@@ -1,6 +1,6 @@
 name: atschool
 type: drupal10
-docroot: ""
+docroot: web
 php_version: "8.1"
 webserver_type: nginx-fpm
 router_http_port: "80"
@@ -11,22 +11,6 @@ additional_fqdns: []
 database:
   type: mariadb
   version: "10.4"
-nfs_mount_enabled: false
-mutagen_enabled: false
-hooks:
-  post-import-db:
-  - exec: drush cr
-  - exec: drush pm:enable -y devel dblog && drush cset -y system.logging error_level
-      verbose
-  - exec: drush uli
-  post-start:
-  - exec-host: ddev auth ssh
-  pre-import-db:
-  - exec: drush cr
-  - exec-host: mkdir -p .tarballs && ddev export-db --file=.tarballs/$DDEV_PROJECT-ddev-$(date
-      +'%Y-%m-%d-%H%M').sql.gz
-  - exec: drush sql-drop -y
-  - composer: require drupal/stage_file_proxy drupal/masquerade drupal/environment_indicator
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
@@ -272,3 +256,17 @@ nodejs_version: "16"
 # post-import-db:
 #   - exec: drush cr
 #   - exec: drush updb
+hooks:
+  post-start:         
+    - exec-host: ddev auth ssh
+  pre-import-db:
+  - exec: drush cr
+  - exec-host: mkdir -p .tarballs && ddev export-db --file=.tarballs/$DDEV_PROJECT-ddev-$(date +'%Y-%m-%d-%H%M').sql.gz
+  - exec: drush sql-drop -y
+  - composer: require drupal/masquerade drupal/environment_indicator
+  post-import-db:
+  - exec: drush cr
+  # - exec: drush pm-enable -y masquerade environment_indicator
+  # - exec: drush cset -y system.file path.temporary /tmp
+  # - exec: drush pm:enable -y devel dblog && drush cset -y system.logging error_level verbose
+  # - exec: drush uli
