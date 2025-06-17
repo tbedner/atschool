@@ -60,3 +60,6 @@
 /drush
 /drupal.phar
 /drupal
+
+# ignore Apple files
+.DS_Store
