@@ -16,3 +16,14 @@
 
 						</div>
 					</header>
+<?php
+$mail = "";
+if(isset($_GET['mail'])) {
+	$mail = filter_var($_GET['mail'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+}
+if($mail == "sent") {
+	$message = '<div class="container"><div class="row justify-content-md-center">
+    <div class="col col-lg-12"><div class="alert alert-success" role="alert">送信に成功しました。できるだけ早くご連絡いたします。ありがとうございます。</div></div></div></div>';
+	echo $message;
+}
+?>

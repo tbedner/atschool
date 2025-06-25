@@ -60,7 +60,7 @@ include('menu.php');
 					</div>
 
 <?php
-include('footer.php');
+include('contact_footer.php');
 ?>
 	</body>
 </html>
