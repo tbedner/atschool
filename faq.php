@@ -89,7 +89,7 @@ include('menu.php');
 							</p>
 
 							<div class="col-lg-12 text-center">
-									<img src="images/CEFRLevels.png" class="img-fluid" alt="" width="100%"/>
+									<img src="images/CEFRLevels.png" class="img-fluid" alt="" width="75%"/>
 							</div>
 							<br>
 							<h3>Q14. 担当講師とのセッションミーティングに参加するリンクはどこで見つけられますか？</h3>
