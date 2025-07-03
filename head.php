@@ -1,4 +1,4 @@
-<head>
+	<head>
 		<meta charset="utf-8" />
         <title>Home | @School</title>
         <link rel="shortcut icon" href="https://www.at-school-portal.com/moodle/pluginfile.php/1/core_admin/favicon/64x64/1741962128/favicon.ico" />
@@ -9,3 +9,12 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-3TTY6PRWS9"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-3TTY6PRWS9');
+	</script>
