@@ -4,9 +4,19 @@
 
 							<!-- Logo -->
 								<a href="index.php" class="logo">
-                                <img src="images/logo.png" alt="@School Logo" width="60" height="60"> <span class="title">@Schoolへようこそ</span>
+                                <img src="images/logo.png" alt="@School Logo" width="60" height="60"> <span class="title"><?php echo $translations['title']; ?></span>
 								</a>
-
+<form name="langSelect" action="" method="get">
+	<div class="form-group col-md-4 float-right lang">
+     <select class="form-control form-control-sm" name="lang" id="lang" onchange='this.form.submit()'>
+         <option>Select Language</option>
+         <option value="ja" <?=$lang == 'ja' ? ' selected="selected"' : '';?>>日本語</option>
+         <option value="en" <?=$lang == 'en' ? ' selected="selected"' : '';?>>English</option>
+         <option value="es" <?=$lang == 'es' ? ' selected="selected"' : '';?>>Español</option>
+     </select>
+	<noscript><button type="submit" class="btn btn-sm float-right" id="langbutton">Submit</button></noscript>
+	</div>
+</form>
 							<!-- Nav -->
 								<nav>
 									<ul>

@@ -1,3 +1,6 @@
+<?php
+include('lang.php');
+?>	
 	<head>
 		<meta charset="utf-8" />
         <title>Home | @School</title>

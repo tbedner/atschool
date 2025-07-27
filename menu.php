@@ -5,11 +5,11 @@
 						<ul>
 <?php
 $menu_items = array(
-    'ホーム' => 'index.php',
-    '参加する' => 'join.php',
-    '当サイトについて' => 'about.php',
-    'よくある質問' => 'faq.php',
-    '@School ポータル ログイン' => 'moodle/',
+    $translations['home_nav'] => 'index.php',
+    $translations['join_nav'] => 'join.php',
+    $translations['about_nav'] => 'about.php',
+    $translations['faq_nav'] => 'faq.php',
+    $translations['portal_nav'] => 'moodle/?lang='.$lang,
 );
 foreach($menu_items as $item => $value) {
     if ((strpos($_SERVER['REQUEST_URI'], $value) !== FALSE) || ($item == 'ホーム' && $_SERVER['REQUEST_URI']== '/')) {

@@ -3324,3 +3324,16 @@ input, select, textarea {
 	#faq img {
 		height: 200px;
 	}
+
+/* Lang Form and Submit Button */
+
+	#langbutton {
+		position:relative;
+		top: -33px;
+		left: 100px;
+		height: 35px;
+	}
+
+	.lang {
+		right: 85px;
+	}

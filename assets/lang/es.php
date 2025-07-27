@@ -1,0 +1,33 @@
+<?php
+return [
+    'home_nav' => 'Inicio',
+    'join_nav' => 'Unirse',
+    'about_nav' => 'Acerca de',
+    'faq_nav' => 'Preguntas frecuentes',
+    'portal_nav' => 'Inicio de sesión en el portal @School',
+    'title' => 'Bienvenidos a @School',
+    'home_title' => 'Comunidad en línea de @School',
+    'home_p1' => 'Una mejor manera de aprender inglés – Diseñada para hispanohablantes',
+    'home_p2' => 'Bienvenido/a a @School, una comunidad de aprendizaje de inglés amigable, estructurada y práctica, creada especialmente para personas que hablan español. Tanto si estás empezando desde cero como si estás retomando el inglés, estamos aquí para apoyarte en cada paso del camino. Aprende con confianza, a tu propio ritmo, combinando tecnología moderna con una conexión humana real.',
+    'home_title2' => '¡Únete a nuestra clase!',
+    'home_join' => 'Unirse',
+    'home_about' => 'Sobre nosotros',
+    'home_faq' => 'Preguntas frecuentes',
+    'home_portal' => 'Inicio de sesión en el portal @School',
+    'contact_title' => 'Contacto',
+    'contact_name' => 'Nombre',
+    'contact_email' => 'Correo electrónico',
+    'contact_subject' => 'Asunto',
+    'contact_message' => 'Mensaje',
+    'contact_send' => 'Enviar mensaje',
+    'contact_info' => 'Información de contacto',
+    'contact_copyright' => 'Derechos de autor',
+    'join_title' => 'Un curso estructurado respaldado por tecnología inteligente y profesores reales',
+    'join_p1' => 'Nuestro curso está diseñado con una estructura clara, semana a semana, que hace que el aprendizaje sea eficaz y fácil de gestionar.',
+    'join_p2' => 'Combina lo último en tecnología de inteligencia artificial —incluidos chatbots y asistencia integrada gracias a nuestra colaboración con Duolingo— con una verdadera conexión humana.
+Los estudiantes participan en dos sesiones en directo de 30 minutos cada semana con un profesor certificado en TEFL, para ganar confianza real en la conversación.',
+    'join_p3' => 'Recomendamos dedicar entre 4 y 8 horas semanales, lo que facilita su integración en agendas ocupadas. Las tareas se envían y son corregidas por profesores reales, lo que garantiza retroalimentación personalizada y un progreso medible. Es la combinación perfecta de estructura, tecnología y apoyo humano —diseñada para quienes quieren ver resultados.',
+    'join_p4' => '¿Listo para empezar? Contacta con nuestro equipo de soporte hoy mismo',
+    'join_p5' => 'por correo electrónico, a través del formulario de contacto, o mediante mensaje directo en Instagram o Facebook.',
+
+];
