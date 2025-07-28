@@ -86,7 +86,7 @@ include('carousel.php');
 
 							<br><br>
 
-							<p class="text-center"><button type="button" class="btn btn-dark"><a href="moodle/?lang=<?php echo $lang; ?>" style="color:#fff;"><?php echo $translations['home_portal']; ?></a></button></p>
+							<p class="text-center"><a href="moodle/?lang=<?php echo $lang; ?>" style="color:#fff;"><button type="button" class="btn btn-dark"><?php echo $translations['home_portal']; ?></button></a></p>
 
 						</div>
 					</div>

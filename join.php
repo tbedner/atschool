@@ -26,7 +26,9 @@ include('menu.php');
 							
 							<p><?php echo $translations['join_p3']; ?></p>
 
-							<p><b><?php echo $translations['join_p4']; ?></b> <?php echo $translations['join_p5']; ?></p>
+							<p><?php echo $translations['join_p4']; ?></p>
+
+							<p class="text-center"><a href="moodle/login/signup.php?lang=<?php echo $lang; ?>" style="color:#fff;"><button type="button" class="btn btn-dark"><?php echo $translations['join_button']; ?></button></a></p>
 						</div>
 					</div>
 
