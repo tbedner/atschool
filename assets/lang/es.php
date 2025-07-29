@@ -45,7 +45,7 @@ Los estudiantes participan en dos sesiones en directo de 30 minutos cada semana 
     'faq_q7' => '<h3>Q7. ¿Está bien si no hablo nada de inglés?</h3>',
     'faq_a7' => '<p><b>A.</b> Sí. Hay apoyo disponible en tu idioma nativo durante todo el curso, así que puedes comenzar sin preocupaciones.</p>',
     'faq_q8' => '<h3>Q8. ¿Cuánto cuesta?</h3>',
-    'faq_a8' => '<p><b>A.</b> El precio normal del curso es de $820 AUD, pero los nuevos estudiantes pueden inscribirse por un precio especial de $515 AUD. Ofrecemos opciones de pago flexibles. Si utilizas PayPal, puedes calificar para un plan de 4 pagos sin comisiones (Pay in 4). También aceptamos pagos por Venmo y <strong>transferencias bancarias</strong> desde Japón.</p>',
+    'faq_a8' => '<p><b>A.</b> El precio normal del curso es de €460, pero los nuevos estudiantes pueden inscribirse por un precio especial de €290. Ofrecemos opciones de pago flexibles. Si utilizas PayPal, puedes calificar para un plan de 4 pagos sin comisiones (Pay in 4). También aceptamos pagos por Venmo y <strong>transferencias bancarias</strong> desde Japón.</p>',
     'faq_q9' => '<h3>Q9. ¿Cómo me inscribo?</h3>',
     'faq_a9' => '<p><b>A.</b> Contáctanos usando uno de los siguientes métodos. Nuestro personal te atenderá en tu idioma nativo.<ul style="margin-left:40px;"><li>Correo electrónico</li><li>Formulario de contacto</li><li>Mensaje directo en Instagram o Facebook</li></ul></p>',
     'faq_q10' => '<h3>Q10. ¿Cómo está estructurado el curso?</h3>',
