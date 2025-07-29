@@ -46,7 +46,7 @@ return [
   'faq_q8' => '<h3>Q8. How much does it cost?</h3>',
   'faq_a8' => '<p><b>A.</b> The regular course fee is $820 AUD, but new students can join for a special price of $515 AUD. We offer flexible payment options. If you use PayPal, you may qualify for a 4-installment plan (Pay in 4) with no fees. We also accept Venmo and <strong>bank transfers</strong> from within Japan.</p>',
   'faq_q9' => '<h3>Q9. How do I sign up?</h3>',
-  'faq_a9' => '<p><b>A.</b> Contact us using one of the following methods. Our staff will support you in you native language.<ul style="margin-left:40px;"><li>Email</li><li>Contact form</li><li>Instagram or Facebook DM</li></ul></p>',
+  'faq_a9' => '<p><b>A.</b> Click the "Register Now!" button below or contact us using one of the following methods. Our staff will support you in you native language.<ul style="margin-left:40px;"><li>Email</li><li>Contact form</li><li>Instagram or Facebook DM</li></ul><p class="text-center"><a href="moodle/login/signup.php?lang=<?php echo $lang; ?>" style="color:#fff;"><button type="button" class="btn btn-dark">Register Now!</button></a></p></p>',
   'faq_q10' => '<h3>Q10. How is the course structured?</h3>',
   'faq_a10' => '<p><b>A.</b> This course is designed to improve your overall English skills, including listening, vocabulary, and grammar. It is an asynchronous, fully online course, so you can study anytime and anywhere. Each course lasts 6 weeks and includes weekly assignments and teacher meetings. While flexible, there are deadlines, so time management is important. The course is fast-paced and rewarding, helping you improve communication skills and learn efficiently.</p>',
   'faq_q11' => '<h3>Q11. What if I don’t finish my weekly assignment? Can I still submit it?</h3>',
