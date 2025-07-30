@@ -29,6 +29,7 @@ Los estudiantes participan en dos sesiones en directo de 30 minutos cada semana 
     'join_p3' => 'Recomendamos dedicar entre 4 y 8 horas semanales, lo que facilita su integración en agendas ocupadas. Las tareas se envían y son corregidas por profesores reales, lo que garantiza retroalimentación personalizada y un progreso medible. Es la combinación perfecta de estructura, tecnología y apoyo humano —diseñada para quienes quieren ver resultados.',
     'join_p4' => '<b>¿Listo para empezar? Haz clic en el enlace de abajo para registrarte.</b> Te inscribiremos en nuestro curso llamado "Cómo inscribirse en los cursos y comprobar tu nivel de inglés", donde encontrarás todas las instrucciones necesarias para apuntarte a nuestras clases. Si necesitas ayuda, no dudes en ponerte en contacto con nuestro equipo de soporte por correo electrónico, a través del formulario de contacto, o mediante un mensaje directo en Instagram o Facebook.',
     'join_button' => '¡Regístrate ahora!',
+    'join_docs' => 'Guía de ayuda para el registro',
     'faq_title' => 'Preguntas Frecuentes',
     'faq_q1' => '<h3>Q1. ¿Para quién es adecuado este curso?</h3>',
     'faq_a1' => '<p><b>A.</b> Este curso es perfecto para principiantes en inglés o para aquellos que lo estudiaron antes pero lo han olvidado. Hay apoyo disponible, así que incluso quienes aprenden por primera vez pueden comenzar con confianza.</p>',

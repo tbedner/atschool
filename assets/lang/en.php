@@ -28,6 +28,7 @@ return [
     'join_p3' => 'We recommend students dedicate 4 to 8 hours per week, making it easy to fit into busy schedules. Assignments are submitted and graded by real teachers, ensuring personal feedback and measurable progress. It’s the perfect blend of structure, technology, and human support — designed for learners who want results.',
     'join_p4' => '<b>Ready to get started? Click the link below to register.</b> You will be enrolled in our course called "How to Enroll in Courses and Check Your English Level" which will have all of the instructions you will need on how to enroll in our courses. If you need anything, please contact our support team today via email, our contact form, or direct message us on Instagram or Facebook.',
     'join_button' => 'Register Now!',
+    'join_docs' => 'Registration Help Guide',
     'faq_title' => 'Frequently Asked Questions',
   'faq_q1' => '<h3>Q1. Who is this course suitable for?</h3>',
   'faq_a1' => '<p><b>A.</b> This course is perfect for English beginners or those who studied it before but have forgotten. Support is available, so even first-time learners can start with confidence.</p>',
