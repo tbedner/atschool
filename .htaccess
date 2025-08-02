@@ -1,0 +1,9 @@
+
+<FilesMatch \.php$>
+        SetHandler proxy:fcgi://tdbedner-php81
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+</IfModule>

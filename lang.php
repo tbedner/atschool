@@ -28,13 +28,17 @@ if (!empty($acceptLanguageHeader)) {
 
     // Get the most preferred language (e.g., 'en', 'fr-FR')
     $mostPreferredLanguage = key($preferredLanguages);
+
+    // List supported languages
+    $supported_languages = ['ja', 'en', 'es']; 
+
     // Set default language
     if(str_contains($mostPreferredLanguage, "-")) {
         $filtered_lang = explode("-",$mostPreferredLanguage);
-        $lang = $filtered_lang[0];
+        $lang = in_array($filtered_lang[0], $supported_languages) ? $filtered_lang[0] : 'en';
     }
     elseif(!empty($mostPreferredLanguage)) {
-        $lang = $mostPreferredLanguage;
+        $lang = in_array($mostPreferredLanguage, $supported_languages) ? $mostPreferredLanguage : 'en';
     } 
     else {
         $lang = 'en';
@@ -48,9 +52,11 @@ if (!empty($acceptLanguageHeader)) {
 if (isset($_GET['lang'])) {
     $lang = stripslashes($_GET['lang']);
 	$lang = trim(htmlentities($lang, ENT_QUOTES, 'UTF-8'));
+    $lang = in_array($lang, $supported_languages) ? $lang : 'en';
     $_SESSION['lang'] = $lang;
 } elseif (isset($_SESSION['lang'])) {
     $lang = $_SESSION['lang'];
+    $lang = in_array($lang, $supported_languages) ? $lang : 'en';
 }
 
 // Load language file

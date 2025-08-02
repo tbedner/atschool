@@ -1,0 +1,135 @@
+[18-Jun-2025 14:08:22 Asia/Tokyo] PHP Warning:  Undefined array key "mail" in /home/tdbedner/public_html/header.php on line 22
+[18-Jun-2025 14:08:27 Asia/Tokyo] PHP Warning:  Undefined array key "mail" in /home/tdbedner/public_html/header.php on line 22
+[18-Jun-2025 14:08:30 Asia/Tokyo] PHP Warning:  Undefined array key "mail" in /home/tdbedner/public_html/header.php on line 22
+[18-Jun-2025 14:20:26 Asia/Tokyo] PHP Parse error:  syntax error, unexpected variable "$headers" in /home/tdbedner/public_html/email.php on line 10
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[19-Jul-2025 13:21:46 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[03-Aug-2025 00:54:14 Asia/Tokyo] PHP Parse error:  syntax error, unexpected token "protected", expecting ")" in /home/tdbedner/public_html/chats.php on line 15
+[03-Aug-2025 00:59:03 Asia/Tokyo] PHP Warning:  Undefined variable $PHP_AUTH_USER in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 00:59:09 Asia/Tokyo] PHP Warning:  Undefined variable $PHP_AUTH_USER in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 00:59:20 Asia/Tokyo] PHP Warning:  Undefined variable $PHP_AUTH_USER in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 00:59:22 Asia/Tokyo] PHP Warning:  Undefined variable $PHP_AUTH_USER in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 01:01:04 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 2
+[03-Aug-2025 01:01:04 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 01:01:08 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 2
+[03-Aug-2025 01:01:08 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 01:01:09 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 2
+[03-Aug-2025 01:01:09 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 3
+[03-Aug-2025 01:12:46 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 6
+[03-Aug-2025 01:12:46 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 7
+[03-Aug-2025 01:12:49 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 6
+[03-Aug-2025 01:12:49 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 7
+[03-Aug-2025 01:12:55 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 6
+[03-Aug-2025 01:12:55 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 7
+[03-Aug-2025 01:12:57 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 6
+[03-Aug-2025 01:12:57 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_PW" in /home/tdbedner/public_html/chats.php on line 7
+[03-Aug-2025 01:15:49 Asia/Tokyo] PHP Warning:  Undefined array key "HTTP_AUTHORIZATION" in /home/tdbedner/public_html/chats.php on line 4
+[03-Aug-2025 01:15:49 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 10
+[03-Aug-2025 01:15:53 Asia/Tokyo] PHP Warning:  Undefined array key "HTTP_AUTHORIZATION" in /home/tdbedner/public_html/chats.php on line 4
+[03-Aug-2025 01:15:53 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 10
+[03-Aug-2025 01:15:55 Asia/Tokyo] PHP Warning:  Undefined array key "HTTP_AUTHORIZATION" in /home/tdbedner/public_html/chats.php on line 4
+[03-Aug-2025 01:15:55 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 10
+[03-Aug-2025 01:23:44 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 01:24:03 Asia/Tokyo] PHP Warning:  Undefined array key "PHP_AUTH_USER" in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 01:25:18 Asia/Tokyo] PHP Warning:  Undefined array key 1 in /home/tdbedner/public_html/chats.php on line 2
+[03-Aug-2025 01:25:25 Asia/Tokyo] PHP Warning:  Undefined array key 1 in /home/tdbedner/public_html/chats.php on line 2
+[03-Aug-2025 02:31:36 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:31:36 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:37:26 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, string given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:38:18 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:38:18 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:39:15 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:39:15 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:39:18 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:39:18 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:39:19 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:39:19 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 02:39:20 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 13
+[03-Aug-2025 02:39:20 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: pg_query(): Argument #1 ($connection) must be of type PgSql\Connection, bool given in /home/tdbedner/public_html/chats.php:14
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(14): pg_query()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 14
+[03-Aug-2025 03:03:24 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 23
+[03-Aug-2025 03:03:24 Asia/Tokyo] PHP Fatal error:  Uncaught Error: No PostgreSQL connection opened yet in /home/tdbedner/public_html/chats.php:26
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(26): pg_last_error()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 26
+[03-Aug-2025 03:17:58 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: No such file or directory
+	Is the server running locally and accepting
+	connections on Unix domain socket &quot;/var/run/postgresql/.s.PGSQL.5432&quot;? in /home/tdbedner/public_html/chats.php on line 26
+[03-Aug-2025 03:17:58 Asia/Tokyo] PHP Warning:  Undefined variable $conn in /home/tdbedner/public_html/chats.php on line 30
+[03-Aug-2025 03:17:58 Asia/Tokyo] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in /home/tdbedner/public_html/chats.php on line 31
+[03-Aug-2025 03:17:58 Asia/Tokyo] PHP Fatal error:  Uncaught Error: No PostgreSQL connection opened yet in /home/tdbedner/public_html/chats.php:31
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(31): pg_last_error()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 31
+[03-Aug-2025 03:18:40 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: No such file or directory
+	Is the server running locally and accepting
+	connections on Unix domain socket &quot;/var/run/postgresql/.s.PGSQL.5432&quot;? in /home/tdbedner/public_html/chats.php on line 26
+[03-Aug-2025 03:18:40 Asia/Tokyo] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in /home/tdbedner/public_html/chats.php on line 31
+[03-Aug-2025 03:18:40 Asia/Tokyo] PHP Fatal error:  Uncaught Error: No PostgreSQL connection opened yet in /home/tdbedner/public_html/chats.php:31
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(31): pg_last_error()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 31
+[03-Aug-2025 03:27:05 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 26
+[03-Aug-2025 03:27:05 Asia/Tokyo] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in /home/tdbedner/public_html/chats.php on line 30
+[03-Aug-2025 03:27:05 Asia/Tokyo] PHP Fatal error:  Uncaught Error: No PostgreSQL connection opened yet in /home/tdbedner/public_html/chats.php:30
+Stack trace:
+#0 /home/tdbedner/public_html/chats.php(30): pg_last_error()
+#1 {main}
+  thrown in /home/tdbedner/public_html/chats.php on line 30
+[03-Aug-2025 03:29:39 Asia/Tokyo] PHP Warning:  pg_connect(): Unable to connect to PostgreSQL server: could not connect to server: Connection refused
+	Is the server running on host &quot;c5hilnj7pn10vb.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com&quot; (35.170.118.189) and accepting
+	TCP/IP connections on port 5432? in /home/tdbedner/public_html/chats.php on line 26
