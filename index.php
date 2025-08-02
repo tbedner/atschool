@@ -39,23 +39,23 @@ include('carousel.php');
 								
 
 								<div class="col-sm-4 text-center">
-									<img src="images/blog-1-720x480.jpg" class="img-fluid" alt="" />
+									<a href="join.php"><img src="images/blog-1-720x480.jpg" class="img-fluid" alt="" />
 
-									<h2 class="m-n"><a href="join.php"><?php echo $translations['home_join']; ?></a></h2>
-
-								</div>
-
-								<div class="col-sm-4 text-center">
-									<img src="images/blog-2-720x480.jpg" class="img-fluid" alt="" />
-
-									<h2 class="m-n"><a href="about.php"><?php echo $translations['home_about']; ?></a></h2>
+									<h2 class="m-n"><?php echo $translations['home_join']; ?></h2></a>
 
 								</div>
 
 								<div class="col-sm-4 text-center">
-									<img src="images/blog-4-720x480.jpg" class="img-fluid" alt="" />
+									<a href="about.php"><img src="images/blog-2-720x480.jpg" class="img-fluid" alt="" />
 
-									<h2 class="m-n"><a href="faq.php"><?php echo $translations['home_faq']; ?></a></h2>
+									<h2 class="m-n"><?php echo $translations['home_about']; ?></h2></a>
+
+								</div>
+
+								<div class="col-sm-4 text-center">
+									<a href="faq.php"><img src="images/blog-4-720x480.jpg" class="img-fluid" alt="" />
+
+									<h2 class="m-n"><?php echo $translations['home_faq']; ?></h2></a>
 
 								</div>
 
