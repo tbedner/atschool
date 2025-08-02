@@ -63,3 +63,5 @@
 
 # ignore Apple files
 .DS_Store
+
+.htaccess
