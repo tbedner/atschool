@@ -3,6 +3,7 @@ return [
     'home_nav' => 'Home',
     'join_nav' => 'Join',
     'about_nav' => 'About',
+    'pricing_nav' => 'Pricing',
     'faq_nav' => 'FAQs',
     'portal_nav' => '@School Portal Login',
     'title' => 'Welcome to @School',

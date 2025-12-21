@@ -3,6 +3,7 @@ return [
     'home_nav' => 'Inicio',
     'join_nav' => 'Unirse',
     'about_nav' => 'Acerca de',
+    'pricing_nav' => 'Precios',
     'faq_nav' => 'Preguntas frecuentes',
     'portal_nav' => 'Inicio de sesión en el portal @School',
     'title' => 'Bienvenidos a @School',

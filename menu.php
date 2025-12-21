@@ -8,6 +8,7 @@ $menu_items = array(
     $translations['home_nav'] => 'index.php',
     $translations['join_nav'] => 'join.php',
     $translations['about_nav'] => 'about.php',
+    $translations['pricing_nav'] => 'pricing.php',
     $translations['faq_nav'] => 'faq.php',
     $translations['portal_nav'] => 'moodle/?lang='.$lang,
 );

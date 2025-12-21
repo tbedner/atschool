@@ -3,6 +3,7 @@ return [
     'home_nav' => 'ホーム',
     'join_nav' => '参加する',
     'about_nav' => '当サイトについて',
+    'pricing_nav' => '料金',
     'faq_nav' => 'よくある質問',
     'portal_nav' => '@School ポータル ログイン',
     'title' => '@Schoolへようこそ',
