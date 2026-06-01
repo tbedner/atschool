@@ -3319,6 +3319,13 @@ input, select, textarea {
 		height: 475px;
 	}
 
+	@media screen and (max-width: 736px) {
+
+			.carousel-inner {
+				height: auto;
+			}
+
+		}
 /* FAQs */
 
 	#faq img {
