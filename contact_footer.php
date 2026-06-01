@@ -42,6 +42,12 @@
 									<li><span class="fa fa-map-pin"></span> 212 Barrington Court New York, ABC 10001 United States of America</li> -->
 								</ul>
 
+								<ul class="icons">
+									<li><a href="https://x.com/school_3aju" class="icon style2 fa-twitter" target="_blank"><span class="label">X</span></a></li> 
+									<!-- <li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li> -->
+									<li><a href="https://www.instagram.com/at_school_jp/" class="icon style2 fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+									<!-- <li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li> -->
+								</ul>
 								
 							</section>
 

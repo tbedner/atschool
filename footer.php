@@ -1,16 +1,16 @@
 				<!-- Footer -->
                 <footer id="footer">
 						<div class="inner">
-							<!-- <section>
+							<section>
 								<ul class="icons">
-									<li><a href="#" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://x.com/school_3aju" class="icon style2 fa-twitter"><span class="label">X</span></a></li> 
+									<!-- <li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li> -->
+									<li><a href="https://www.instagram.com/at_school_jp/" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
+									<!-- <li><a href="#" class="icon style2 fa-linkedin"><span class="label">LinkedIn</span></a></li> -->
 								</ul>
 
 								&nbsp;
-							</section> -->
+							</section>
 
 							<ul class="copyright">
 								<li>Copyright © 2020 Company Name </li>
