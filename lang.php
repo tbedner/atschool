@@ -30,7 +30,7 @@ if (!empty($acceptLanguageHeader)) {
     $mostPreferredLanguage = key($preferredLanguages);
 
     // List supported languages
-    $supported_languages = ['ja', 'en', 'es']; 
+    $supported_languages = ['ar', 'bg', 'de', 'en', 'es', 'fr', 'hi', 'ja', 'ko', 'pt', 'ru', 'zh_cn', 'zh_tw']; 
 
     // Set default language
     if(str_contains($mostPreferredLanguage, "-")) {

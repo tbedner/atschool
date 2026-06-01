@@ -10,9 +10,19 @@
 	<div class="form-group col-md-4 float-right lang">
      <select class="form-control form-control-sm" name="lang" id="lang" onchange='this.form.submit()'>
          <option>Select Language</option>
-         <option value="ja" <?=$lang == 'ja' ? ' selected="selected"' : '';?>>日本語</option>
-         <option value="en" <?=$lang == 'en' ? ' selected="selected"' : '';?>>English</option>
-         <option value="es" <?=$lang == 'es' ? ' selected="selected"' : '';?>>Español</option>
+		<option value="en" <?=$lang == 'en' ? ' selected="selected"' : '';?>>English</option>
+		<option value="ja" <?=$lang == 'ja' ? ' selected="selected"' : '';?>>日本語</option>
+		<option value="ko" <?=$lang == 'ko' ? ' selected="selected"' : '';?>>한국어</option>
+		<option value="es" <?=$lang == 'es' ? ' selected="selected"' : '';?>>Español</option>
+		<option value="fr" <?=$lang == 'fr' ? ' selected="selected"' : '';?>>Français</option>
+		<option value="de" <?=$lang == 'de' ? ' selected="selected"' : '';?>>Deutsch</option>
+		<option value="pt" <?=$lang == 'pt' ? ' selected="selected"' : '';?>>Português</option>
+		<option value="bg" <?=$lang == 'bg' ? ' selected="selected"' : '';?>>Български</option>
+		<option value="ru" <?=$lang == 'ru' ? ' selected="selected"' : '';?>>Русский</option>
+		<option value="ar" <?=$lang == 'ar' ? ' selected="selected"' : '';?>>العربية</option>
+		<option value="hi" <?=$lang == 'hi' ? ' selected="selected"' : '';?>>हिन्दी</option>
+		<option value="zh_cn" <?=$lang == 'zh_cn' ? ' selected="selected"' : '';?>>简体中文 (Simplified Chinese)</option>
+		<option value="zh_tw" <?=$lang == 'zh_tw' ? ' selected="selected"' : '';?>>繁體中文 (Traditional Chinese)</option>
      </select>
 	<noscript><button type="submit" class="btn btn-sm float-right" id="langbutton">Submit</button></noscript>
 	</div>
