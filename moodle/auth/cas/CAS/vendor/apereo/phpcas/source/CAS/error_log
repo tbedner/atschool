@@ -1,0 +1,4 @@
+[06-Dec-2025 10:56:11 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "CAS_OutOfSequenceException" not found in /home/tdbedner/public_html/moodle/auth/cas/CAS/vendor/apereo/phpcas/source/CAS/OutOfSequenceBeforeClientException.php:43
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/auth/cas/CAS/vendor/apereo/phpcas/source/CAS/OutOfSequenceBeforeClientException.php on line 43

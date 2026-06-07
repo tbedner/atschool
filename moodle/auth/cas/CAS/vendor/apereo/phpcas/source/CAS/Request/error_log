@@ -1,0 +1,4 @@
+[06-Dec-2025 10:07:10 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Interface "CAS_Request_RequestInterface" not found in /home/tdbedner/public_html/moodle/auth/cas/CAS/vendor/apereo/phpcas/source/CAS/Request/AbstractRequest.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/auth/cas/CAS/vendor/apereo/phpcas/source/CAS/Request/AbstractRequest.php on line 40

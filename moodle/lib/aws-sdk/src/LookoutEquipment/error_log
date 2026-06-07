@@ -1,0 +1,4 @@
+[06-Dec-2025 10:06:52 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "Aws\AwsClient" not found in /home/tdbedner/public_html/moodle/lib/aws-sdk/src/LookoutEquipment/LookoutEquipmentClient.php:91
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/lib/aws-sdk/src/LookoutEquipment/LookoutEquipmentClient.php on line 91

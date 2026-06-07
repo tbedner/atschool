@@ -1,0 +1,4 @@
+[06-Dec-2025 10:55:49 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "HTMLPurifier_HTMLModule" not found in /home/tdbedner/public_html/moodle/lib/htmlpurifier/HTMLPurifier/HTMLModule/Name.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/lib/htmlpurifier/HTMLPurifier/HTMLModule/Name.php on line 3

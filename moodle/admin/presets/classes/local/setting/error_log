@@ -1,0 +1,4 @@
+[06-Dec-2025 10:07:01 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_adminpresets\local\setting\adminpresets_admin_setting_configcheckbox" not found in /home/tdbedner/public_html/moodle/admin/presets/classes/local/setting/adminpresets_admin_setting_configcheckbox_with_advanced.php:29
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/presets/classes/local/setting/adminpresets_admin_setting_configcheckbox_with_advanced.php on line 29

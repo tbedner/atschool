@@ -1,0 +1,1 @@
+[06-Dec-2025 10:55:36 Asia/Tokyo] PHP Fatal error:  Trait "PhpOffice\PhpSpreadsheet\Calculation\ArrayEnabled" not found in /home/tdbedner/public_html/moodle/lib/phpspreadsheet/vendor/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Calculation/Engineering/Erf.php on line 9

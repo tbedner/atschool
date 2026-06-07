@@ -1,0 +1,278 @@
+<?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Strings for component 'message', language 'hi', version '4.4'.
+ *
+ * @package     message
+ * @category    string
+ * @copyright   1999 Martin Dougiamas and contributors
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+$string['acceptandaddcontact'] = 'संपर्क स्वीकार करें और जोड़ें';
+$string['addcontact'] = 'संपर्क जोड़ना';
+$string['addcontactconfirm'] = 'क्या आप सुनिश्चित हैं कि आप अपने संपर्कों में {$a} जोड़ना चाहते हैं?';
+$string['addtofavourites'] = 'सितारों की बातचीत';
+$string['addtoyourcontacts'] = 'संपर्कों में जोड़ें';
+$string['addtoyourcontactsandmessage'] = 'संपर्क और सन्देश, सूचना में जोड़ें';
+$string['ago'] = '{$a} पहले';
+$string['allusers'] = 'सभी उपयोगकर्ताओं से सभी संदेश';
+$string['backto'] = '{$a} पर वापस जाएँ';
+$string['backupmessageshelp'] = 'यदि सक्षम किया जाता है, तो तत्काल संदेशों को साइट स्वचालित बैकअप में शामिल किया जाएगा';
+$string['blockcontact'] = 'संपर्क रोकना';
+$string['blockedusers'] = 'अवरुद्ध उपयोगकर्ता';
+$string['blocknoncontacts'] = 'गैर-संपर्कों को मुझे संदेश भेजने से रोकें';
+$string['blockuser'] = 'उपयोगकर्ता को अवरुद्ध करें';
+$string['blockuserconfirm'] = 'क्या आप सुनिश्चित हैं कि आप {$a} को अवरुद्ध करना चाहते हैं?';
+$string['blockuserconfirmbutton'] = 'ब्लॉक';
+$string['cancelselection'] = 'प्रवरण रद्द करना';
+$string['cantblockuser'] = 'आप {$a} को अवरुद्ध नहीं कर सकते क्योंकि सभी उपयोगकर्ताओं को सन्देश, सूचना भेजने की अनुमति के साथ उनकी भूमिका है।';
+$string['contactableprivacy'] = 'से संदेश स्वीकार करेंः';
+$string['contactableprivacy_coursemember'] = 'मेरे संपर्क और मेरे पाठ्यक्रमों में कोई भी';
+$string['contactableprivacy_onlycontacts'] = 'केवल मेरे संपर्क';
+$string['contactableprivacy_site'] = 'साइट पर कोई भी';
+$string['contactblocked'] = 'संपर्क अवरुद्ध';
+$string['contactrequests'] = 'अनुरोधों से संपर्क करें';
+$string['contactrequestsent'] = 'भेजा गया संपर्क अनुरोध';
+$string['contacts'] = 'संपर्क';
+$string['conversationactions'] = 'बातचीत क्रियाओं का मेनू';
+$string['decline'] = 'गिरावट';
+$string['defaultmessageoutputs'] = 'अधिसूचना सेटिंग';
+$string['deleteallconfirm'] = 'क्या आपको यकीन है कि आप इस पूरी बातचीत को हटाना चाहेंगे? यह अन्य बातचीत प्रतिभागियों के लिए इसे नहीं निकाल देना';
+$string['deleteallmessages'] = 'सभी संदेशों को निकाल देना दें';
+$string['deleteallselfconfirm'] = 'क्या आपको यकीन है कि आप इस पूरी व्यक्तिगत बातचीत को हटाना चाहेंगे?';
+$string['deleteconversation'] = 'बातचीत निकाल देना दें';
+$string['deleteforeveryone'] = 'मेरे लिए और बाकी सभी के लिए निकाल देना दें';
+$string['deleteforeveryoneselectedmessagesconfirm'] = 'क्या आप निश्चित हैं कि आप चयनित संदेशों को हटाना चाहेंगे?';
+$string['deleteselectedmessages'] = 'चयनित संदेशों को निकाल देना दें';
+$string['deleteselectedmessagesconfirm'] = 'क्या आप निश्चित हैं कि आप चयनित संदेशों को हटाना चाहेंगे? यह उन्हें अन्य बातचीत प्रतिभागियों के लिए नहीं निकाल देना';
+$string['deleteselectedmessagesconfirmselfconversation'] = 'क्या आप निश्चित हैं कि आप चयनित व्यक्तिगत संदेशों को हटाना चाहेंगे?';
+$string['disableall'] = 'अधिसूचनाओं को अक्षम करें';
+$string['disabled'] = 'इस साइट पर संदेश अक्षम है';
+$string['disallowed'] = 'अस्वीकार करना';
+$string['editmessages'] = 'संदेशों को संपादित करें';
+$string['emailtagline'] = 'यह {$a->sitename} साइट पर आपको भेजे गए संदेश की एक प्रति है। उत्तर देने के लिए <a href="{$a->url}">{$a->url}</a> पर जाएं।';
+$string['enabled'] = 'सक्षम किया गया';
+$string['errorcallingprocessor'] = 'त्रुटि कॉलिंग परिभाषित आउटपुट';
+$string['errorconversationdoesnotexist'] = 'बातचीत मौजूद नहीं है';
+$string['errormessagetoolong'] = 'सूचना उच्‍चतम अनुमत से लंबा है।';
+$string['errortranslatingdefault'] = 'इसके बजाय सिस्टम चूकना का उपयोग करके प्लगइन द्वारा बशर्ते, यह कि गई चूकना सेटिंग का अनुवाद करने में त्रुटि।';
+$string['eventgroupmessagesent'] = 'भेजा गया समूह सन्देश';
+$string['eventmessagecontactadded'] = 'सूचना संपर्क जोड़ा गया';
+$string['eventmessagecontactremoved'] = 'सूचना संपर्क हटा दिया गया';
+$string['eventmessagedeleted'] = 'सूचना हटा दिया गया';
+$string['eventmessagesent'] = 'भेजा गया सन्देश';
+$string['eventmessageuserblocked'] = 'उपयोगकर्ता अवरुद्ध';
+$string['eventmessageuserunblocked'] = 'उपयोगकर्ता को अनब्लॉक किया गया';
+$string['eventmessageviewed'] = 'सूचना देखा गया';
+$string['eventnotificationsent'] = 'अधिसूचना भेजी गई';
+$string['eventnotificationviewed'] = 'अधिसूचना देखी गई';
+$string['forced'] = 'बंद ';
+$string['forcedmessage'] = 'बंद है';
+$string['groupconversations'] = 'समूह';
+$string['groupinfo'] = 'समूह जानकारी';
+$string['guestnoeditmessage'] = 'अतिथि उपयोगकर्ता संदेश विकल्पों को संपादित नहीं कर सकता है';
+$string['guestnoeditmessageother'] = 'अतिथि उपयोगकर्ता अन्य उपयोगकर्ता संदेश विकल्पों को संपादित नहीं कर सकता है';
+$string['hidemessagewindow'] = 'सूचना विंडो छुपाएँ';
+$string['hidenotificationwindow'] = 'अधिसूचना विंडो छुपाएँ';
+$string['individualconversations'] = 'निजी';
+$string['info'] = 'उपयोगकर्ता जानकारी';
+$string['isnotinyourcontacts'] = '{$a} आपके संपर्कों में नहीं है';
+$string['loadmore'] = 'अधिक लोड करें';
+$string['loggedin'] = 'ऑनलाइन';
+$string['loggedoff'] = 'ऑनलाइन नहीं';
+$string['managemessageoutputs'] = 'पूर्वनिर्धारित अधिसूचना वरीयताएँ';
+$string['message'] = 'सन्देश';
+$string['messagecontactrequest'] = '{$a->user} संपर्क के रूप में जोड़े जाने का अनुरोध कर रहा है। अनुरोध का जवाब देने के लिए अपने <a href="{$a->url}">संपर्क अनुरोध</a> पृष्ठ पर जाएँ।';
+$string['messagecontactrequestsubject'] = '{$a->sitename}: {$a->user} से संपर्क अनुरोध';
+$string['messagecontentaudio'] = 'ऑडियो';
+$string['messagecontentimage'] = 'छवि';
+$string['messagecontentmultimediageneral'] = 'अन्य मीडिया';
+$string['messagecontentvideo'] = 'वीडियो';
+$string['messagedrawerviewcontact'] = '{$a} के लिए उपयोगकर्ता ब्योरा';
+$string['messagedrawerviewcontacts'] = 'सूचना संपर्क';
+$string['messagedrawerviewconversation'] = '{$a} के साथ बातचीत';
+$string['messagedrawerviewgroupinfo'] = '{$a} के लिए समूह ब्योरा';
+$string['messagedrawerviewoverview'] = 'संदेशों का अवलोकन';
+$string['messagedrawerviewsearch'] = '{$a} के लिए संदेश खोज परिणाम';
+$string['messagedrawerviewsettings'] = 'सन्देश, सूचना सेटिंग्स';
+$string['messageoutputs'] = 'अधिसूचना प्लगइन';
+$string['messagepreferences'] = 'सन्देश, सूचना वरीयताएँ';
+$string['messages'] = 'सन्देश';
+$string['messagesselected:'] = 'चयनित संदेशः';
+$string['messagetextrequired'] = 'कृपया सन्देश, सूचना पाठ दर्ज करें';
+$string['messagingdatahasnotbeenmigrated'] = 'संदेश अवसंरचना में उन्नयन के कारण आपके संदेश अस्थायी रूप से अनुपलब्ध हैं। कृपया उनके स्थानांतरित होने का इंतजार करें।';
+$string['muteconversation'] = 'मूक';
+$string['mutedconversation'] = 'मूक बातचीत';
+$string['newmessage'] = 'नया सन्देश, सूचना';
+$string['newmessagesearch'] = 'एक नअथवा सन्देश, सूचना भेजने के लिए किसी संपर्क का चयन अथवा खोज करें।';
+$string['newonlymsg'] = 'केवल नए दिखाएँ';
+$string['nocontactrequests'] = 'कोई संपर्क अनुरोध नहीं';
+$string['nocontacts'] = 'कोई संपर्क नहीं';
+$string['nocontactsgetstarted'] = 'कोई संपर्क नहीं';
+$string['nofavourites'] = 'कोई तारांकित बातचीत नहीं';
+$string['noframesjs'] = 'अधिक सुलभ इंटरफेस का उपयोग करें';
+$string['nogroupconversations'] = 'कोई सामूहिक बातचीत नहीं';
+$string['noindividualconversations'] = 'कोई निजी बातचीत नहीं';
+$string['nomessagesfound'] = 'कोई संदेश नहीं मिला';
+$string['noncontacts'] = 'गैर-संपर्क';
+$string['nonotifications'] = 'आपके पास कोई सूचना नहीं है';
+$string['noparticipants'] = 'कोई प्रतिभागी नहीं';
+$string['noreply'] = 'इस सन्देश, सूचना का जवाब न दें';
+$string['notificationdatahasnotbeenmigrated'] = 'अधिसूचना अवसंरचना में उन्नयन के कारण आपकी अधिसूचनाएँ अस्थायी रूप से अनुपलब्ध हैं। कृपया उनके स्थानांतरित होने का इंतजार करें।';
+$string['notificationimage'] = 'अधिसूचना छवि';
+$string['notificationpreferences'] = 'अधिसूचना वरीयताएँ';
+$string['notifications'] = 'अधिसूचनाएँ';
+$string['notificationwindow'] = 'अधिसूचना विंडो';
+$string['notincontacts'] = 'आपको अपने संपर्कों को संदेश भेजने में सक्षम होने के लिए उनमें {$a} जोड़ने की आवश्यकता है।';
+$string['notincontactsheading'] = '{$a} आपके संपर्कों में नहीं है';
+$string['numparticipants'] = '{$a} प्रतिभागी';
+$string['off'] = 'बंद करें';
+$string['offline'] = 'ऑफ़लाइन';
+$string['on'] = 'पर';
+$string['online'] = 'ऑनलाइन';
+$string['otherparticipants'] = 'अन्य प्रतिभागी';
+$string['outputnotavailable'] = 'उपलब्ध नहीं है';
+$string['page-message-x'] = 'कोई भी सन्देश, सूचना पृष्ठ';
+$string['participants'] = 'प्रतिभागी';
+$string['pendingcontactrequests'] = '{$a} विचाराधीन संपर्क अनुरोध हैं';
+$string['permitted'] = 'अनुमति दी';
+$string['privacy'] = 'गोपनीयता';
+$string['privacy:export:conversationprefix'] = 'बातचीतः';
+$string['privacy:metadata:core_favourites'] = 'उपयोगकर्ता द्वारा निभाई गई बातचीत';
+$string['privacy:metadata:message_contact_requests'] = 'संपर्क अनुरोधों की सूची';
+$string['privacy:metadata:message_contact_requests:requesteduserid'] = 'संपर्क अनुरोध प्राप्त करने वाले उपयोगकर्ता की आईडी';
+$string['privacy:metadata:message_contact_requests:timecreated'] = 'वह समय जब संपर्क अनुरोध बनाया गया था';
+$string['privacy:metadata:message_contact_requests:userid'] = 'संपर्क अनुरोध भेजने वाले उपयोगकर्ता की आईडी';
+$string['privacy:metadata:message_contacts'] = 'संपर्कों की सूची';
+$string['privacy:metadata:message_contacts:contactid'] = 'उपयोगकर्ता की ID जो एक संपर्क है';
+$string['privacy:metadata:message_contacts:timecreated'] = 'वह समय जब संपर्क बनाया गया था';
+$string['privacy:metadata:message_contacts:userid'] = 'उपयोगकर्ता की ID जिसकी संपर्क सूची हम देख रहे हैं';
+$string['privacy:metadata:message_conversation_actions'] = 'बातचीत उपयोगकर्ता कार्यों की सूची';
+$string['privacy:metadata:message_conversation_actions:action'] = 'जो क्रिया की गई थी';
+$string['privacy:metadata:message_conversation_actions:conversationid'] = 'बातचीत की पहचान यह कार्रवाई से संबंधित है';
+$string['privacy:metadata:message_conversation_actions:timecreated'] = 'वह समय जब कार्रवाई बनाई गई थी';
+$string['privacy:metadata:message_conversation_actions:userid'] = 'इस कार्रवाई को करने वाले उपयोगकर्ता की ID';
+$string['privacy:metadata:message_conversation_members'] = 'बातचीत में उपयोगकर्ताओं की सूची';
+$string['privacy:metadata:message_conversation_members:conversationid'] = 'बातचीत की पहचान';
+$string['privacy:metadata:message_conversation_members:timecreated'] = 'बातचीत की पहचान';
+$string['privacy:metadata:message_conversation_members:userid'] = 'बातचीत में उपयोगकर्ता की ID';
+$string['privacy:metadata:message_user_actions'] = 'सन्देश, सूचना उपयोगकर्ता क्रियाओं की सूची';
+$string['privacy:metadata:message_user_actions:action'] = 'जो क्रिया की गई थी';
+$string['privacy:metadata:message_user_actions:messageid'] = 'इस क्रिया से संबंधित सन्देश, सूचना की पहचान';
+$string['privacy:metadata:message_user_actions:timecreated'] = 'वह समय जब कार्रवाई बनाई गई थी';
+$string['privacy:metadata:message_user_actions:userid'] = 'इस कार्रवाई को करने वाले उपयोगकर्ता की आईडी';
+$string['privacy:metadata:message_users_blocked'] = 'अवरुद्ध उपयोगकर्ताओं की सूची';
+$string['privacy:metadata:message_users_blocked:blockeduserid'] = 'अवरुद्ध किए गए उपयोगकर्ता की ID';
+$string['privacy:metadata:message_users_blocked:timecreated'] = 'वह समय जब अवरुद्ध कार्रवाई बनाई गई थी';
+$string['privacy:metadata:message_users_blocked:userid'] = 'अवरुद्ध कार्रवाई करने वाले उपयोगकर्ता की आईडी';
+$string['privacy:metadata:messages'] = 'Messages';
+$string['privacy:metadata:messages:conversationid'] = 'बातचीत की पहचान';
+$string['privacy:metadata:messages:customdata'] = 'कस्टम डेटा, जिसमें आमतौर पर आंतरिक आईडी और प्रेषक छवि (उपयोगकर्ता अथवा समूह) का एक सार्वजनिक URL होता है।';
+$string['privacy:metadata:messages:fullmessage'] = 'पूरा सन्देश, सूचना';
+$string['privacy:metadata:messages:fullmessageformat'] = 'पूर्ण सन्देश, सूचना का प्रारूप';
+$string['privacy:metadata:messages:fullmessagehtml'] = 'पूर्ण सन्देश, सूचना का HTML  प्रारूप';
+$string['privacy:metadata:messages:smallmessage'] = 'सन्देश, सूचना का एक छोटा संस्करण';
+$string['privacy:metadata:messages:subject'] = 'सन्देश, सूचना का विषय';
+$string['privacy:metadata:messages:timecreated'] = 'वह समय जब सन्देश, सूचना बनाया गया था';
+$string['privacy:metadata:messages:useridfrom'] = 'सूचना भेजने वाले उपयोगकर्ता की ID';
+$string['privacy:metadata:notifications'] = 'अधिसूचनाएँ';
+$string['privacy:metadata:notifications:component'] = 'अधिसूचना भेजने के लिए जिम्मेदार, उत्तरदायी अवयव';
+$string['privacy:metadata:notifications:contexturl'] = 'इस अधिसूचना से संबंधित URL';
+$string['privacy:metadata:notifications:contexturlname'] = 'संदर्भ का नाम';
+$string['privacy:metadata:notifications:customdata'] = 'कस्टम डेटा, जिसमें आमतौर पर आंतरिक आईडी और प्रेषक चित्र का एक सार्वजनिक URL होता है (यदि कोई हो)';
+$string['privacy:metadata:notifications:eventtype'] = 'कार्यक्रम का प्रकार';
+$string['privacy:metadata:notifications:fullmessage'] = 'पूरी अधिसूचना';
+$string['privacy:metadata:notifications:fullmessageformat'] = 'अधिसूचना प्रारूप';
+$string['privacy:metadata:notifications:fullmessagehtml'] = 'अधिसूचना का HTML';
+$string['privacy:metadata:notifications:smallmessage'] = 'अधिसूचना का छोटा सा सन्देश';
+$string['privacy:metadata:notifications:subject'] = 'अधिसूचना का छोटा संदेश,';
+$string['privacy:metadata:notifications:timecreated'] = 'वह समय जब अधिसूचना बनाई गई थी';
+$string['privacy:metadata:notifications:timeread'] = 'जिस समय अधिसूचना पढ़ी गई थी';
+$string['privacy:metadata:notifications:useridfrom'] = 'अधिसूचना भेजने वाले उपयोगकर्ता की ID';
+$string['privacy:metadata:notifications:useridto'] = 'सूचना प्राप्त करने वाले उपयोगकर्ता की ID';
+$string['privacy:metadata:preference:core_message_settings'] = 'संदेश से संबंधित सेटिंग्स';
+$string['privacy:request:preference:set'] = 'सेटिंग \'{$a->name}\' का मान \'{$a->value}\' था।';
+$string['privacy_desc'] = 'आप सीमित करना, प्रतिबंध, रोक लगाना लगा सकते हैं कि आपको कौन सन्देश, सूचना भेज सकता है';
+$string['processorsettings'] = 'प्रोसेसर सेटिंग्स';
+$string['providerenabled'] = '"{$a}" सक्षम हैसियत भेजना';
+$string['providerprocesorisdisallowed'] = '"{$a->processor}" पर "{$a->provider}" लॉक है';
+$string['providerprocesorislocked'] = '"{$a->provider}" "{$a->processor}" पर लॉक है';
+$string['removecontact'] = 'संपर्क हटा दें';
+$string['removecontactconfirm'] = 'क्या आप सुनिश्चित हैं कि आप अपने संपर्कों से {$a} को हटाना चाहते हैं?';
+$string['removecoursefilter'] = 'क्रम {$a} के लिए फ़िल्टर हटा दें';
+$string['removefromfavourites'] = 'अनस्टार वार्तालाप';
+$string['removefromyourcontacts'] = 'संपर्कों से हटा दें';
+$string['requirecontacttomessage'] = 'आपको उन्हें सन्देश, सूचना भेजने में सक्षम होने के लिए आपको एक संपर्क के रूप में जोड़ने के लिए {$a} का अनुरोध करने की आवश्यकता है।';
+$string['requiresconfiguration'] = 'विन्यास की आवश्यकता है';
+$string['searchcombined'] = 'लोगों और संदेशों की खोज करें';
+$string['searchforuser'] = 'किसी उपयोगकर्ता के लिए खोजें';
+$string['searchforuserorcourse'] = 'किसी उपयोगकर्ता अथवा क्रम की खोज करें';
+$string['searchmessages'] = 'सन्देश सर्च कीजिए';
+$string['seeall'] = 'सभी को देखें';
+$string['selectmessagestodelete'] = 'निकाल देना के लिए संदेशों का चयन करें';
+$string['selectnotificationtoview'] = 'अधिक ब्योरा देखने के लिए बगल की अधिसूचनाओं की सूची में से चयन करना';
+$string['selfconversation'] = 'व्यक्तिगत स्थान';
+$string['selfconversationdefaultmessage'] = 'मसौदा संदेशों, लिंक, नोट्स आदि को बाद में एक्सेस करने के लिए सेव करें।';
+$string['send'] = 'भेजें';
+$string['sendbulkmessage'] = '{$a} लोगों को सन्देश';
+$string['sendbulkmessagesent'] = '{$a} लोगों को भेजा गया सन्देश';
+$string['sendbulkmessagesentsingle'] = '1 व्यक्ति को भेजा गया सन्देश, सूचना';
+$string['sendbulkmessagesingle'] = '1 व्यक्ति को सन्देश, सूचना भेजें';
+$string['sendcontactrequest'] = 'संपर्क अनुरोध भेजें';
+$string['sendingviaenabled'] = '"{$a->processor}" के माध्यम से "{$a->provider}" भेजना सक्षम स्थिति';
+$string['sendingvialocked'] = 'लॉक स्थिति के कारण "{$a->processor}" के माध्यम से "{$a->provider}" भेजा जा रहा है';
+$string['sendmessage'] = 'सन्देश भेजिए';
+$string['sendmessageto'] = '{$a} पर सन्देश, सूचना भेजें';
+$string['sendmessagetopopup'] = '{$a}-नई विंडो पर सन्देश, सूचना भेजें';
+$string['settings'] = 'सॅटिंग्स';
+$string['showmessagewindownonew'] = 'बिना किसी नए सन्देश, सूचना के सन्देश, सूचना विंडो दिखाएँ';
+$string['showmessagewindowwithcount'] = '{$a} नए सन्देश, सूचनाों के साथ सन्देश, सूचना विंडो दिखाएँ';
+$string['shownotificationwindownonew'] = 'बिना किसी नई अधिसूचना के अधिसूचना विंडो दिखाएँ';
+$string['shownotificationwindowwithcount'] = '{$a} नई अधिसूचनाओं के साथ अधिसूचना विंडो दिखाएँ';
+$string['togglemessagemenu'] = 'मैसेजिंग दराज को टॉगल करें';
+$string['togglenotificationmenu'] = 'अधिसूचना मेनू को टॉगल करें';
+$string['totalconversations'] = '{$a} कुल बातचीत';
+$string['touserdoesntexist'] = 'आप किसी ऐसे उपयोगकर्ता ID ({$a}) पर सन्देश, सूचना नहीं भेज सकते हैं जो मौजूद नहीं है।';
+$string['unabletomessage'] = 'आप इस उपयोगकर्ता को सन्देश, सूचना भेजने में असमर्थ हैं';
+$string['unblock'] = 'अनब्लॉक करें';
+$string['unblockcontact'] = 'संपर्क को अवरुद्ध करें';
+$string['unblockuser'] = 'उपयोगकर्ता को अनब्लॉक करें';
+$string['unblockuserconfirm'] = 'क्या आप सुनिश्चित हैं कि आप {$a} को अनब्लॉक करना चाहते हैं?';
+$string['unknownuser'] = 'अज्ञात उपयोगकर्ता';
+$string['unmuteconversation'] = 'बेदाग';
+$string['unreadconversations'] = 'वहाँ {$a} अपठित बातचीत है';
+$string['unreadmessages'] = 'वहाँ {$a} अपठित बातचीत है';
+$string['unreadnewgroupconversationmessage'] = '{$a-> conversationname} में {$a-> name} से नया सन्देश, सूचना';
+$string['unreadnewmessage'] = '{$a} से नया सन्देश';
+$string['unreadnotification'] = 'अपठित अधिसूचना: {$a}';
+$string['unreadnotifications'] = 'वहाँ {$a} अपठित सूचनाएँ हैं';
+$string['useentertosend'] = 'भेजने के लिए एंटर का उपयोग करें';
+$string['usercantbemessaged'] = 'आप इस उपयोगकर्ता को उनकी सन्देश, सूचना प्राथमिकताओं के कारण सन्देश, सूचना नहीं भेज सकते हैं। उन्हें संपर्क के रूप में जोड़ने का प्रयास करें।';
+$string['userwouldliketocontactyou'] = '{$a} आपसे संपर्क करना चाहेंगे';
+$string['viewfullnotification'] = 'पूरी अधिसूचना देखें';
+$string['viewmessageswith'] = '{$a} के साथ संदेश देखें';
+$string['viewnotificationresource'] = 'पर जाएँः {$a}';
+$string['viewunreadmessageswith'] = '{$a} के साथ अपठित संदेश देखें';
+$string['waitingforcontactaccept'] = 'संपर्क के रूप में जोड़े जाने की प्रतीक्षा';
+$string['wouldliketocontactyou'] = 'आपसे संपर्क करना चाहते हैं';
+$string['writeamessage'] = 'एक सन्देश, सूचना लिखें।....';
+$string['you'] = 'आपः';
+$string['youhaveblockeduser'] = 'आपने इस उपयोगकर्ता को अवरुद्ध कर दिया है।';
+$string['yourcontactrequestpending'] = 'आपका संपर्क अनुरोध {$a} के साथ विचाराधीन है';

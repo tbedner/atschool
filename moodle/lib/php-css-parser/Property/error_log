@@ -1,0 +1,4 @@
+[06-Dec-2025 10:07:04 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "Sabberworm\CSS\Property\Selector" not found in /home/tdbedner/public_html/moodle/lib/php-css-parser/Property/KeyframeSelector.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/lib/php-css-parser/Property/KeyframeSelector.php on line 5

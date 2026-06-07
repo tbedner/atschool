@@ -1,0 +1,28 @@
+[17-Nov-2025 10:14:47 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[04-Dec-2025 01:18:16 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[04-Dec-2025 02:24:04 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[04-Dec-2025 05:17:55 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[04-Dec-2025 15:43:21 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[05-Dec-2025 23:13:36 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31
+[05-Mar-2026 09:02:38 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "admin_setting" not found in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/admin/admin_setting_plugin_manager.php on line 31

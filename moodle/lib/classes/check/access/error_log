@@ -1,0 +1,4 @@
+[06-Dec-2025 10:55:34 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core\check\check" not found in /home/tdbedner/public_html/moodle/lib/classes/check/access/defaultuserrole.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/lib/classes/check/access/defaultuserrole.php on line 31

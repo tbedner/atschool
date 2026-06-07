@@ -1,0 +1,4 @@
+[06-Dec-2025 10:06:50 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Interface "renderable" not found in /home/tdbedner/public_html/moodle/course/classes/output/activity_completion.php:36
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/course/classes/output/activity_completion.php on line 36

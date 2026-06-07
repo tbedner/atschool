@@ -1,0 +1,48 @@
+[17-Nov-2025 10:14:50 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[17-Nov-2025 10:14:51 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_admin\table\plugin_management_table" not found in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php on line 28
+[04-Dec-2025 01:18:19 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[04-Dec-2025 01:18:19 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_admin\table\plugin_management_table" not found in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php on line 28
+[04-Dec-2025 02:24:06 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[04-Dec-2025 02:24:07 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_admin\table\plugin_management_table" not found in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php on line 28
+[04-Dec-2025 05:17:58 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[04-Dec-2025 05:17:59 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_admin\table\plugin_management_table" not found in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php on line 28
+[04-Dec-2025 15:43:16 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[05-Dec-2025 23:13:44 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[05-Mar-2026 09:02:41 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_table\local\filter\filterset" not found in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php:26
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/plugin_management_table_filterset.php on line 26
+[05-Mar-2026 09:02:41 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "core_admin\table\plugin_management_table" not found in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/admin/classes/table/tool_plugin_management_table.php on line 28

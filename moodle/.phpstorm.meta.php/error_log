@@ -1,0 +1,20 @@
+[17-Nov-2025 10:14:53 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Call to undefined function PHPSTORM_META\override() in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php on line 28
+[04-Dec-2025 01:18:22 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Call to undefined function PHPSTORM_META\override() in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php on line 28
+[04-Dec-2025 02:24:09 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Call to undefined function PHPSTORM_META\override() in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php on line 28
+[04-Dec-2025 05:18:01 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Call to undefined function PHPSTORM_META\override() in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php on line 28
+[05-Mar-2026 09:02:43 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Call to undefined function PHPSTORM_META\override() in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php:28
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/moodle/.phpstorm.meta.php/di.php on line 28
