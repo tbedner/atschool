@@ -1,4 +1,0 @@
-[06-Dec-2025 10:07:12 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "cache_store" not found in /home/tdbedner/public_html/moodle/availability/condition/grade/db/caches.php:28
-Stack trace:
-#0 {main}
-  thrown in /home/tdbedner/public_html/moodle/availability/condition/grade/db/caches.php on line 28

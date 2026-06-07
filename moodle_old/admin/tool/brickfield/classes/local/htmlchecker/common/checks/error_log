@@ -1,4 +1,0 @@
-[06-Dec-2025 10:07:03 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "tool_brickfield\local\htmlchecker\common\brickfield_accessibility_test" not found in /home/tdbedner/public_html/moodle/admin/tool/brickfield/classes/local/htmlchecker/common/checks/table_th_should_have_scope.php:28
-Stack trace:
-#0 {main}
-  thrown in /home/tdbedner/public_html/moodle/admin/tool/brickfield/classes/local/htmlchecker/common/checks/table_th_should_have_scope.php on line 28

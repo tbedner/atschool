@@ -1,4 +1,0 @@
-[06-Dec-2025 10:55:51 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Class "Aws\AwsClient" not found in /home/tdbedner/public_html/moodle/lib/aws-sdk/src/PrometheusService/PrometheusServiceClient.php:51
-Stack trace:
-#0 {main}
-  thrown in /home/tdbedner/public_html/moodle/lib/aws-sdk/src/PrometheusService/PrometheusServiceClient.php on line 51

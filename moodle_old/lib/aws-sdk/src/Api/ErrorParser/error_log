@@ -1,1 +1,0 @@
-[06-Dec-2025 10:55:50 Asia/Tokyo] PHP Fatal error:  Trait "Aws\Api\Parser\PayloadParserTrait" not found in /home/tdbedner/public_html/moodle/lib/aws-sdk/src/Api/ErrorParser/JsonParserTrait.php on line 11
