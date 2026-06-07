@@ -312,7 +312,7 @@ class stateactions {
         $maxsections = $format->get_max_sections();
 
         if ($lastsectionnumber >= $maxsections) {
-            throw new moodle_exception('maxsectionslimit', 'moodle', $maxsections);
+            throw new moodle_exception('maxsectionslimit', 'moodle', '', $maxsections);
         }
 
         $modinfo = get_fast_modinfo($course);
@@ -362,6 +362,9 @@ class stateactions {
             // We need to get the latest modinfo on each iteration because the section numbers change.
             $modinfo = get_fast_modinfo($course);
             $section = $modinfo->get_section_info_by_id($sectionid, MUST_EXIST);
+            if (!course_can_delete_section($course, $section)) {
+                continue;
+            }
             // Send all activity deletions.
             if (!empty($modinfo->sections[$section->section])) {
                 foreach ($modinfo->sections[$section->section] as $modnumber) {

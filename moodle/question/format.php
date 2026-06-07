@@ -481,6 +481,7 @@ class qformat_default {
                 $question->questiontext = file_save_draft_area_files($question->questiontextitemid,
                         $this->importcontext->id, 'question', 'questiontext', $question->id,
                         $fileoptions, $question->questiontext);
+                file_clear_draft_area($question->questiontextitemid);
             } else if (isset($question->questiontextfiles)) {
                 foreach ($question->questiontextfiles as $file) {
                     question_bank::get_qtype($question->qtype)->import_file(
@@ -491,6 +492,7 @@ class qformat_default {
                 $question->generalfeedback = file_save_draft_area_files($question->generalfeedbackitemid,
                         $this->importcontext->id, 'question', 'generalfeedback', $question->id,
                         $fileoptions, $question->generalfeedback);
+                file_clear_draft_area($question->generalfeedbackitemid);
             } else if (isset($question->generalfeedbackfiles)) {
                 foreach ($question->generalfeedbackfiles as $file) {
                     question_bank::get_qtype($question->qtype)->import_file(
@@ -960,15 +962,16 @@ class qformat_default {
             $contextid = $DB->get_field('question_categories', 'contextid', ['id' => $qcategory]);
             $question->contextid = $contextid;
             $question->idnumber = $questionbankentry->idnumber;
+
+            // Do not export hidden questions.
+            if ($question->status === \core_question\local\bank\question_version_status::QUESTION_STATUS_HIDDEN) {
+                continue;
+            }
+
             if ($question->status === \core_question\local\bank\question_version_status::QUESTION_STATUS_READY) {
                 $question->status = 0;
             } else {
                 $question->status = 1;
-            }
-
-            // do not export hidden questions
-            if (!empty($question->hidden)) {
-                continue;
             }
 
             // do not export random questions

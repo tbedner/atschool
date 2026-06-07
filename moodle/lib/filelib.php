@@ -791,7 +791,7 @@ function file_get_drafarea_files($draftitemid, $filepath = '/') {
             }
             // find the file this draft file was created from and count all references in local
             // system pointing to that file
-            $source = @unserialize($file->get_source() ?? '');
+            $source = unserialize_object($file->get_source() ?? '');
             if (isset($source->original)) {
                 $item->refcount = $fs->search_references_count($source->original);
             }
@@ -855,7 +855,7 @@ function file_get_all_files_in_draftarea(int $draftitemid, string $filepath = '/
 
     if (!empty($draftfiles)) {
         foreach ($draftfiles->list as $draftfile) {
-            if ($draftfile->type == 'file') {
+            if ($draftfile->type !== 'folder') {
                 $files[] = $draftfile;
             }
         }
@@ -911,9 +911,9 @@ function file_get_submitted_draft_itemid($elname) {
  * @return stored_file
  */
 function file_restore_source_field_from_draft_file($storedfile) {
-    $source = @unserialize($storedfile->get_source() ?? '');
-    if (!empty($source)) {
-        if (is_object($source)) {
+    if (!empty($storedfile->get_source())) {
+        $source = unserialize_object($storedfile->get_source());
+        if (isset($source->source)) {
             $restoredsource = $source->source;
             $storedfile->set_source($restoredsource);
         } else {
@@ -1205,7 +1205,7 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             // Let's check if we can update this file or we need to delete and create.
             if ($newfile->is_directory()) {
                 // Directories are always ok to just update.
-            } else if (($source = @unserialize($newfile->get_source() ?? '')) && isset($source->original)) {
+            } else if (($source = unserialize_object($newfile->get_source() ?? '')) && isset($source->original)) {
                 // File has the 'original' - we need to update the file (it may even have not been changed at all).
                 $original = file_storage::unpack_reference($source->original);
                 if ($original['filename'] !== $oldfile->get_filename() || $original['filepath'] !== $oldfile->get_filepath()) {
@@ -1241,8 +1241,10 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
             // Field files.source for draftarea files contains serialised object with source and original information.
             // We only store the source part of it for non-draft file area.
             $newsource = $newfile->get_source();
-            if ($source = @unserialize($newfile->get_source() ?? '')) {
-                $newsource = $source->source;
+            if ($source = unserialize_object($newfile->get_source() ?? '')) {
+                if (isset($source->source)) {
+                    $newsource = $source->source;
+                }
             }
             if ($oldfile->get_source() !== $newsource) {
                 $oldfile->set_source($newsource);
@@ -1275,10 +1277,12 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
         // the size and subdirectory tests are extra safety only, the UI should prevent it
         foreach ($newhashes as $file) {
             $file_record = array('contextid'=>$contextid, 'component'=>$component, 'filearea'=>$filearea, 'itemid'=>$itemid, 'timemodified'=>time());
-            if ($source = @unserialize($file->get_source() ?? '')) {
+            if ($source = unserialize_object($file->get_source() ?? '')) {
                 // Field files.source for draftarea files contains serialised object with source and original information.
                 // We only store the source part of it for non-draft file area.
-                $file_record['source'] = $source->source;
+                if (isset($source->source)) {
+                    $file_record['source'] = $source->source;
+                }
             }
 
             if ($file->is_external_file()) {
@@ -1311,6 +1315,19 @@ function file_save_draft_area_files($draftitemid, $contextid, $component, $filea
     } else {
         return file_rewrite_urls_to_pluginfile($text, $draftitemid, $forcehttps);
     }
+}
+
+/**
+ * Clear a draft area.
+ *
+ * @param int $draftitemid Id of the draft area to clear.
+ * @return boolean success
+ */
+function file_clear_draft_area(int $draftitemid): bool {
+    global $USER;
+    $fs = get_file_storage();
+    $usercontext = context_user::instance($USER->id);
+    return $fs->delete_area_files($usercontext->id, 'user', 'draft', $draftitemid);
 }
 
 /**
@@ -2920,7 +2937,7 @@ function file_overwrite_existing_draftfile(stored_file $newfile, stored_file $ex
 
     $fs = get_file_storage();
     // Remember original file source field.
-    $source = @unserialize($existingfile->get_source() ?? '');
+    $source = unserialize_object($existingfile->get_source() ?? '');
     // Remember the original sortorder.
     $sortorder = $existingfile->get_sortorder();
     if ($newfile->is_external_file()) {
@@ -2944,7 +2961,7 @@ function file_overwrite_existing_draftfile(stored_file $newfile, stored_file $ex
     $newfile = $fs->create_file_from_storedfile($newfilerecord, $newfile);
     // Preserve original file location (stored in source field) for handling references.
     if (isset($source->original)) {
-        if (!($newfilesource = @unserialize($newfile->get_source() ?? ''))) {
+        if (!($newfilesource = unserialize_object($newfile->get_source() ?? ''))) {
             $newfilesource = new stdClass();
         }
         $newfilesource->original = $source->original;
@@ -3155,6 +3172,8 @@ class curl {
     private $ignoresecurity;
     /** @var array $mockresponses For unit testing only - return the head of this list instead of making the next request. */
     private static $mockresponses = [];
+    /** @var array $curlresolveinfo Resolve addresses for the URL that have passed cuRL security checks, in a CURLOPT_RESOLVE compatible format. */
+    private $curlresolveinfo = [];
     /** @var array temporary params value if the value is not belongs to class stored_file. */
     public $_tmp_file_post_params = [];
 
@@ -3752,6 +3771,9 @@ class curl {
             return $this->error;
         }
 
+        // Set allowed resolve info if the URL is not blocked.
+        $this->curlresolveinfo = $this->securityhelper->get_resolve_info();
+
         return null;
     }
 
@@ -3787,6 +3809,10 @@ class curl {
 
         // Set the URL as a curl option.
         $this->setopt(array('CURLOPT_URL' => $url));
+
+        // Force cURL to only resolve the URL from IP/port combinations that were validated by the security helper.
+        // This prevents re-fetching DNS data on subsequent requests, which could return un-validated hosts/ports.
+        $this->setopt(['CURLOPT_RESOLVE' => $this->curlresolveinfo]);
 
         // Create curl instance.
         $curl = curl_init();
@@ -3898,6 +3924,10 @@ class curl {
                 }
 
                 curl_setopt($curl, CURLOPT_URL, $redirecturl);
+
+                // Force cURL to only resolve the URL from IP/port combinations that were validated by the security helper.
+                // This prevents re-fetching DNS data on subsequent requests, which could return un-validated hosts/ports.
+                $this->setopt(['CURLOPT_RESOLVE' => $this->curlresolveinfo]);
 
                 // If CURLOPT_UNRESTRICTED_AUTH is empty/false, don't send credentials to other hosts.
                 // Ref: https://curl.se/libcurl/c/CURLOPT_UNRESTRICTED_AUTH.html.
@@ -4335,7 +4365,7 @@ class curl_cache {
                 $fp = fopen($this->dir.$filename, 'r');
                 $size = filesize($this->dir.$filename);
                 $content = fread($fp, $size);
-                return unserialize($content);
+                return unserialize_array($content);
             }
         }
         return false;

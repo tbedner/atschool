@@ -1834,7 +1834,7 @@ function glossary_print_approval_menu($cm, $glossary,$mode, $hook, $sortkey = ''
 
     glossary_print_all_links($cm, $glossary, $mode, $hook);
 
-    glossary_print_sorting_links($cm, $mode, 'CREATION', 'asc');
+    glossary_print_sorting_links($cm, $mode, $sortkey, $sortorder);
 }
 /**
  * @param object $cm
@@ -2056,9 +2056,14 @@ function glossary_print_sorting_links($cm, $mode, $sortkey = '',$sortorder = '')
     $bopen  = '<b>';
     $bclose = '</b>';
 
-     $neworder = '';
-     $currentorder = '';
-     $currentsort = '';
+    $neworder = '';
+    $currentorder = '';
+    $currentsort = '';
+
+    if ($sortkey === '') {
+        $sortkey = 'CREATION';
+    }
+
      if ( $sortorder ) {
          if ( $sortorder == 'asc' ) {
              $currentorder = $asc;
@@ -2081,20 +2086,18 @@ function glossary_print_sorting_links($cm, $mode, $sortkey = '',$sortorder = '')
              $icon = " " . $OUTPUT->pix_icon('asc', $newordertitle, 'glossary');
          }
      }
-     $ficon     = '';
-     $fneworder = '';
-     $fbtag     = '';
-     $fendbtag  = '';
 
-     $sicon     = '';
-     $sneworder = '';
+    $ficon     = '';
+    $fneworder = '';
 
-     $sbtag      = '';
-     $fbtag      = '';
-     $fendbtag      = '';
-     $sendbtag      = '';
+    $sicon     = '';
+    $sneworder = '';
 
-     $sendbtag  = '';
+    $sbtag      = '';
+    $fbtag      = '';
+    $fendbtag      = '';
+
+    $sendbtag  = '';
 
      if ( $sortkey == 'CREATION' or $sortkey == 'FIRSTNAME' ) {
          $ficon       = $icon;
@@ -2363,6 +2366,7 @@ function glossary_generate_export_file($glossary, $ignored = "", $hook = 0) {
                     $co .= glossary_full_tag("CONCEPT",4,false,trim($entry->concept));
                     $co .= glossary_full_tag("DEFINITION",4,false,$entry->definition);
                     $co .= glossary_full_tag("FORMAT",4,false,$entry->definitionformat); // note: use old name for BC reasons
+                    $co .= glossary_full_tag('DEFINITIONTRUST', 4, false, $entry->definitiontrust);
                     $co .= glossary_full_tag("USEDYNALINK",4,false,$entry->usedynalink);
                     $co .= glossary_full_tag("CASESENSITIVE",4,false,$entry->casesensitive);
                     $co .= glossary_full_tag("FULLMATCH",4,false,$entry->fullmatch);
@@ -4506,4 +4510,53 @@ function mod_glossary_prepare_entry_for_edition(stdClass $entry): stdClass {
     }
 
     return $entry;
+}
+
+/**
+ * Checks whether the current user can see ratings for a given itemid.
+ *
+ * @param array $params submitted data
+ *            contextid => int contextid [required]
+ *            component => The component for this module - should always be mod_glossary [required]
+ *            ratingarea => Should always be entry (the only rating area in glossary) [required]
+ *            itemid => int the ID of the entry being rated [required]
+ * @return bool
+ */
+function mod_glossary_rating_can_see_item_ratings(array $params): bool {
+    global $DB, $USER;
+
+    if (!isset($params['component']) || $params['component'] != 'mod_glossary') {
+        throw new rating_exception('invalidcomponent');
+    }
+
+    if (!isset($params['ratingarea']) || $params['ratingarea'] != 'entry') {
+        throw new rating_exception('invalidratingarea');
+    }
+
+    if (!isset($params['itemid'])) {
+        throw new rating_exception('invaliditemid');
+    }
+
+    $entry = $DB->get_record('glossary_entries', ['id' => $params['itemid']], '*', MUST_EXIST);
+    $glossary = $DB->get_record('glossary', ['id' => $entry->glossaryid], '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('glossary', $glossary->id, $glossary->course, false, MUST_EXIST);
+    $cminfo = get_fast_modinfo($glossary->course)->instances['glossary'][$cm->instance];
+
+    if ($cminfo->context->id != $params['contextid']) {
+        throw new rating_exception('invalidcontext');
+    }
+
+    $context = context::instance_by_id($params['contextid']);
+
+    $ratingpermissions = glossary_rating_permissions($context->id, 'mod_glossary', 'entry');
+    $requiredpermission = ($entry->userid != $USER->id) ? 'viewall' : 'view';
+    if (!$ratingpermissions[$requiredpermission]) {
+        return false;
+    }
+
+    if (!glossary_can_view_entry($entry, $cminfo)) {
+        return false;
+    }
+
+    return true;
 }

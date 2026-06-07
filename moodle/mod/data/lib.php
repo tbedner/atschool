@@ -512,7 +512,6 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
      * @return bool|string
      */
     function display_browse_field($recordid, $template) {
-        global $DB;
         $content = $this->get_data_content($recordid);
         if (!$content || !isset($content->content)) {
             return '';
@@ -523,7 +522,8 @@ class data_field_base {     // Base class for Database Field Types (see field/*/
             $options->filter = false;
         }
         $options->para = false;
-        $str = format_text($content->content, $content->content1, $options);
+        $format = !empty($content->content1) && !empty(trim($content->content1)) ? $content->content1 : null;
+        $str = format_text($content->content, $format, $options);
         return $str;
     }
 
@@ -1714,7 +1714,7 @@ function data_rating_validate($params) {
  * @throws rating_exception
  */
 function mod_data_rating_can_see_item_ratings($params) {
-    global $DB;
+    global $DB, $USER;
 
     // Check the component is mod_data.
     if (!isset($params['component']) || $params['component'] != 'mod_data') {
@@ -1730,7 +1730,7 @@ function mod_data_rating_can_see_item_ratings($params) {
         throw new rating_exception('invaliditemid');
     }
 
-    $datasql = "SELECT d.id as dataid, d.course, r.groupid
+    $datasql = "SELECT d.id as dataid, d.course, r.userid, r.groupid
                   FROM {data_records} r
                   JOIN {data} d ON r.dataid = d.id
                  WHERE r.id = :itemid";
@@ -1740,13 +1740,22 @@ function mod_data_rating_can_see_item_ratings($params) {
         throw new rating_exception('invaliditemid');
     }
 
+    $course = $DB->get_record('course', array('id' => $info->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('data', $info->dataid, $course->id, false, MUST_EXIST);
+    $context = context_module::instance($cm->id);
+
+    if (!empty($info->userid)) {
+        $ratingpermissions = data_rating_permissions($context->id, 'mod_data', 'entry');
+        $requiredpermission = ($info->userid != $USER->id) ? 'viewall' : 'view';
+        if (!$ratingpermissions[$requiredpermission]) {
+            return false;
+        }
+    }
+
     // User can see ratings of all participants.
     if ($info->groupid == 0) {
         return true;
     }
-
-    $course = $DB->get_record('course', array('id' => $info->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('data', $info->dataid, $course->id, false, MUST_EXIST);
 
     // Make sure groups allow this user to see the item they're rating.
     return groups_group_visible($info->groupid, $course, $cm);

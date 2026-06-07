@@ -389,16 +389,8 @@ define ('BLOG_COURSE_LEVEL', 3);
 define ('BLOG_SITE_LEVEL', 4);
 define ('BLOG_GLOBAL_LEVEL', 5);
 
-
-// Tag constants.
-/**
- * To prevent problems with multibytes strings,Flag updating in nav not working on the review page. this should not exceed the
- * length of "varchar(255) / 3 (bytes / utf-8 character) = 85".
- * TODO: this is not correct, varchar(255) are 255 unicode chars ;-)
- *
- * @todo define(TAG_MAX_LENGTH) this is not correct, varchar(255) are 255 unicode chars ;-)
- */
-define('TAG_MAX_LENGTH', 50);
+/** The maximum length of a tag */
+define('TAG_MAX_LENGTH', 255);
 
 // Password policy constants.
 define ('PASSWORD_LOWER', 'abcdefghijklmnopqrstuvwxyz');
@@ -5068,8 +5060,7 @@ function reset_course_userdata($data) {
 
     // Calculate the time shift of dates.
     if (!empty($data->reset_start_date)) {
-        // Time part of course startdate should be zero.
-        $data->timeshift = $data->reset_start_date - usergetmidnight($data->reset_start_date_old);
+        $data->timeshift = $data->reset_start_date - $data->reset_start_date_old;
     } else {
         $data->timeshift = 0;
     }
@@ -5604,14 +5595,16 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
         return false;
     }
 
-    if (defined('BEHAT_SITE_RUNNING')) {
-        // Fake email sending in behat.
+    if (defined('BEHAT_SITE_RUNNING') && !defined('TEST_EMAILCATCHER_MAIL_SERVER') &&
+            !defined('TEST_EMAILCATCHER_API_SERVER')) {
+
+        // Behat tests are running and we are not using email catcher so fake email sending.
         return true;
     }
 
     if (!empty($CFG->noemailever)) {
         // Hidden setting for development sites, set in config.php if needed.
-        debugging('Not sending email due to $CFG->noemailever config setting', DEBUG_NORMAL);
+        debugging('Not sending email due to $CFG->noemailever config setting', DEBUG_DEVELOPER);
         return true;
     }
 

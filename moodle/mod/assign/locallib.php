@@ -499,10 +499,6 @@ class assign {
             $nextpageparams['id'] = $this->get_course_module()->id;
         }
 
-        if (empty($action)) {
-            $PAGE->add_body_class('limitedwidth');
-        }
-
         // Handle form submissions first.
         if ($action == 'savesubmission') {
             $action = 'editsubmission';
@@ -533,7 +529,16 @@ class assign {
                 $nextpageparams['action'] = 'view';
             }
         } else if ($action == 'addattempt') {
-            $this->process_add_attempt(required_param('userid', PARAM_INT));
+            $userid = false;
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                $userid = $this->get_user_id_for_uniqueid($blindid);
+            }
+            // Fallback to userid, if not found by blindid.
+            if (!$userid) {
+                $userid = required_param('userid', PARAM_INT);
+            }
+            $this->process_add_attempt($userid);
             $action = 'redirect';
             $nextpageparams['action'] = 'grading';
         } else if ($action == 'reverttodraft') {
@@ -3011,7 +3016,14 @@ class assign {
 
         $users = optional_param('userid', 0, PARAM_INT);
         if (!$users) {
-            $users = required_param('selectedusers', PARAM_SEQUENCE);
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                $users = $this->get_user_id_for_uniqueid($blindid);
+            }
+            // We need users, if not found by blindid.
+            if (!$users) {
+                $users = required_param('selectedusers', PARAM_SEQUENCE);
+            }
         }
         $userlist = explode(',', $users);
 
@@ -3159,7 +3171,9 @@ class assign {
             if ($create) {
                 $action = optional_param('action', '', PARAM_TEXT);
                 if ($action == 'editsubmission') {
-                    if (empty($submission->timestarted) && $this->get_instance()->timelimit) {
+                    $starttimer = optional_param('begin', 0, PARAM_INT);
+                    // Only start the timer if the user has clicked the 'Begin assignment' button.
+                    if (empty($submission->timestarted) && $this->get_instance()->timelimit && $starttimer) {
                         $submission->timestarted = time();
                         $DB->update_record('assign_submission', $submission);
                     }
@@ -3770,7 +3784,9 @@ class assign {
             if ($create) {
                 $action = optional_param('action', '', PARAM_TEXT);
                 if ($action == 'editsubmission') {
-                    if (empty($submission->timestarted) && $this->get_instance()->timelimit) {
+                    $starttimer = optional_param('begin', 0, PARAM_INT);
+                    // Only start the timer if the user has clicked the 'Begin assignment' button.
+                    if (empty($submission->timestarted) && $this->get_instance()->timelimit && $starttimer) {
                         $submission->timestarted = time();
                         $DB->update_record('assign_submission', $submission);
                     }
@@ -4319,7 +4335,29 @@ class assign {
     protected function view_remove_submission_confirm() {
         global $USER;
 
-        $userid = optional_param('userid', $USER->id, PARAM_INT);
+        $userid = optional_param('userid', 0, PARAM_INT);
+        $blindid = optional_param('blindid', 0, PARAM_INT);
+
+        // Construct the base URL parameters for the confirm and cancel actions.
+        $urlparams = [
+            'id' => $this->get_course_module()->id,
+            'action' => 'removesubmission',
+            'sesskey' => sesskey(),
+        ];
+
+        // Determine the correct user ID.
+        if ($userid) {
+            // Real user ID was explicitly provided.
+            $urlparams['userid'] = $userid;
+        } elseif ($this->is_blind_marking() && $blindid) {
+            // Blind marking is in use. Resolve anonymized (blind) ID to the real user ID to obtain the user object later.
+            $userid = $this->get_user_id_for_uniqueid($blindid);
+            $urlparams['blindid'] = $blindid;
+        } else {
+            // Default to the currently logged-in user (e.g. user deleting their own submission scenario).
+            $userid = $USER->id;
+            $urlparams['userid'] = $userid;
+        }
 
         if (!$this->can_edit_submission($userid, $USER->id)) {
             throw new \moodle_exception('nopermission');
@@ -4333,10 +4371,6 @@ class assign {
                                     $this->get_course_module()->id);
         $o .= $this->get_renderer()->render($header);
 
-        $urlparams = array('id' => $this->get_course_module()->id,
-                           'action' => 'removesubmission',
-                           'userid' => $userid,
-                           'sesskey' => sesskey());
         $confirmurl = new moodle_url('/mod/assign/view.php', $urlparams);
 
         $urlparams = array('id' => $this->get_course_module()->id,
@@ -4576,7 +4610,11 @@ class assign {
         }
 
         if ($this->is_blind_marking() && has_capability('mod/assign:viewblinddetails', $this->get_context())) {
-            $o .= $this->get_renderer()->notification(get_string('blindmarkingenabledwarning', 'assign'), 'notifymessage');
+            if ($this->is_marking_anonymous()) {
+                $o .= $this->get_renderer()->notification(get_string('blindmarkingenabledwarning', 'assign'), 'notifymessage');
+            } else {
+                $o .= $this->get_renderer()->notification(get_string('blindmarkingnogradewarning', 'assign'), 'notifymessage');
+            }
         }
 
         // Load and print the table of submissions.
@@ -4647,7 +4685,7 @@ class assign {
         $userid = optional_param('userid', 0, PARAM_INT);
         $blindid = optional_param('blindid', 0, PARAM_INT);
 
-        if (!$userid && $blindid) {
+        if ($this->is_blind_marking() && !$userid && $blindid) {
             $userid = $this->get_user_id_for_uniqueid($blindid);
         }
 
@@ -4776,12 +4814,22 @@ class assign {
      * @return string The page output.
      */
     protected function view_edit_submission_page($mform, $notices) {
-        global $CFG, $USER, $DB, $PAGE;
+        global $CFG, $USER, $DB, $PAGE, $OUTPUT;
 
         $o = '';
         require_once($CFG->dirroot . '/mod/assign/submission_form.php');
         // Need submit permission to submit an assignment.
-        $userid = optional_param('userid', $USER->id, PARAM_INT);
+        $userid = optional_param('userid', 0, PARAM_INT);
+        $blindid = optional_param('blindid', 0, PARAM_INT);
+
+        if ($this->is_blind_marking() && !$userid && $blindid) {
+            $userid = $this->get_user_id_for_uniqueid($blindid);
+        }
+        // If no userid specified, default to current user.
+        if (!$userid) {
+            $userid = $USER->id;
+        }
+
         $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
         $timelimitenabled = get_config('assign', 'enabletimelimit');
 
@@ -4861,7 +4909,30 @@ class assign {
             $o .= $this->get_renderer()->notification($notice);
         }
 
-        $o .= $this->get_renderer()->render(new assign_form('editsubmissionform', $mform));
+        if (
+            $submission->status == ASSIGN_SUBMISSION_STATUS_NEW && $this->get_instance()->timelimit &&
+            empty($submission->timestarted)
+        ) {
+            // Timed assignment should always get a confirmation that the user wants to start it.
+            $confirmation = new \confirm_action(
+                get_string('confirmstart', 'assign', format_time($this->get_instance()->timelimit)),
+                null,
+                get_string('beginassignment', 'assign')
+            );
+            // The 'begin' flag indicates that the user is starting a timed assignment.
+            $urlparams = ['id' => $this->get_course_module()->id, 'action' => 'editsubmission', 'begin' => 1];
+            $beginbutton = new \action_link(
+                new moodle_url('/mod/assign/view.php', $urlparams),
+                get_string('beginassignment', 'assign'),
+                $confirmation,
+                ['class' => 'btn btn-primary']
+            );
+
+            $o .= $OUTPUT->render($beginbutton);
+        } else {
+            $o .= $this->get_renderer()->render(new assign_form('editsubmissionform', $mform));
+        }
+
         $o .= $this->view_footer();
 
         \mod_assign\event\submission_form_viewed::create_from_user($this, $user)->trigger();
@@ -6016,7 +6087,7 @@ class assign {
         require_once($CFG->dirroot.'/mod/assign/lib.php');
         // Do not push grade to gradebook if blind marking is active as
         // the gradebook would reveal the students.
-        if ($this->is_blind_marking()) {
+        if ($this->is_blind_marking() && !$this->is_marking_anonymous()) {
             return false;
         }
 
@@ -6307,7 +6378,8 @@ class assign {
         }
 
         $cm = $this->get_course_module();
-        if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS) {
+        if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS &&
+                !has_capability('moodle/site:accessallgroups', $this->context, $graderid)) {
             $sharedgroupmembers = $this->get_shared_group_members($cm, $graderid);
             return in_array($userid, $sharedgroupmembers);
         }
@@ -6813,7 +6885,17 @@ class assign {
 
         require_sesskey();
 
-        $userid = optional_param('userid', $USER->id, PARAM_INT);
+        $userid = optional_param('userid', 0, PARAM_INT);
+        $blindid = optional_param('blindid', 0, PARAM_INT);
+
+        if ($this->is_blind_marking() && !$userid && $blindid) {
+            $userid = $this->get_user_id_for_uniqueid($blindid);
+        }
+
+        // If no userid specified, default to current user.
+        if (!$userid) {
+            $userid = $USER->id;
+        }
 
         if (!$this->submissions_open($userid)) {
             $notices[] = get_string('submissionsclosed', 'assign');
@@ -8277,7 +8359,15 @@ class assign {
         require_sesskey();
 
         if (!$userid) {
-            $userid = required_param('userid', PARAM_INT);
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                $userid = $this->get_user_id_for_uniqueid($blindid);
+            }
+
+            // Userid is required, if not found by blindid.
+            if (!$userid) {
+                $userid = required_param('userid', PARAM_INT);
+            }
         }
 
         return $this->remove_submission($userid);
@@ -8294,7 +8384,17 @@ class assign {
         require_sesskey();
 
         if (!$userid) {
-            $userid = required_param('userid', PARAM_INT);
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                if ($blindid) {
+                    $userid = $this->get_user_id_for_uniqueid($blindid);
+                }
+            }
+
+            // Userid is required, if not found by blindid.
+            if (!$userid) {
+                $userid = required_param('userid', PARAM_INT);
+            }
         }
 
         return $this->revert_to_draft($userid);
@@ -8389,15 +8489,6 @@ class assign {
                         $grade->feedbackfiles = $plugin->files_for_gradebook($grade);
                     }
                     $this->update_grade($grade);
-                    $assign = clone $this->get_instance();
-                    $assign->cmidnumber = $this->get_course_module()->idnumber;
-                    // Set assign gradebook feedback plugin status.
-                    $assign->gradefeedbackenabled = $this->is_gradebook_feedback_enabled();
-
-                    // If markinganonymous is enabled then allow to release grades anonymously.
-                    if (isset($assign->markinganonymous) && $assign->markinganonymous == 1) {
-                        assign_update_grades($assign, $userid);
-                    }
                     $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
                     \mod_assign\event\workflow_state_updated::create_from_user($this, $user, $state)->trigger();
                 }
@@ -8474,7 +8565,17 @@ class assign {
         require_sesskey();
 
         if (!$userid) {
-            $userid = required_param('userid', PARAM_INT);
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                if ($blindid) {
+                    $userid = $this->get_user_id_for_uniqueid($blindid);
+                }
+            }
+
+            // Userid is required, if not found by blindid.
+            if (!$userid) {
+                $userid = required_param('userid', PARAM_INT);
+            }
         }
 
         return $this->lock_submission($userid);
@@ -8523,7 +8624,17 @@ class assign {
         require_sesskey();
 
         if (!$userid) {
-            $userid = required_param('userid', PARAM_INT);
+            if ($this->is_blind_marking()) {
+                $blindid = optional_param('blindid', 0, PARAM_INT);
+                if ($blindid) {
+                    $userid = $this->get_user_id_for_uniqueid($blindid);
+                }
+            }
+
+            // Userid is required, if not found by blindid.
+            if (!$userid) {
+                $userid = required_param('userid', PARAM_INT);
+            }
         }
 
         return $this->unlock_submission($userid);
@@ -9699,6 +9810,15 @@ class assign {
         }
 
         return !empty($submission) && $submission->status !== ASSIGN_SUBMISSION_STATUS_SUBMITTED && $timedattemptstarted;
+    }
+
+    /**
+     * Is "Allow partial release of grades while marking anonymously" enabled?
+     *
+     * @return bool
+     */
+    public function is_marking_anonymous(): bool {
+        return isset($this->get_instance()->markinganonymous) && $this->get_instance()->markinganonymous;
     }
 }
 

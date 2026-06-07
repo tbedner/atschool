@@ -1323,7 +1323,6 @@ function lti_verify_with_keyset($jwtparam, $keyseturl, $clientid) {
             throw new moodle_exception('errornocachedkeysetfound', 'mod_lti');
         }
         $keysetarr = json_decode($keyset, true);
-        // JWK::parseKeySet uses RS256 algorithm by default.
         $keys = JWK::parseKeySet($keysetarr);
         $jwt = JWT::decode($jwtparam, $keys);
     } catch (Exception $e) {
@@ -1332,7 +1331,10 @@ function lti_verify_with_keyset($jwtparam, $keyseturl, $clientid) {
         $keysetarr = json_decode($keyset, true);
 
         // Fix for firebase/php-jwt's dependency on the optional 'alg' property in the JWK.
+        // The fix_jwks_alg() call only fixes a single, matched key and will leave others present (which may be missing alg too),
+        // Remaining keys missing alg are excluded since they cannot be used for decoding anyway (no match to JWT kid).
         $keysetarr = jwks_helper::fix_jwks_alg($keysetarr, $jwtparam);
+        $keysetarr['keys'] = array_filter($keysetarr['keys'], fn($key) => isset($key['alg']));
 
         // JWK::parseKeySet uses RS256 algorithm by default.
         $keys = JWK::parseKeySet($keysetarr);
@@ -4354,18 +4356,26 @@ function lti_is_cartridge($url) {
     if (preg_match('/\.xml$/', $url)) {
         return true;
     }
-    // Even if it doesn't have .xml, load the url to check if it's a cartridge..
-    try {
-        $toolinfo = lti_load_cartridge($url,
-            array(
-                "launch_url" => "launchurl"
-            )
-        );
-        if (!empty($toolinfo['launchurl'])) {
-            return true;
+
+    // Skip slow cartridge checks during tests.
+    // During tests, working .xml cartridge URLs are used when testing cartridge support. These will match the '.xml' check
+    // above (which is fast). Don't try to check whether other tool URLs are cartridges because most URLs used in tests will be
+    // example URLs and won't be resolvable, resulting in network hangs within load_cartridge() - which is called every time a
+    // tool is edited and will result in slow tests or seemingly random test failures.
+    if (!defined('BEHAT_SITE_RUNNING') && !defined('PHPUNIT_TEST')) {
+        // Even if it doesn't have .xml, load the url to check if it's a cartridge..
+        try {
+            $toolinfo = lti_load_cartridge($url,
+                array(
+                    "launch_url" => "launchurl"
+                )
+            );
+            if (!empty($toolinfo['launchurl'])) {
+                return true;
+            }
+        } catch (moodle_exception $e) {
+            return false; // Error loading the xml, so it's not a cartridge.
         }
-    } catch (moodle_exception $e) {
-        return false; // Error loading the xml, so it's not a cartridge.
     }
     return false;
 }

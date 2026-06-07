@@ -339,11 +339,24 @@ final class moodle_url_test extends \advanced_testcase {
     }
 
     /**
+     * Test the get_slashargument method.
+     */
+    public function test_get_slashargument(): void {
+        $this->resetAfterTest();
+
+        $url = new \moodle_url('/pluginfile.php/14/user/private/capybara.png');
+        $this->assertEquals('/14/user/private/capybara.png', $url->get_slashargument());
+
+        $url = new \moodle_url('/image/capybara.png');
+        $this->assertEmpty($url->get_slashargument());
+    }
+
+    /**
      * Data provider for make_pluginfile_url tests.
      *
      * @return  array[]
      */
-    public function make_pluginfile_url_provider() {
+    public static function make_pluginfile_url_provider(): array {
         $baseurl = "https://www.example.com/moodle/pluginfile.php";
         $tokenbaseurl = "https://www.example.com/moodle/tokenpluginfile.php";
         return [

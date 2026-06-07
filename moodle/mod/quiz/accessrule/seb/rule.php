@@ -249,6 +249,8 @@ class quizaccess_seb extends access_rule_base {
                 . 'seb.userconfirmquit AS seb_userconfirmquit, '
                 . 'seb.enableaudiocontrol AS seb_enableaudiocontrol, '
                 . 'seb.muteonstartup AS seb_muteonstartup, '
+                . 'seb.allowcapturecamera AS seb_allowcapturecamera, '
+                . 'seb.allowcapturemicrophone AS seb_allowcapturemicrophone, '
                 . 'seb.allowspellchecking AS seb_allowspellchecking, '
                 . 'seb.allowreloadinexam AS seb_allowreloadinexam, '
                 . 'seb.activateurlfiltering AS seb_activateurlfiltering, '
@@ -376,8 +378,11 @@ class quizaccess_seb extends access_rule_base {
      */
     private function get_invalid_key_error_message(): string {
         // Return error message with download link and links to get the seb config.
-        return get_string('invalidkeys', 'quizaccess_seb')
-            . $this->display_buttons($this->get_action_buttons());
+        if ($this->accessmanager->is_using_seb()) {
+            return get_string('invalidkeys', 'quizaccess_seb')
+                . $this->display_buttons($this->get_action_buttons());
+        }
+        return $this->display_buttons($this->get_action_buttons());
     }
 
     /**

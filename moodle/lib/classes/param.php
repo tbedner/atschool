@@ -1041,8 +1041,11 @@ enum param: string {
                 // Absolute, and matches our wwwroot.
             } else {
                 // Relative - let's make sure there are no tricks.
-                if (validateUrlSyntax('/' . $param, 's-u-P-a-p-f+q?r?') && !preg_match('/javascript:/i', $param)) {
-                    // Looks ok.
+                if (
+                    validateUrlSyntax('/' . $param, 's-u-P-a-p-f+q?r?') &&
+                    !preg_match('/\bjavascript\b[\s\S]*?(?:\:|\/)/i', rawurldecode($param))
+                ) {
+                    // Valid relative local URL.
                 } else {
                     $param = '';
                 }

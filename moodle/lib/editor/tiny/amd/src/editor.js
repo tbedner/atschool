@@ -28,6 +28,8 @@ import {getTinyMCE, baseUrl} from './loader';
 import * as Options from './options';
 import {addToolbarButton, addToolbarButtons, addToolbarSection,
     removeToolbarButton, removeSubmenuItem, updateEditorState} from './utils';
+import {addMathMLSupport, addSVGSupport} from './content';
+import Config from 'core/config';
 
 /**
  * Storage for the TinyMCE instances on the page.
@@ -154,7 +156,7 @@ export const setupForElementId = ({elementId, options}) => {
 const initialisePage = async() => {
     const lang = document.querySelector('html').lang;
 
-    const [tinyMCE, langData] = await Promise.all([getTinyMCE(), fetchLanguage(lang)]);
+    const [tinyMCE, langData] = await Promise.all([getTinyMCE(), fetchLanguage(Config.language)]);
     tinyMCE.addI18n(lang, langData);
 };
 initialisePage();
@@ -257,7 +259,7 @@ const getStandardConfig = (target, tinyMCE, options, plugins) => {
 
         // Add specific rules to the valid elements.
         // eslint-disable-next-line camelcase
-        extended_valid_elements: 'script[*],p[*],i[*]',
+        extended_valid_elements: options.extended_valid_elements,
 
         // Disable XSS Sanitisation.
         // We do this in PHP.
@@ -340,6 +342,9 @@ const getStandardConfig = (target, tinyMCE, options, plugins) => {
                 // Adjust the editor size.
                 adjustEditorSize(editor, target);
             });
+
+            addMathMLSupport(editor);
+            addSVGSupport(editor);
 
             target.addEventListener('form:editorUpdated', function() {
                 updateEditorState(editor, target);
