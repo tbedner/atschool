@@ -66,7 +66,7 @@ class dataformat {
      * @throws coding_exception
      */
     public static function download_data(string $filename, string $dataformat, array $columns, Iterable $iterator,
-            callable $callback = null): void {
+            ?callable $callback = null): void {
 
         if (ob_get_length()) {
             throw new coding_exception('Output can not be buffered before calling download_data()');
@@ -115,7 +115,7 @@ class dataformat {
      * @return string Complete path to the file on disk
      */
     public static function write_data(string $filename, string $dataformat, array $columns, Iterable $iterator,
-            callable $callback = null): string {
+            ?callable $callback = null): string {
 
         $format = self::get_format_instance($dataformat);
 
@@ -159,7 +159,7 @@ class dataformat {
      * @return stored_file
      */
     public static function write_data_to_filearea(array $filerecord, string $dataformat, array $columns, Iterable $iterator,
-            callable $callback = null): stored_file {
+            ?callable $callback = null): stored_file {
 
         $filepath = self::write_data($filerecord['filename'], $dataformat, $columns, $iterator, $callback);
 
@@ -179,7 +179,7 @@ class dataformat {
      * @return string|null Return escaped formula if detected.
      */
     public static function escape_spreadsheet_formula(mixed $value): ?string {
-        // Only escape strings; leave numbers and other types unchanged.
+        // Allow mixed input; only process strings.
         if (!is_string($value)) {
             return $value;
         }
@@ -191,20 +191,16 @@ class dataformat {
 
         // Trim only for checking, not for modifying output.
         $trimmed = ltrim($value);
-
         if ($trimmed === '') {
             return $value;
         }
 
-        // Characters that trigger formula parsing in Excel/Sheets.
         $formulacharacters = ['=', '+', '-', '@'];
-
         // If trimmed version starts with formula character, escape it.
         if (in_array($trimmed[0], $formulacharacters, true)) {
-            // Preserve original whitespace. Do not alter actual content.
+            // Prepend single quote if value starts with a formula character.
             return "'" . $value;
         }
-
         return $value;
     }
 }

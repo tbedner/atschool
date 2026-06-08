@@ -70,6 +70,50 @@ Feature: Group assignment submissions
     And I should not see "Test assignment name" in the "Timeline" "block"
 
   @javascript
+  Scenario: Confirm that the group switching option is available only when the group settings are correctly configured
+    Given the following "activity" exists:
+      | activity | assign          |
+      | course   | C1              |
+      | name     | Test assignment |
+    And I am on the "Test assignment" "assign activity editing" page logged in as teacher1
+    # The assignment does not have a specified group mode.
+    When I set the following fields to these values:
+      | Group mode | No groups |
+    And I press "Save and display"
+    And I navigate to "Submissions" in current page administration
+    Then ".groupsearchwidget" "css_element" should not exist
+    # The course has a specified group mode, but not enforced on modules.
+    And I am on the "C1" "course editing" page
+    And I set the following fields to these values:
+      | Group mode       | Separate groups |
+      | Force group mode | No              |
+    And I press "Save and display"
+    And I am on the "Test assignment" Activity page
+    And I navigate to "Submissions" in current page administration
+    And ".groupsearchwidget" "css_element" should not exist
+    # The assignment has a specified group mode.
+    And I am on the "Test assignment" "assign activity editing" page
+    And I set the following fields to these values:
+      | Group mode | Visible groups |
+    And I press "Save and display"
+    And I navigate to "Submissions" in current page administration
+    And ".groupsearchwidget" "css_element" should exist
+    And I should see "Select visible groups" in the ".groupsearchwidget" "css_element"
+    And I confirm "All participants" exists in the "Search groups" search combo box
+    And I confirm "Group 1" exists in the "Search groups" search combo box
+    # The course enforces its group mode on modules.
+    And I am on the "C1" "course editing" page
+    And I set the following fields to these values:
+      | Force group mode | Yes |
+    And I press "Save and display"
+    And I am on the "Test assignment" Activity page
+    And I navigate to "Submissions" in current page administration
+    And ".groupsearchwidget" "css_element" should exist
+    And I should see "Select separate groups" in the ".groupsearchwidget" "css_element"
+    And I confirm "All participants" exists in the "Search groups" search combo box
+    And I confirm "Group 1" exists in the "Search groups" search combo box
+
+  @javascript
   Scenario: Switch between group modes
     Given the following "activity" exists:
       | activity         | assign                      |
@@ -78,7 +122,7 @@ Feature: Group assignment submissions
       | submissiondrafts | 0                           |
       | teamsubmission   | 1                           |
     And I am on the "Test assignment name" Activity page logged in as teacher1
-    When I follow "View all submissions"
+    When I navigate to "Submissions" in current page administration
     Then I should see "Default group" in the "Student 0" "table_row"
     And I should see "Default group" in the "Student 1" "table_row"
     And I should see "Default group" in the "Student 2" "table_row"
@@ -96,12 +140,12 @@ Feature: Group assignment submissions
       | student0 | G1    |
       | student1 | G1    |
     And I am on the "Test assignment name" "assign activity" page
-    And I follow "View all submissions"
-    And I set the field "Separate groups" to "Group 1"
+    And I navigate to "Submissions" in current page administration
+    And I click on "Group 1" in the "Search groups" search combo box
     And I should see "Group 1" in the "Student 0" "table_row"
     And I should see "Group 1" in the "Student 1" "table_row"
     And I should not see "Student 2"
-    And I set the field "Separate groups" to "All participants"
+    And I click on "All participants" in the "Search groups" search combo box
     And I should see "Group 1" in the "Student 0" "table_row"
     And I should see "Group 1" in the "Student 1" "table_row"
     And I should see "Default group" in the "Student 2" "table_row"
@@ -125,7 +169,7 @@ Feature: Group assignment submissions
       | assign                | user      | onlinetext                          |
       | Test assignment name  | student1  | I'm the student's first submission  |
     And I am on the "Test assignment name" Activity page logged in as teacher1
-    When I follow "View all submissions"
+    When I navigate to "Submissions" in current page administration
     Then "Student 1" row "Status" column of "generaltable" table should contain "Submitted for grading"
     And "Student 2" row "Status" column of "generaltable" table should contain "Submitted for grading"
     And "Student 3" row "Status" column of "generaltable" table should not contain "Submitted for grading"
@@ -134,7 +178,7 @@ Feature: Group assignment submissions
       | assign                | user      | onlinetext                          |
       | Test assignment name  | student3  | I'm the student's first submission  |
     And I am on the "Test assignment name" Activity page
-    And I follow "View all submissions"
+    And I navigate to "Submissions" in current page administration
     And "Student 1" row "Status" column of "generaltable" table should contain "Submitted for grading"
     And "Student 2" row "Status" column of "generaltable" table should contain "Submitted for grading"
     And "Student 3" row "Status" column of "generaltable" table should contain "Submitted for grading"
@@ -154,14 +198,14 @@ Feature: Group assignment submissions
       | assignsubmission_onlinetext_enabled | 1                           |
       | assignsubmission_file_enabled       | 0                           |
       | teamsubmission                      | 1                           |
+      | maxattempts                         | -1                          |
       | attemptreopenmethod                 | manual                      |
       | requireallteammemberssubmit         | 0                           |
     And the following "mod_assign > submissions" exist:
       | assign                | user      | onlinetext                          |
       | Test assignment name  | student1  | I'm the student's first submission  |
     And I am on the "Test assignment name" Activity page logged in as teacher1
-    And I follow "View all submissions"
-    And I click on "Grade" "link" in the "Student 1" "table_row"
+    And I go to "Student 1" "Test assignment name" activity advanced grading page
     And I set the following fields to these values:
       | Grade out of 100 | 50.0 |
       | Apply grades and feedback to entire group | 1 |
@@ -170,7 +214,7 @@ Feature: Group assignment submissions
       | Allow another attempt | 1 |
     And I press "Save changes"
     When I am on the "Test assignment name" "assign activity" page
-    And I follow "View all submissions"
+    And I navigate to "Submissions" in current page administration
     Then "Student 1" row "Status" column of "generaltable" table should contain "Reopened"
     And "Student 2" row "Status" column of "generaltable" table should contain "Reopened"
 
@@ -256,7 +300,7 @@ Feature: Group assignment submissions
     And I click on "Assignments" "link" in the "Activities" "block"
     And I should see "Submitted for grading"
     And I am on the "Test assignment name" Activity page logged in as teacher1
-    When I follow "View all submissions"
+    When I navigate to "Submissions" in current page administration
     Then "Student 1" row "Status" column of "generaltable" table should contain "Submitted for grading"
     And "Student 2" row "Status" column of "generaltable" table should contain "Submitted for grading"
 
@@ -325,7 +369,7 @@ Feature: Group assignment submissions
     And I should see "Submitted for grading" in the "Submission status" "table_row"
     And I should not see "Users who need to submit"
 
-  Scenario: Group submission does not use non-participation groups
+  Scenario: Students cannot make a group submission under a non-participation group
     Given the following "groups" exist:
       | name    | course | idnumber | participation |
       | Group A | C1     | CG1      | 0             |
@@ -342,3 +386,69 @@ Feature: Group assignment submissions
     When I am on the "Test assignment name" Activity page logged in as student1
     Then I should see "Default group"
     And I should not see "Group A"
+
+  @javascript
+  Scenario: All groups including non-participation groups can be used for filtering submissions
+    Given the following "groups" exist:
+      | name    | course | idnumber | participation | visibility |
+      | Group 2 | C1     | G2       | 0             | 0          |
+      | Group 3 | C1     | G3       | 0             | 3          |
+    And the following "group members" exist:
+      | group | user     |
+      | G1    | student1 |
+      | G2    | student1 |
+      | G1    | student2 |
+      | G2    | student3 |
+    And the following "activity" exists:
+      | activity         | assign               |
+      | course           | C1                   |
+      | name             | Test assignment name |
+      | submissiondrafts | 0                    |
+      | teamsubmission   | 1                    |
+      | groupmode        | 1                    |
+    And the following "mod_assign > submissions" exist:
+      | assign                | user      | onlinetext                          |
+      | Test assignment name  | student1  | I'm the student's first submission  |
+      | Test assignment name  | student3  | I'm the student's first submission  |
+    When I am on the "Test assignment name" Activity page logged in as teacher1
+    And I follow "Submissions"
+    And I confirm "Group 1" exists in the "Search groups" search combo box
+    And I confirm "Group 2" exists in the "Search groups" search combo box
+    And I confirm "Group 3" exists in the "Search groups" search combo box
+    And I should not see "Non-participation" in the "Group 1" "list_item"
+    And I should see "Non-participation" in the "Group 2" "list_item"
+    And I should see "Non-participation" in the "Group 3" "list_item"
+    And I click on "Group 2" in the "Search groups" search combo box
+    Then I should see "Student 1"
+    And I should see "Student 3"
+    And I should not see "Student 2"
+
+  @javascript
+  Scenario: All groups including non-participation groups can be selected when viewing the grade summary
+    Given the following "groups" exist:
+      | name    | course | idnumber | participation | visibility |
+      | Group 2 | C1     | G2       | 0             | 0          |
+      | Group 3 | C1     | G3       | 0             | 3          |
+    And the following "group members" exist:
+      | group | user     |
+      | G1    | student1 |
+      | G2    | student1 |
+      | G1    | student2 |
+      | G2    | student3 |
+    And the following "activity" exists:
+      | activity         | assign               |
+      | course           | C1                   |
+      | name             | Test assignment name |
+      | submissiondrafts | 0                    |
+      | teamsubmission   | 1                    |
+      | groupmode        | 1                    |
+    And the following "mod_assign > submissions" exist:
+      | assign                | user      | onlinetext                          |
+      | Test assignment name  | student1  | I'm the student's first submission  |
+      | Test assignment name  | student3  | I'm the student's first submission  |
+    When I am on the "Test assignment name" Activity page logged in as teacher1
+    Then "Non-participation" "optgroup" should exist in the "select[name=group]" "css_element"
+    And "Group 1" "option" should exist in the "select[name=group]" "css_element"
+    And "Group 2" "option" should exist in the "optgroup[label=Non-participation]" "css_element"
+    And "Group 3" "option" should exist in the "optgroup[label=Non-participation]" "css_element"
+    And "Group 1" "option" should not exist in the "optgroup[label=Non-participation]" "css_element"

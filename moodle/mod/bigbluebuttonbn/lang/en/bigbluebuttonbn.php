@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language File.
+ * Strings for component 'mod_bigbluebuttonbn', language 'en'.
  *
  * @package   mod_bigbluebuttonbn
  * @copyright 2010 onwards, Blindside Networks Inc
@@ -43,6 +43,7 @@ $string['bigbluebuttonbn:protectrecordings'] = 'Protect recordings';
 $string['bigbluebuttonbn:unprotectrecordings'] = 'Unprotect recordings';
 $string['bigbluebuttonbn:deleterecordings'] = 'Delete recordings';
 $string['bigbluebuttonbn:importrecordings'] = 'Import recordings';
+$string['bigbluebuttonbn:seepresentation'] = 'Always see presentation file on activity page';
 $string['bigbluebuttonbn:viewallrecordingformats'] = 'View all recording formats';
 $string['bigbluebuttonbn'] = 'BigBlueButton';
 $string['cannotperformaction'] = 'Cannot perform action {$a} on this recording';
@@ -69,7 +70,7 @@ $string['resettags'] = 'Delete tags';
 $string['resetlogs'] = 'Delete custom logs';
 $string['resetrecordings'] = 'Delete recordings';
 $string['resetlogs_help'] = 'Deleting the logs will result in lost references to recordings.';
-$string['resetrecordings_help'] = 'Deleting the recordings will make them inaccessible from anywhere. This action cannot be undone!';
+$string['resetrecordings_help'] = 'Deleting the recordings will remove them from this course. Media stored on the BigBlueButton server is not affected.';
 
 $string['search:activity'] = 'BigBlueButton - activity information';
 $string['search:tags'] = 'BigBlueButton - tags information';
@@ -198,7 +199,7 @@ $string['config_waitformoderator_editable'] = 'Wait for moderator editable';
 $string['config_waitformoderator_editable_description'] = 'Should \'Wait for moderator\' be editable in the BigBlueButton activity settings?';
 $string['config_waitformoderator_ping_interval'] = 'Wait for moderator ping (seconds)';
 $string['config_waitformoderator_ping_interval_description'] = 'How often should the server be pinged to check if the moderator has entered the room?';
-$string['config_waitformoderator_cache_ttl'] = 'Wait for moderator cache TTL (seconds)';
+$string['config_waitformoderator_cache_ttl'] = 'Wait for moderator cache Time-to-Live (TTL) (seconds)';
 $string['config_waitformoderator_cache_ttl_description'] = 'To support a heavy load of clients this plugin makes use of a cache. This parameter defines the time the cache will be kept before the next request is sent to the BigBlueButton server.';
 
 $string['config_voicebridge'] = 'Voice bridge';
@@ -213,6 +214,11 @@ $string['config_preuploadpresentation_editable_description'] = 'Option in activi
 
 $string['config_presentation_default'] = 'Default presentation file';
 $string['config_presentation_default_description'] = 'A file may be provided for use in all rooms.';
+
+$string['config_showpresentation_default'] = 'Show presentation file on activity page';
+$string['config_showpresentation_default_description'] = 'Should students have access to the presentation file before the session? This setting has no effect on users with the capability \'Always see presentation file on activity page\' .';
+$string['config_showpresentation_editable'] = '\'Show presentation file on activity page\' option';
+$string['config_showpresentation_editable_description'] = 'Option in activity settings for teachers to choose whether to show the presentation file to students.';
 
 $string['config_participant'] = 'Participants';
 $string['config_participant_description'] = 'These settings define the default role for participants.';
@@ -396,6 +402,7 @@ $string['mod_form_field_participant_list_action_add'] = 'Add';
 $string['mod_form_field_participant_list_action_remove'] = 'Remove';
 $string['mod_form_field_participant_bbb_role_moderator'] = 'Moderator';
 $string['mod_form_field_participant_bbb_role_viewer'] = 'Viewer';
+$string['mod_form_field_showpresentation'] = 'Show presentation file on activity page';
 $string['mod_form_field_instanceprofiles'] = 'Instance type';
 $string['mod_form_field_instanceprofiles_help'] = 'If a session is to be recorded, select \'Room with recordings\', otherwise \'Room only\'. After a session is recorded, if there are to be no more sessions, select \'Recordings only\'.';
 $string['mod_form_field_muteonstart'] = 'Mute on start';
@@ -528,7 +535,7 @@ $string['view_conference_action_end'] = 'End session';
 $string['view_recording'] = 'recording';
 $string['view_recording_link'] = 'imported link';
 $string['view_recording_link_warning'] = 'This is a link pointing to a recording that was created in a different course or activity.';
-$string['view_recording_delete_confirmation'] = 'Are you sure you want to delete {$a}?';
+$string['view_recording_delete_confirmation'] = 'Are you sure you want to permanently delete {$a}? This will remove the media file from the BigBlueButton server and cannot be undone.';
 $string['view_recording_delete_confirmation_warning_s'] = 'This recording has {$a} link associated that was imported into a different course or activity. If the recording is deleted, this link will also be removed.';
 $string['view_recording_delete_confirmation_warning_p'] = 'This recording has {$a} links associated that were imported into different courses or activities. If the recording is deleted, these links will also be removed.';
 $string['view_recording_publish_confirmation'] = 'Are you sure you want to publish this {$a}?';
@@ -589,6 +596,7 @@ $string['event_recording_viewed'] = 'Recording viewed';
 $string['event_recording_edited'] = 'Recording edited';
 $string['event_recording_deleted'] = 'Recording deleted';
 $string['event_recording_imported'] = 'Recording imported';
+$string['event_recording_link_deleted'] = 'Recording link deleted';
 $string['event_recording_published'] = 'Recording published';
 $string['event_recording_unpublished'] = 'Recording unpublished';
 $string['event_recording_protected'] = 'Recording protected';
@@ -626,9 +634,6 @@ $string['view_room'] = 'View room';
 $string['index_error_noinstances'] = 'There are no instances of BigBlueButton rooms';
 $string['index_error_bbtn'] = 'BigBlueButton ID {$a} is incorrect';
 
-$string['view_mobile_message_reload_page_creation_time_meeting'] = 'You exceeded 45 seconds on this page. Please refresh the page to join the session.';
-$string['view_mobile_message_groups_not_supported'] = 'This instance is enabled to work with groups but the mobile app doesn\'t yet support it. Please use the web version.';
-
 $string['end_session_confirm_title'] = 'Really end session?';
 $string['end_session_confirm'] = 'Are you sure you want to end the session?';
 $string['end_session_notification'] = 'The session has ended.';
@@ -648,23 +653,6 @@ $string['recordingurlnotfound'] = 'The recording URL is invalid.';
 $string['subplugintype_bbbext'] = 'BigBlueButton activity extension';
 $string['subplugintype_bbbext_plural'] = 'BigBlueButton activity extensions';
 
-// Deprecated since Moodle 4.3.
-$string['completionview'] = 'Require view';
-$string['completionview_desc'] = 'View the room';
-$string['completionattendancegroup_help'] = 'Attending the meeting for (n) minutes is required for completion.';
-$string['completionengagementgroup_help'] = 'Active participation during the session is required for completion.';
-// Deprecated since Moodle 4.4.
-$string['acceptdpa'] = 'I understand and accept the data processing agreement';
-$string['bigbluebuttondisablednotification_subject'] = 'BigBlueButton activity module disabled.';
-$string['bigbluebuttondisablednotification'] = 'The BigBlueButton activity module has been disabled and any existing BigBlueButton course activities are currently not accessible. Prior to re-enabling this plugin, please ensure that you have read and accepted the <a href="{$a}" target="_blank">data processing agreement</a> with Blindside Networks Inc.';
-$string['enablingbigbluebutton'] = 'Enabling BigBlueButton activity';
-$string['enablingbigbluebuttondpainfo'] = 'In order to meet your data protection obligations, prior to enabling this plugin, you may need to ensure that you have read and accepted the <a href="{$a}" target="_blank">Blindside Networks data processing agreement</a>. Please consult with your own privacy professionals for advice.';
-$string['dpainfonotsigned'] = 'Before enabling this plugin, you must confirm that you have read and accepted the <a href="{$a}">Blindside Networks data processing agreement</a>.';
-$string['config_dpa_note'] = 'Note: In order to meet your data protection obligations, before using a service provider for this plugin, you must ensure that you have read and accepted the service provider\'s data processing agreement. For the default free BigBlueButton service, this is the <a href="{$a}" target="_blank">Blindside Networks data processing agreement</a>. Please consult with your own privacy professionals for advice.';
-$string['view_warning_default_server'] = 'This site is using a <a href="https://bigbluebutton.org/free-bigbluebutton-service-for-moodle/" target="_blank">free BigBlueButton service for Moodle (opens in new window)</a> provided by Blindside Networks with restrictions as follows:
-<ol>
-<li>The maximum length for each session is 60 minutes</li>
-<li>The maximum number of concurrent users per session is 25</li>
-<li>Recordings expire after seven (7) days and are not downloadable</li>
-<li>Student webcams are only visible to the moderator.</li>
-</ol>';
+// Deprecated since Moodle 4.5.
+$string['view_mobile_message_reload_page_creation_time_meeting'] = 'You exceeded 45 seconds on this page. Please refresh the page to join the session.';
+$string['view_mobile_message_groups_not_supported'] = 'This instance is enabled to work with groups but the mobile app doesn\'t yet support it. Please use the web version.';

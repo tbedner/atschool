@@ -187,7 +187,7 @@ Feature: Course index depending on role
     And I should see "Section 3" in the "courseindex-content" "region"
     And I should see "Activity sample 3" in the "courseindex-content" "region"
 
-  @javascript
+  @javascript @accessibility
   Scenario: Course index toggling all sections
     When I am on the "Course 1" course page logged in as teacher1
     # Sections should be opened by default.
@@ -199,6 +199,7 @@ Feature: Course index depending on role
     And I should see "Activity sample 3" in the "courseindex-content" "region"
     # Collapse all sections
     And I click on "Course index options" "button" in the "#courseindexdrawercontrols" "css_element"
+    And the page should meet accessibility standards
     And I click on "Collapse all" "link" in the "#courseindexdrawercontrols" "css_element"
     And I should see "Section 1" in the "courseindex-content" "region"
     And I should not see "Activity sample 1" in the "courseindex-content" "region"
@@ -381,3 +382,17 @@ Feature: Course index depending on role
     And I turn editing mode on
     When I set the field "Edit section name" in the "page-header" "region" to "Custom section name"
     Then I should see "Custom section name" in the "courseindex-content" "region"
+
+  @javascript
+  Scenario: We cannot add a section when the number of section reaches maxsections but as soon as we reach under the limit we can add a section again.
+    Given the following config values are set as admin:
+      | maxsections | 4 | moodlecourse|
+    And I log in as "teacher1"
+    And I am on "Course 1" course homepage with editing mode on
+    Then I should see "Section 1" in the "courseindex-content" "region"
+    And ".disabled" "css_element" should exist in the "[data-action='addSection']" "css_element"
+    And I should see "You have reached the maximum number of sections allowed for a course."
+    And I delete section "4"
+    And I click on "Delete" "button" in the ".modal" "css_element"
+    And ".disabled" "css_element" should not exist in the "[data-action='addSection']" "css_element"
+    And I should not see "You have reached the maximum number of sections allowed for a course."

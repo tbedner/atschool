@@ -26,6 +26,44 @@ namespace core_badges\tests;
 trait external_helper {
 
     /**
+     * Asserts that a badge class returned by an external function matches the given data.
+     *
+     * @param array $expected Expected badge data.
+     * @param array $actual Actual badge class data returned by the external function.
+     * @param bool $canconfiguredetails True if user has capability "moodle/badges:configuredetails".
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     */
+    private function assert_badge_class(array $expected, array $actual, bool $canconfiguredetails): void {
+        $this->assertEquals('BadgeClass', $actual['type']);
+        $badgeurl = new \moodle_url('/badges/badgeclass.php', ['id' => $expected['id']]);
+        $this->assertEquals($badgeurl->out(false), $actual['id']);
+        $this->assertEquals($expected['issuername'], $actual['issuer']);
+        $this->assertEquals($expected['name'], $actual['name']);
+        $this->assertEquals($expected['badgeurl'], $actual['image']);
+        $this->assertEquals($expected['description'], $actual['description']);
+        $this->assertEquals($expected['issuerurl'], $actual['hostedUrl']);
+        $this->assertEquals($expected['coursefullname'], $actual['coursefullname'] ?? null);
+        if ($canconfiguredetails) {
+            $this->assertEquals($expected['courseid'], $actual['courseid'] ?? null);
+        } else {
+            $this->assertArrayNotHasKey('courseid', $actual);
+        }
+
+        $alignments = $expected['alignment'];
+        if (!$canconfiguredetails) {
+            foreach ($alignments as $index => $alignment) {
+                $alignments[$index] = [
+                    'id' => $alignment['id'],
+                    'badgeid' => $alignment['badgeid'],
+                    'targetName' => $alignment['targetName'],
+                    'targetUrl' => $alignment['targetUrl'],
+                ];
+            }
+        }
+        $this->assertEquals($alignments, $actual['alignment'] ?? []);
+    }
+
+    /**
      * Asserts that an issued badge returned by an external function matches the given data.
      *
      * @param array $expected Expected badge data.
@@ -47,11 +85,11 @@ trait external_helper {
         $this->assertEquals($expected['dateexpire'], $actual['dateexpire']);
         $this->assertEquals($expected['version'], $actual['version']);
         $this->assertEquals($expected['language'], $actual['language']);
-        $this->assertEquals($expected['imageauthorname'], $actual['imageauthorname']);
-        $this->assertEquals($expected['imageauthoremail'], $actual['imageauthoremail']);
-        $this->assertEquals($expected['imageauthorurl'], $actual['imageauthorurl']);
         $this->assertEquals($expected['imagecaption'], $actual['imagecaption']);
         $this->assertEquals($expected['badgeurl'], $actual['badgeurl']);
+        $this->assertEquals($expected['recipientid'], $actual['recipientid']);
+        $this->assertEquals($expected['recipientfullname'], $actual['recipientfullname']);
+        $this->assertEquals($expected['coursefullname'], $actual['coursefullname'] ?? null);
         $this->assertEquals($expected['endorsement'] ?? null, $actual['endorsement'] ?? null);
 
         if ($isrecipient || $canconfiguredetails) {
@@ -174,7 +212,10 @@ trait external_helper {
             'visible' => (int) $siteissuedbadge->visible,
             'badgeurl' => \moodle_url::make_webservice_pluginfile_url($systemcontext->id, 'badges', 'badgeimage',
                                                                       $sitebadge->id, '/', 'f3')->out(false),
+            'recipientid' => $student->id,
+            'recipientfullname' => fullname($student),
             'email' => $student->email,
+            'coursefullname' => null,
             'endorsement' => null,
             'alignment' => [],
             'relatedbadges' => [],
@@ -254,7 +295,10 @@ trait external_helper {
             'visible' => (int) $courseissuedbadge->visible,
             'badgeurl' => \moodle_url::make_webservice_pluginfile_url($coursecontext->id, 'badges', 'badgeimage',
                                                                       $coursebadge->id, '/', 'f3')->out(false),
+            'recipientid' => $student->id,
+            'recipientfullname' => fullname($student),
             'email' => $student->email,
+            'coursefullname' => \core_external\util::format_string($course->fullname, $coursecontext),
             'endorsement' => null,
             'alignment' => [],
             'relatedbadges' => [],

@@ -32,7 +32,10 @@ $string['currentinparentheses'] = '(current)';
 $string['region-side-pre'] = 'Right';
 $string['prev_section'] = 'Previous section';
 $string['next_section'] = 'Next section';
-$string['themedevelopedby'] = 'This theme was developed by';
+$string['themedevelopedby'] = 'This theme was proudly developed by';
+$string['themedevelopedbyconectimepartner'] = 'a Brazilian Moodle Partner Company.';
+$string['needsupport'] = 'Need support for your Moodle site? ';
+$string['pleasuretohelp'] = 'It will be a pleasure to help you!';
 $string['access'] = 'Access';
 $string['prev_activity'] = 'Previous activity';
 $string['next_activity'] = 'Next activity';
@@ -63,6 +66,8 @@ $string['fontsite'] = 'Site font';
 $string['fontsite_desc'] = 'Default font site. You can try out the fonts on <a href="https://fonts.google.com">Google Fonts site</a>.';
 $string['enablecourseindex'] = 'Enable course index';
 $string['enablecourseindex_desc'] = 'You can show/hide course index navigation';
+$string['enableclassicbreadcrumb'] = 'Enable classic breadcrumb';
+$string['enableclassicbreadcrumb_desc'] = 'This setting enables the classic breadcrumb, showing it on pages like course and categories.';
 
 // Advanced settings tab.
 $string['advancedsettings'] = 'Advanced';
@@ -72,6 +77,8 @@ $string['rawscss'] = 'Raw SCSS';
 $string['rawscss_desc'] = 'Use this field to provide SCSS or CSS code which will be injected at the end of the style sheet.';
 $string['googleanalytics'] = 'Google Analytics V4 Code';
 $string['googleanalyticsdesc'] = 'Please enter your Google Analytics V4 code to enable analytics on your website. The code format shold be like [G-XXXXXXXXXX]';
+$string['hvpcss'] = 'Raw H5P CSS';
+$string['hvpcss_desc'] = 'Use this field to provide a CSS file which will be injected on mod_hvp plugin pages.';
 
 // Frontpage settings tab.
 $string['frontpagesettings'] = 'Frontpage';
@@ -122,6 +129,8 @@ $string['mobile'] = 'Mobile';
 $string['mobiledesc'] = 'Enter Mobile No. Ex: +5598912341234';
 $string['mail'] = 'E-Mail';
 $string['maildesc'] = 'Company support e-mail';
+$string['tiktok'] = 'TikTok URL';
+$string['tiktokdesc'] = 'Enter the URL of your TikTok. (i.e http://www.tiktok.com/@myinstitution)';
 $string['facebook'] = 'Facebook URL';
 $string['facebookdesc'] = 'Enter the URL of your Facebook. (i.e http://www.facebook.com/myinstitution)';
 $string['twitter'] = 'Twitter URL';
@@ -132,6 +141,8 @@ $string['youtube'] = 'Youtube URL';
 $string['youtubedesc'] = 'Enter the URL of your Youtube. (i.e https://www.youtube.com/user/myinstitution)';
 $string['instagram'] = 'Instagram URL';
 $string['instagramdesc'] = 'Enter the URL of your Instagram. (i.e https://www.instagram.com/myinstitution)';
+$string['pinterest'] = 'Pinterest URL';
+$string['pinterestdesc'] = 'Enter the URL of your Pinterest. (i.e http://www.pinterest.com/myinstitution)';
 $string['whatsapp'] = 'Whatsapp number';
 $string['whatsappdesc'] = 'Enter your whatsapp number for contact.';
 $string['telegram'] = 'Telegram';
@@ -177,3 +188,9 @@ $string['privacy:thememoovesettings_enableaccessibilitytoolbar'] = 'The current 
 
 $string['redirectmessage'] = 'This page should automatically redirect.';
 $string['redirectbtntext'] = 'If nothing is happening please click here to continue.';
+
+$string['ourpartners'] = 'Our Partners';
+$string['ourpartnersdesc'] = 'These are our partners who help Moodle and the community grow.';
+
+$string['readspeaker_text'] = '<strong>Do you know the block ReadSpeaker?</strong> It\'s a great resource that can help your students\' learning.';
+$string['readspeaker_link'] = 'Learn more about ReadSpeaker';

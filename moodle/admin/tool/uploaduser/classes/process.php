@@ -110,7 +110,7 @@ class process {
      * @param string|null $progresstrackerclass
      * @throws \coding_exception
      */
-    public function __construct(\csv_import_reader $cir, string $progresstrackerclass = null) {
+    public function __construct(\csv_import_reader $cir, ?string $progresstrackerclass = null) {
         $this->cir = $cir;
         if ($progresstrackerclass) {
             if (!class_exists($progresstrackerclass) || !is_subclass_of($progresstrackerclass, \uu_progress_tracker::class)) {
@@ -910,8 +910,8 @@ class process {
                 }
 
                 if ($this->get_bulk() == UU_BULK_UPDATED or $this->get_bulk() == UU_BULK_ALL) {
-                    if (!in_array($user->id, $SESSION->bulk_users)) {
-                        $SESSION->bulk_users[] = $user->id;
+                    if (!array_key_exists($user->id, $SESSION->bulk_users)) {
+                        $SESSION->bulk_users[$user->id] = $user->id;
                     }
                 }
 
@@ -924,14 +924,14 @@ class process {
                 $this->usersuptodate++;
 
                 if ($this->get_bulk() == UU_BULK_ALL) {
-                    if (!in_array($user->id, $SESSION->bulk_users)) {
-                        $SESSION->bulk_users[] = $user->id;
+                    if (!array_key_exists($user->id, $SESSION->bulk_users)) {
+                        $SESSION->bulk_users[$user->id] = $user->id;
                     }
                 }
             }
 
             if ($dologout) {
-                \core\session\manager::kill_user_sessions($existinguser->id);
+                \core\session\manager::destroy_user_sessions($existinguser->id);
             }
 
         } else {
@@ -1059,8 +1059,8 @@ class process {
             \context_user::instance($user->id);
 
             if ($this->get_bulk() == UU_BULK_NEW or $this->get_bulk() == UU_BULK_ALL) {
-                if (!in_array($user->id, $SESSION->bulk_users)) {
-                    $SESSION->bulk_users[] = $user->id;
+                if (!array_key_exists($user->id, $SESSION->bulk_users)) {
+                    $SESSION->bulk_users[$user->id] = $user->id;
                 }
             }
         }

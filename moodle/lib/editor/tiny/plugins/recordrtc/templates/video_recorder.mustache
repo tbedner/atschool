@@ -21,6 +21,7 @@
 
     Example context (json):
     {
+        "isallowedpausing": true
     }
 }}
 {{!
@@ -53,17 +54,22 @@
         </div>
         <div data-purpose="start-stop-container" class="row">
             <div class="col-1"></div>
-            <div class="col-10">
-                <button class="btn btn-lg btn-outline-danger btn-block" data-action="startstop">
+            <div class="col-10 d-inline-flex w-100">
+                <button class="btn btn-lg btn-outline-danger w-100" data-action="startstop">
                     {{#str}} startrecording, tiny_recordrtc {{/str}}
                 </button>
+                {{#isallowedpausing}}
+                    <button class="btn btn-lg btn-outline-primary ms-3 hidden" data-action="pauseresume">
+                        {{#str}} pause, tiny_recordrtc {{/str}}
+                    </button>
+                {{/isallowedpausing}}
             </div>
             <div class="col-1"></div>
         </div>
         <div data-purpose="upload-container" class="row hide">
             <div class="col-1"></div>
             <div class="col-10">
-                <button class="btn btn-lg btn-primary btn-block" data-action="upload">
+                <button class="btn btn-lg btn-primary w-100" data-action="upload">
                     {{#str}} attachrecording, tiny_recordrtc {{/str}}
                 </button>
             </div>

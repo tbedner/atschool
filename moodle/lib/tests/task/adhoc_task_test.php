@@ -16,6 +16,8 @@
 
 namespace core\task;
 
+use core\url;
+
 /**
  * Test class for adhoc tasks.
  *
@@ -480,7 +482,10 @@ final class adhoc_task_test extends \advanced_testcase {
         $task = new \mod_fake\task\adhoc_component_task();
 
         manager::queue_adhoc_task($task);
-        $this->assertDebuggingCalled('Component not set and the class namespace does not match a valid component (mod_fake).');
+        $this->assertdebuggingcalledcount(
+            2,
+            array_fill(0, 2, 'Component not set and the class namespace does not match a valid component (mod_fake).'),
+        );
     }
 
     /**
@@ -949,8 +954,7 @@ final class adhoc_task_test extends \advanced_testcase {
     /**
      * Test send messages when adhoc task reaches the max fail delay time.
      *
-     * @covers ::adhoc_task_failed
-     * @covers ::send_failed_task_max_delay_message
+     * @covers \core\task\failed_task_callbacks::send_failed_task_max_delay_message
      */
     public function test_adhoc_message_max_fail_delay(): void {
         $this->resetAfterTest();
@@ -1016,6 +1020,11 @@ final class adhoc_task_test extends \advanced_testcase {
         $this->assertEquals('failedtaskmaxdelay', $messages[0]->eventtype);
         $this->assertEquals('-10', $messages[0]->useridfrom);
         $this->assertEquals('2', $messages[0]->useridto);
+        $this->assertEquals('Task logs', $messages[0]->contexturlname);
+        $this->assertEquals(
+            (new url('/admin/tasklogs.php', ['filter' => get_class($task)]))->out(false),
+            $messages[0]->contexturl,
+        );
 
         // Close sink.
         $messagesink->close();

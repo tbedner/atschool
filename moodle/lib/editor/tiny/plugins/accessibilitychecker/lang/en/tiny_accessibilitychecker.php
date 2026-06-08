@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['accessibilitychecker:use'] = 'Use TinyMCE accessibility checker';
 $string['emptytext'] = 'Empty text';
 $string['entiredocument'] = 'Entire document';
 $string['imagesmissingalt'] = 'Images require alternative text. To fix this warning, add an alt attribute to your img tags. An empty alt attribute may be used, but only when the image is purely decorative and carries no information.';
@@ -35,4 +36,6 @@ $string['tablesmissingheaders'] = 'Tables should use row and/or column headers.'
 $string['tableswithmergedcells'] = 'Tables should not contain merged cells, as screen readers may not support them.';
 $string['privacy:metadata'] = 'The accessibility checker for TinyMCE does not store any personal data.';
 $string['viewissue'] = 'View';
+
+// Deprecated since Moodle 4.5.
 $string['helplinktext'] = 'Accessibility helper';

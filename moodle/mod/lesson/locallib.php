@@ -898,7 +898,8 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
             'label' => $selectall,
             'selectall' => $selectall,
             'deselectall' => $deselectall,
-            'labelclasses' => 'form-check-label'
+            'classes' => 'form-check-input',
+            'labelclasses' => 'form-check-label',
         ]);
         $attemptsheader = $OUTPUT->render($mastercheckbox);
     }
@@ -995,9 +996,11 @@ function lesson_get_overview_report_table_and_data(lesson $lesson, $currentgroup
                     $checkbox = new \core\output\checkbox_toggleall('lesson-attempts', false, [
                         'id' => $attemptid,
                         'name' => $attemptname,
-                        'label' => $attemptlink
+                        'label' => $attemptlink,
+                        'classes' => 'form-check-input',
+                        'labelclasses' => 'form-check-label',
                     ]);
-                    $attemptlink = $OUTPUT->render($checkbox);
+                    $attemptlink = html_writer::div($OUTPUT->render($checkbox), 'form-check p-0');
                 }
 
                 // build up the attempts array
@@ -2307,7 +2310,7 @@ class lesson extends lesson_base {
                             'lesson',
                             format_string($instancename, true, ['context' => $this->get_context()]),
                         ),
-                        ['class' => 'centerpadded lessonbutton standardbutton pr-3'],
+                        ['class' => 'centerpadded lessonbutton standardbutton pe-3'],
                     );
                 }
             }
@@ -3762,8 +3765,6 @@ abstract class lesson_base {
         }
         return !empty($this->properties->{$key});
     }
-
-    //NOTE: E_STRICT does not allow to change function signature!
 
     /**
      * If implemented should create a new instance, save it in the DB and return it

@@ -38,7 +38,7 @@ class manager {
     /**
      * Default mlbackend
      */
-    const DEFAULT_MLBACKEND = '\mlbackend_php\processor';
+    const DEFAULT_MLBACKEND = '\mlbackend_python\processor';
 
     /**
      * Name of the file where components declare their models.
@@ -257,11 +257,16 @@ class manager {
     public static function is_mlbackend_used($plugin) {
         $models = self::get_all_models();
         foreach ($models as $model) {
-            $processor = $model->get_predictions_processor();
-            $noprefixnamespace = ltrim(get_class($processor), '\\');
-            $processorplugin = substr($noprefixnamespace, 0, strpos($noprefixnamespace, '\\'));
-            if ($processorplugin == $plugin) {
-                return true;
+            try {
+                $processor = $model->get_predictions_processor();
+                $noprefixnamespace = ltrim(get_class($processor), '\\');
+                $processorplugin = substr($noprefixnamespace, 0, strpos($noprefixnamespace, '\\'));
+                if ($processorplugin == $plugin) {
+                    return true;
+                }
+            } catch (\Exception $e) {
+                // The model does not have a predictions processor.
+                continue;
             }
         }
 
@@ -297,15 +302,6 @@ class manager {
         }
 
         return self::$alltimesplittings;
-    }
-
-    /**
-     * @deprecated since Moodle 3.7 use get_time_splitting_methods_for_evaluation instead
-     */
-    public static function get_enabled_time_splitting_methods() {
-        throw new coding_exception(__FUNCTION__ . '() has been removed. You can use self::get_time_splitting_methods_for_evaluation if ' .
-            'you want to get the default time splitting methods for evaluation, or you can use self::get_all_time_splittings if ' .
-            'you want to get all the time splitting methods available on this site.');
     }
 
     /**
@@ -533,7 +529,7 @@ class manager {
      * @param  int|null $newmodelid A new model to add to the list of models with insights in the provided context.
      * @return int[]
      */
-    public static function cached_models_with_insights(\context $context, int $newmodelid = null) {
+    public static function cached_models_with_insights(\context $context, ?int $newmodelid = null) {
 
         $cache = \cache::make('core', 'contextwithinsights');
         $modelids = $cache->get($context->id);
@@ -778,6 +774,27 @@ class manager {
             } else {
                 $model['enabled'] = clean_param($model['enabled'], PARAM_BOOL);
             }
+
+            // For the core models only, automatically remove references to modules that do not
+            // exist. This allows you to install without error if there are missing plugins.
+            if ($componentname === 'moodle') {
+                $updatedindicators = [];
+                $allmodules = [];
+                foreach ($model['indicators'] as $indicator) {
+                    if (preg_match('~^\\\\mod_([^\\\\]+)\\\\~', $indicator, $matches)) {
+                        if (!$allmodules) {
+                            // The first time, get all modules.
+                            $allmodules = \core\plugin_manager::instance()->get_present_plugins('mod');
+                        }
+                        if (!array_key_exists($matches[1], $allmodules)) {
+                            // Module does not exist, so skip indicator.
+                            continue;
+                        }
+                    }
+                    $updatedindicators[] = $indicator;
+                }
+                $model['indicators'] = $updatedindicators;
+            }
         }
 
         static::validate_models_declaration($models);
@@ -941,7 +958,7 @@ class manager {
      * @param  string|null $query
      * @return array Associative array with contextid as key and the short version of the context name as value.
      */
-    public static function get_potential_context_restrictions(?array $contextlevels = null, string $query = null) {
+    public static function get_potential_context_restrictions(?array $contextlevels = null, ?string $query = null) {
         global $DB;
 
         if (empty($contextlevels) && !is_null($contextlevels)) {

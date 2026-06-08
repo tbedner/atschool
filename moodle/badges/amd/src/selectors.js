@@ -36,9 +36,11 @@ const getDataSelector = (name, value) => {
 export default {
     actions: {
         deletebackpack: getDataSelector('action', 'deletebackpack'),
+        enablebadge: getDataSelector('action', 'enablebadge'),
+        disablebadge: getDataSelector('action', 'disablebadge'),
     },
     elements: {
-        clearsearch: '.input-group-append .clear-icon',
+        clearsearch: '.input-group .clear-icon',
         main: '#backpacklist',
         backpackurl: '[data-backpackurl]',
     },

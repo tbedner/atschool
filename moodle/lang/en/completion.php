@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for core_completion subsystem.
+ * Strings for component 'core_completion', language 'en'.
  *
  * @package     core_completion
  * @category    string
@@ -87,6 +87,7 @@ $string['completion_help'] = 'If enabled, activity completion is tracked, either
 $string['completion_link'] = 'activity/completion';
 $string['completion_manual'] = 'Students must manually mark the activity as done';
 $string['completion_none'] = 'None';
+$string['completion_status'] = 'Completion status';
 $string['completionactivitydefault'] = 'Use activity default';
 $string['completionanygrade_desc'] = 'Any grade';
 $string['completiondisabled'] = 'Disabled, not shown in activity settings';
@@ -140,12 +141,13 @@ $string['csvdownload'] = 'Download in spreadsheet format (UTF-8 .csv)';
 $string['datepassed'] = 'Date passed';
 $string['days'] = 'Days';
 $string['daysoftotal'] = '{$a->days} of {$a->total}';
-$string['daysuntilcompletion'] = 'Days until completion';
+$string['daystakingcourse'] = 'Time taking course';
+$string['daysuntilcompletion'] = 'Time until completion';
 $string['defaultactivitycompletionsite'] = 'These are the default completion conditions for activities in all courses.';
 $string['defaultactivitycompletioncourse'] = 'These are the default completion conditions for activities in this course.';
 $string['defaultcompletion'] = 'Default activity completion';
 $string['defaultcompletionupdated'] = 'Changes saved';
-$string['deletecompletiondata'] = 'Delete completion data';
+$string['deletecompletiondata'] = 'Completion data';
 $string['dependencies'] = 'Dependencies';
 $string['dependenciescompleted'] = 'Completion of other courses';
 $string['detail_desc:receivegrade'] = 'Receive a grade';
@@ -255,12 +257,3 @@ $string['withconditions'] = 'With conditions';
 $string['writingcompletiondata'] = 'Writing completion data';
 $string['xdays'] = '{$a} days';
 $string['youmust'] = 'You must';
-
-// Deprecated since Moodle 4.3.
-$string['editcoursecompletionsettings'] = 'Edit course completion settings';
-$string['completiondefault'] = 'Default completion tracking';
-$string['configcompletiondefault'] = 'The default setting for completion tracking when creating new activities.';
-$string['completionview'] = 'Require view';
-$string['activitygradenotrequired'] = 'Grade not required';
-$string['completionpassgrade_help'] = 'If enabled, the activity is considered complete when a student receives a passing grade.';
-$string['completionusegrade_help'] = 'If enabled, the activity is considered complete when a student receives a grade. If a pass grade for the activity is set, then pass and fail icons are displayed in the activity completion report.';

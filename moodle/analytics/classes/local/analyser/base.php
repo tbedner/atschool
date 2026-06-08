@@ -106,13 +106,6 @@ abstract class base {
     }
 
     /**
-     * @deprecated since Moodle 3.7
-     */
-    public function get_analysables() {
-        throw new \coding_exception('get_analysables() method has been removed and cannot be used any more.');
-    }
-
-    /**
      * Returns the list of analysable elements available on the site.
      *
      * A relatively complex SQL query should be set so that we take into account which analysable elements
@@ -432,7 +425,7 @@ abstract class base {
      * @param  string|null $query Context name filter.
      * @return int[]
      */
-    public static function potential_context_restrictions(string $query = null) {
+    public static function potential_context_restrictions(?string $query = null) {
         return \core_analytics\manager::get_potential_context_restrictions(static::context_restriction_support(), $query);
     }
 

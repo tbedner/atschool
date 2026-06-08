@@ -18,7 +18,7 @@ Prerequisite: Make sure the grunt watcher is running during the below process:
 1. In yourmoodle directory, run "npm install && grunt watch -f".
    It will generate minified js files automatically if there is a change in all JS files in the amd folder.
 
-2. Download PrismJS
+2. Download Tiny, which contains PrismJS as a dependency
    See the lib/editor/tiny/thirdpartylibs.xml to get the current TinyMCE version (X.Y.Z).
    Download the ZIP file at https://github.com/tinymce/tinymce/tree/X.Y.Z and extract the ZIP file.
 
@@ -26,11 +26,14 @@ Prerequisite: Make sure the grunt watcher is running during the below process:
 
 3. In the extracted folder, run "yarn".
 
-4. Copy the node_modules/prismjs/themes/prism.css to yourmoodle/filter/codehighlighter/styles.css
+4. Update the PrismJS version in filter/codehighlighter/thirdpartylibs.xml according to the PrismJS version in the extracted
+   folder in the file node_modules/prismjs/package.json.
 
-5. Edit the styles.css to make sure the indentation is made using spaces, not tabs, and remove trailing spaces.
+5. Copy the node_modules/prismjs/themes/prism.css to yourmoodle/filter/codehighlighter/styles.css
 
-6. To avoid conflict with the theme code tag style.
+6. Edit the styles.css to make sure the indentation is made using spaces, not tabs, and remove trailing spaces.
+
+7. To avoid conflict with the theme code tag style.
    Remove all the lines that contain 'code[class*="language-"]' text in the styles.css,
    and also remove the comma character after the text if necessary to make sure that the CSS structure is correct.
    Please see the examples below:
@@ -42,7 +45,9 @@ Prerequisite: Make sure the grunt watcher is running during the below process:
    * code[class*="language-"] ::selection
    * code[class*="language-"]
 
-7. See if the grunt watch is reporting problems. If yes, follow the instructions to fix it. e.g:
+8. Add the prefix "prism-" in front of all CSS classes, e.g. replace .token with .prism-token
+
+9. See if the grunt watch is reporting problems. If yes, follow the instructions to fix it. e.g:
 
    Before:
    ```
@@ -61,10 +66,14 @@ Prerequisite: Make sure the grunt watcher is running during the below process:
 
    And remove the warning from color-hex-case by renaming "#DD4A68" to lowercase "#dd4a68".
 
-8. In the extracted folder, run "./bin/build-prism.js"
+10. In the extracted folder, edit "./bin/build-prism.js"
 
-9. Copy the node_modules/prismjs/prism.js to yourmoodle/filter/codehighlighter/amd/src/prism.js
+    Add 'plugins/custom-class/prism-custom-class.js' to the files array.
 
-10. Edit the prism.js to make sure the indentation is made using spaces, not tabs, and remove trailing spaces.
+11. Run "./bin/build-prism.js"
+
+12. Copy the node_modules/prismjs/prism.js to yourmoodle/filter/codehighlighter/amd/src/prism.js
+
+13. Edit the prism.js to make sure the indentation is made using spaces, not tabs, and remove trailing spaces.
 
 Note: As long as the grunt watcher says Done, then the upgrade process is complete.

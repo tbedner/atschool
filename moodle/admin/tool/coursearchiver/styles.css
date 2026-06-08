@@ -73,9 +73,14 @@
 }
 
 .mform .coursearchiver_checkbox .fitem {
-    margin: 0;
-    padding: 4px;
+    position: relative;
     display: inline-block;
+    top: 8px;
+    left: 8px;
+}
+
+.mform .coursearchiver_checkbox .fitem label {
+    display: none;
 }
 
 .path-admin-tool-coursearchiver .btn-primary {

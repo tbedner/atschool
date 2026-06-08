@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'lesson', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'mod_lesson', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package mod_lesson
  * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -146,7 +146,7 @@ $string['customscoring'] = 'Custom scoring';
 $string['customscoring_help'] = 'If enabled, a whole number value (positive or negative) may be entered for each answer.';
 $string['deadline'] = 'Deadline';
 $string['defaultessayresponse'] = 'Your essay will be graded by your teacher.';
-$string['deleteallattempts'] = 'Delete all lesson attempts';
+$string['deleteallattempts'] = 'All lesson attempts';
 $string['deletedefaults'] = 'Deleted {$a} x lesson default';
 $string['deletedpage'] = 'Deleted page';
 $string['deletepagenamed'] = 'Delete page: {$a}';
@@ -254,8 +254,7 @@ $string['gradeessay'] = 'Grade essay questions ({$a->notgradedcount} not graded 
 $string['gradeis'] = 'Grade is {$a}';
 $string['gradeoptions'] = 'Grade options';
 $string['groupoverrides'] = 'Group overrides';
-$string['groupoverridesdeleted'] = 'Group overrides deleted';
-$string['groupsnone'] = 'No groups you can access.';
+$string['groupsnone'] = 'There are no groups in this course.';
 $string['handlingofretakes'] = 'Handling of re-takes';
 $string['handlingofretakes_help'] = 'If re-takes are allowed, this setting specifies whether the grade for the lesson is the mean or maximum of all attempts.';
 $string['havenotgradedyet'] = 'Have not graded yet.';
@@ -457,8 +456,6 @@ $string['practice_help'] = 'A practice lesson does not appear in the gradebook.'
 $string['preprocesserror'] = 'Error occurred during pre-processing!';
 $string['prerequisiteisobsolete'] = 'The prerequisite lesson option is due to be removed. Please use access restrictions instead.';
 $string['prerequisitelesson'] = 'Prerequisite lesson';
-$string['preview'] = 'Preview';
-$string['previewlesson'] = 'Preview {$a}';
 $string['previewpagenamed'] = 'Preview page: {$a}';
 $string['previouspage'] = 'Previous page';
 $string['privacy:metadata:attempts:userid'] = 'The user ID';
@@ -515,8 +512,8 @@ $string['rank'] = 'Rank';
 $string['rawgrade'] = 'Raw grade';
 $string['receivedcredit'] = 'Received credit';
 $string['redisplaypage'] = 'Redisplay page';
-$string['removeallgroupoverrides'] = 'Delete all group overrides';
-$string['removealluseroverrides'] = 'Delete all user overrides';
+$string['removeallgroupoverrides'] = 'All group overrides';
+$string['removealluseroverrides'] = 'All user overrides';
 $string['report'] = 'Report';
 $string['reports'] = 'Reports';
 $string['response'] = 'Response';
@@ -592,12 +589,10 @@ $string['usemean'] = 'Use mean';
 $string['usepassword'] = 'Password protected lesson';
 $string['usepassword_help'] = 'If enabled, a password is required in order to access the lesson.';
 $string['useroverrides'] = 'User overrides';
-$string['useroverridesdeleted'] = 'User overrides deleted';
-$string['usersnone'] = 'No students have access to this lesson';
+$string['usersnone'] = 'There are no users enrolled in this course or no users can access the lesson.';
 $string['viewessayanswers'] = 'View essay answers';
 $string['viewgrades'] = 'View grades';
 $string['viewreports'] = 'View {$a->attempts} completed {$a->student} attempts';
-$string['viewreports2'] = 'View {$a} completed attempts';
 $string['warning'] = 'Warning';
 $string['welldone'] = 'Well done!';
 $string['whatdofirst'] = 'What would you like to do first?';
@@ -611,8 +606,11 @@ $string['yourcurrentgradeis'] = 'Your current grade is {$a}';
 $string['yourcurrentgradeisoutof'] = 'Your current grade is {$a->grade} out of {$a->total}';
 $string['youshouldview'] = 'You should answer at least: {$a}';
 
-// Deprecated since 4.3.
-$string['completiontimespent'] = 'Student must do this activity at least for';
+// Deprecated since Moodle 4.5.
+$string['useroverridesdeleted'] = 'User overrides deleted';
+$string['groupoverridesdeleted'] = 'Group overrides deleted';
 
-// Deprecated since Moodle 4.4.
-$string['grade'] = 'Grade';
+// Deprecated since Moodle 5.0.
+$string['preview'] = 'Preview';
+$string['previewlesson'] = 'Preview {$a}';
+$string['viewreports2'] = 'View {$a} completed attempts';

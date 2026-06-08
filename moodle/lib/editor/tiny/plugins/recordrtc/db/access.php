@@ -41,4 +41,19 @@ $capabilities = [
             'user' => CAP_ALLOW,
         ],
     ],
+    // Capability to record screen using this plugin.
+    'tiny/recordrtc:recordscreen' => [
+        'captype'      => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+    'tiny/recordrtc:use' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
 ];

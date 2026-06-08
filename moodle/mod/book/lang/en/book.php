@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Book module language strings
+ * Strings for component 'mod_book', language 'en'.
  *
  * @package    mod_book
  * @copyright  2004-2012 Petr Skoda {@link http://skodak.org}
@@ -111,11 +111,8 @@ $string['subchapternotice'] = '(Only available once the first chapter has been c
 $string['subplugintype_booktool'] = 'Book tool';
 $string['subplugintype_booktool_plural'] = 'Book tools';
 
-$string['removeallbooktags'] = 'Remove all book tags';
+$string['removeallbooktags'] = 'All book tags';
 $string['tagarea_book_chapters'] = 'Book chapters';
-$string['tagsdeleted'] = 'Book tags have been deleted';
 
-// Deprecated since Moodle 4.4.
-$string['navimages'] = 'Images';
-$string['navtext'] = 'Text';
-$string['navtoc'] = 'TOC Only';
+// Deprecated since Moodle 4.5.
+$string['tagsdeleted'] = 'Book tags have been deleted';

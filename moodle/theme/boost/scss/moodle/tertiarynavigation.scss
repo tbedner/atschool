@@ -8,7 +8,7 @@
         border-bottom: 1px solid $gray-300;
         margin-bottom: 25px;
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(md) {
             width: calc(100% + 1rem);
             margin-left: -0.5rem;
             margin-right: -0.5rem;
@@ -49,6 +49,13 @@
         }
     }
 
+    h2 {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin: 0;
+        align-self: center;
+    }
+
     .navitem:not(:last-child),
     .navitem-divider:not(:last-child) {
         margin-right: 20px;
@@ -62,7 +69,7 @@
     }
 }
 
-@include media-breakpoint-down(sm) {
+@include media-breakpoint-down(md) {
     .tertiary-navigation {
         .mform {
             padding-left: initial;
@@ -70,7 +77,7 @@
     }
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
     .tertiary-navigation .page-toggler > p {
         font-size: 80%;
     }

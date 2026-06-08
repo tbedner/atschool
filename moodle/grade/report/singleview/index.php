@@ -29,8 +29,13 @@ require_once($CFG->dirroot.'/lib/gradelib.php');
 require_once($CFG->dirroot.'/grade/lib.php');
 require_once($CFG->dirroot.'/grade/report/lib.php');
 
+// This report may require a lot of memory and time on large courses.
+raise_memory_limit(MEMORY_HUGE);
+set_time_limit(120);
+
 $courseid = required_param('id', PARAM_INT);
 $groupid  = optional_param('group', null, PARAM_INT);
+$reset = optional_param('reset', 0, PARAM_BOOL);
 
 // Making this work with profile reports.
 $userid   = optional_param('userid', null, PARAM_INT);
@@ -105,7 +110,7 @@ switch ($itemtype) {
         }
         // If the item id (user id) cannot be defined or the user id is not part of the list of gradable users,
         // display the user select zero state.
-        if (is_null($itemid) || !array_key_exists($itemid, grade_report::get_gradable_users($courseid, $currentgroup))) {
+        if (is_null($itemid) || !array_key_exists($itemid, grade_report::get_gradable_users($courseid, $currentgroup)) || $reset) {
             $itemtype = 'user_select';
             unset($SESSION->gradereport_singleview["useritem-{$context->id}"]);
         }
@@ -135,8 +140,6 @@ switch ($itemtype) {
         break;
 }
 
-$report = new gradereport_singleview\report\singleview($courseid, $gpr, $context, $itemtype, $itemid);
-
 $pageparams = [
     'id'        => $courseid,
     'userid'    => $userid,
@@ -152,6 +155,31 @@ if (!is_null($groupid)) {
 
 $PAGE->set_url(new moodle_url('/grade/report/singleview/index.php', $pageparams));
 
+// Make sure we have proper final grades.
+$taskindicator = new \core\output\task_indicator(
+    \core_course\task\regrade_final_grades::create($courseid),
+    get_string('recalculatinggrades', 'grades'),
+    get_string('recalculatinggradesadhoc', 'grades'),
+    $PAGE->url,
+);
+
+if ($taskindicator->has_task_record()) {
+    // We need to bail out early as the report requires recalculations to be complete, so just display a basic header
+    // with navigation, and the indicator.
+    $actionbar = new \core_grades\output\general_action_bar(
+        $context,
+        new moodle_url('/grade/report/singleview/index.php', ['id' => $courseid]),
+        'report',
+        'singleview'
+    );
+    print_grade_page_head($course->id, 'report', 'singleview', actionbar: $actionbar);
+    echo $OUTPUT->render($taskindicator);
+    echo $OUTPUT->footer();
+    exit;
+}
+
+$report = new gradereport_singleview\report\singleview($courseid, $gpr, $context, $itemtype, $itemid);
+
 // Build editing on/off button for themes that need it.
 $button = '';
 if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
@@ -166,18 +194,19 @@ if ($PAGE->user_allowed_editing() && !$PAGE->theme->haseditswitch) {
 
 $reportname = $report->screen->heading();
 
+$baseurl = new moodle_url('/grade/report/singleview/index.php', ['id' => $courseid, 'item' => $itemtype]);
 if ($itemtype == 'user' || $itemtype == 'user_select') {
-    $PAGE->requires->js_call_amd('gradereport_singleview/user', 'init');
+    $PAGE->requires->js_call_amd('gradereport_singleview/user', 'init', [$baseurl->out(false)]);
     $actionbar = new \gradereport_singleview\output\action_bar($context, $report, 'user');
 } else if ($itemtype == 'grade' || $itemtype == 'grade_select') {
-    $PAGE->requires->js_call_amd('gradereport_singleview/grade', 'init');
+    $PAGE->requires->js_call_amd('gradereport_singleview/grade', 'init', [$baseurl->out(false)]);
     $actionbar = new \gradereport_singleview\output\action_bar($context, $report, 'grade');
 } else {
     $actionbar = new \core_grades\output\general_action_bar($context, new moodle_url('/grade/report/singleview/index.php',
         ['id' => $courseid]), 'report', 'singleview');
 }
 if ($course->groupmode && $itemtype !== 'select') {
-    $PAGE->requires->js_call_amd('gradereport_singleview/group', 'init', [$itemtype]);
+    $PAGE->requires->js_call_amd('core_course/actionbar/group', 'init', [$baseurl->out(false)]);
 }
 
 if ($itemtype == 'user') {
@@ -211,6 +240,12 @@ if ($data = data_submitted()) {
 
 // Make sure we have proper final grades.
 grade_regrade_final_grades_if_required($course);
+
+if ($taskindicator->has_task_record()) {
+    echo $OUTPUT->render($taskindicator);
+    echo $OUTPUT->footer();
+    exit;
+}
 
 // Save the screen state in a session variable as last viewed state.
 $SESSION->gradereport_singleview["itemtype-{$context->id}"] = $itemtype;

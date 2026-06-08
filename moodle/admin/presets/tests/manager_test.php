@@ -35,6 +35,7 @@ final class manager_test extends \advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
         require_once($CFG->libdir.'/adminlib.php');
+        parent::setUpBeforeClass();
     }
 
     /**
@@ -423,7 +424,7 @@ final class manager_test extends \advanced_testcase {
      * @param string|null $expectedpresetname Expected preset name.
      */
     public function test_import_preset(string $filecontents, bool $expectedpreset, bool $expectedsettings = false,
-            bool $expectedplugins = false, bool $expecteddebugging = false, string $expectedexception = null,
+            bool $expectedplugins = false, bool $expecteddebugging = false, ?string $expectedexception = null,
             string $expectedpresetname = 'Imported preset'): void {
         global $DB;
 
@@ -437,7 +438,10 @@ final class manager_test extends \advanced_testcase {
         // Call the method to be tested.
         $manager = new manager();
         try {
+            $invokable = self::get_invokable();
+            set_error_handler($invokable, E_WARNING);
             list($xml, $preset, $settingsfound, $pluginsfound) = $manager->import_preset($filecontents);
+            restore_error_handler();
         } catch (\exception $e) {
             if ($expectedexception) {
                 $this->assertInstanceOf($expectedexception, $e);
@@ -505,7 +509,7 @@ final class manager_test extends \advanced_testcase {
                             'activity_modules' => 1,
                         ],
                         'mod' => [
-                            'chat' => 0,
+                            'page' => 0,
                             'data' => 0,
                             'lesson' => 1,
                         ],
@@ -601,7 +605,6 @@ final class manager_test extends \advanced_testcase {
             ],
         ];
     }
-
 
     /**
      * Test the behaviour of delete_preset() method when the preset id doesn't exist.
@@ -808,5 +811,180 @@ final class manager_test extends \advanced_testcase {
         // This plugin won't change (because it had the same value than before the preset was applied).
         $enabledplugins = \core\plugininfo\qtype::get_enabled_plugins();
         $this->assertArrayHasKey('truefalse', $enabledplugins);
+    }
+
+    /**
+     * Test apply_preset for a deprecated plugin type.
+     *
+     * @runInSeparateProcess
+     *
+     * @covers ::apply_preset
+     * @return void
+     */
+    public function test_apply_preset_deprecated_plugintype(): void {
+        global $CFG;
+        $this->resetAfterTest();
+
+        // Create a preset.
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_adminpresets');
+        $presetid = $generator->create_preset();
+
+        // Add a mock plugin into the preset. This plugin will be mocked and deprecated below.
+        helper::add_plugin($presetid, 'fake', 'fullfeatured', true);
+
+        // Inject the mock plugin type + plugin, and deprecate it.
+        $this->add_mocked_plugintype('fake', "$CFG->libdir/tests/fixtures/fakeplugins/fake", true);
+        $this->add_mocked_plugin('fake', 'fullfeatured', $CFG->libdir . '/tests/fixtures/fakeplugins/fake/fullfeatured');
+
+        // Pre-flight check to ensure that the plugin is deprecated.
+        $pluginman = \core\plugin_manager::instance();
+        $plugininfo = $pluginman->get_plugin_info('fake_fullfeatured');
+        // Expected, unit-test-only debugging, since \core\plugin_manager isn't aware of the mock plugininfo class for this type.
+        $this->assertDebuggingCalled();
+        $this->assertTrue($plugininfo->is_deprecated());
+
+        // Finally, check apply_preset method, verifying the deprecated plugin is skipped.
+        $manager = new manager();
+        [$applied, $skipped] = $manager->apply_preset($presetid);
+        $this->assertdebuggingcalledcount(2); // Expected unit-test-only debugging, as above.
+        $this->assertContains('fake', array_column($skipped, 'plugin'));
+    }
+
+    /**
+     * Test import_preset() behaviour for executable-path settings depending on $CFG->preventexecpath.
+     *
+     * @dataProvider import_preset_execpath_provider
+     * @covers ::import_preset
+     *
+     * @param bool $preventexecpath Whether to set $CFG->preventexecpath before importing.
+     * @param int $expecteditemcount Expected number of items stored in the preset.
+     * @param string[] $presentnames Setting names that must appear in the stored items.
+     * @param string[] $absentnames Setting names that must not appear in the stored items.
+     */
+    public function test_import_preset_execpath(
+        bool $preventexecpath,
+        int $expecteditemcount,
+        array $presentnames,
+        array $absentnames
+    ): void {
+        global $CFG, $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if ($preventexecpath) {
+            $CFG->preventexecpath = true;
+        } else {
+            unset($CFG->preventexecpath);
+        }
+
+        $xml = file_get_contents(self::get_fixture_path(__NAMESPACE__, 'import_execpath_setting.xml'));
+        [, $preset, $settingsfound] = (new manager())->import_preset($xml);
+
+        $this->assertNotNull($preset);
+        $this->assertTrue($settingsfound);
+
+        $names = array_column($DB->get_records('adminpresets_it', ['adminpresetid' => $preset->id]), 'name');
+        $this->assertCount($expecteditemcount, $names);
+        foreach ($presentnames as $name) {
+            $this->assertContains($name, $names);
+        }
+        foreach ($absentnames as $name) {
+            $this->assertNotContains($name, $names);
+        }
+    }
+
+    /**
+     * Data provider for test_import_preset_execpath().
+     *
+     * @return array
+     */
+    public static function import_preset_execpath_provider(): array {
+        return [
+            'preventexecpath set: execpath and configfile settings dropped' => [
+                'preventexecpath'   => true,
+                'expecteditemcount' => 1,
+                'presentnames'      => ['enablebadges'],
+                'absentnames'       => ['aspellpath', 'geoip2file'],
+            ],
+            'preventexecpath not set: all settings stored' => [
+                'preventexecpath'   => false,
+                'expecteditemcount' => 3,
+                'presentnames'      => ['enablebadges', 'aspellpath', 'geoip2file'],
+                'absentnames'       => [],
+            ],
+        ];
+    }
+
+    /**
+     * Test apply_settings() behaviour for executable-path settings: verifies both the
+     * guard (skipped) and happy-path (applied) branches depending on $CFG->preventexecpath
+     * and whether the path is a valid executable.
+     *
+     * @dataProvider apply_settings_execpath_provider
+     * @covers ::apply_preset
+     *
+     * @param bool $preventexecpath Whether to set $CFG->preventexecpath.
+     * @param string $presetpath The executable path value stored in the preset.
+     * @param bool $expectedapplied Whether the setting should end up in $applied (true) or $skipped (false).
+     */
+    public function test_apply_settings_execpath(bool $preventexecpath, string $presetpath, bool $expectedapplied): void {
+        global $CFG;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        if ($preventexecpath) {
+            $CFG->preventexecpath = true;
+        } else {
+            unset($CFG->preventexecpath);
+        }
+
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_adminpresets');
+        $presetid = $generator->create_preset();
+        helper::add_item($presetid, 'pathtophp', $presetpath);
+
+        set_config('pathtophp', '/original/path');
+
+        [$applied, $skipped] = (new manager())->apply_preset($presetid);
+
+        $phpvisiblename = get_string('pathtophp', 'admin');
+        $appliednames = array_map('strval', array_column($applied, 'visiblename'));
+        $skippednames = array_map('strval', array_column($skipped, 'visiblename'));
+
+        if ($expectedapplied) {
+            $this->assertContains($phpvisiblename, $appliednames);
+            $this->assertNotContains($phpvisiblename, $skippednames);
+            $this->assertEquals($presetpath, get_config('core', 'pathtophp'));
+        } else {
+            $this->assertContains($phpvisiblename, $skippednames);
+            $this->assertNotContains($phpvisiblename, $appliednames);
+            $this->assertEquals('/original/path', get_config('core', 'pathtophp'));
+        }
+    }
+
+    /**
+     * Data provider for test_apply_settings_execpath().
+     *
+     * @return array
+     */
+    public static function apply_settings_execpath_provider(): array {
+        return [
+            'preventexecpath set: execpath setting skipped' => [
+                'preventexecpath' => true,
+                'presetpath'      => PHP_BINARY,
+                'expectedapplied' => false,
+            ],
+            'preventexecpath not set, invalid path: execpath setting skipped' => [
+                'preventexecpath' => false,
+                'presetpath'      => '/this/path/does/not/exist/phpbinary',
+                'expectedapplied' => false,
+            ],
+            'preventexecpath not set, valid executable: execpath setting applied' => [
+                'preventexecpath' => false,
+                'presetpath'      => PHP_BINARY,
+                'expectedapplied' => true,
+            ],
+        ];
     }
 }

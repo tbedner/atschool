@@ -25,8 +25,8 @@ import * as Templates from 'core/templates';
 import Config from 'core/config';
 
 class UsedFileManager {
-    constructor(files, userContext, itemId, elementId) {
-        this.files = files;
+    constructor(userContext, itemId, elementId) {
+        this.files = this.getFiles();
         this.userContext = userContext;
         this.itemId = itemId;
         this.elementId = elementId;
@@ -44,11 +44,14 @@ class UsedFileManager {
         }
         const content = editor.getContent();
         const baseUrl = `${Config.wwwroot}/draftfile.php/${this.userContext}/user/draft/${this.itemId}/`;
-        const pattern = new RegExp("[\"']" + baseUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + "(?<filename>.+?)[\\?\"']", 'gm');
 
-        const usedFiles = [...content.matchAll(pattern)].map((match) => decodeURIComponent(match.groups.filename));
+        // Match any draft file contained within quotes, whitespace, or between html elements.
+        const pattern = new RegExp(
+            "[\"'\\s>]" + baseUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + "(?<filename>.+?)[\\?\"'\\s<]",
+            'gm'
+        );
 
-        return usedFiles;
+        return [...content.matchAll(pattern)].map((match) => decodeURIComponent(match.groups.filename));
     }
 
     // Return an array of unused files.
@@ -84,6 +87,20 @@ class UsedFileManager {
             Templates.replaceNodeContents(form.querySelector('.missing-files'), html, js);
             return;
         });
+    }
+
+    /**
+     * Retrieves a list of existing files selected for deletion.
+     *
+     * @returns {Object} An object where the keys are filenames and the values are file hashes.
+     *
+     */
+     getFiles() {
+        const files = {};
+        document.querySelectorAll('input[type=checkbox][name^="deletefile"]').forEach(input => {
+            files[input.dataset.filename] = input.dataset.filehash;
+        });
+        return files;
     }
 }
 

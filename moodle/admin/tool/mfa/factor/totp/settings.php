@@ -27,6 +27,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading('factor_totp/description', '',
+        new lang_string('settings:description', 'factor_totp')));
+    $settings->add(new admin_setting_heading('factor_totp/settings', new lang_string('settings', 'moodle'), ''));
+
     $enabled = new admin_setting_configcheckbox('factor_totp/enabled',
         new lang_string('settings:enablefactor', 'tool_mfa'),
         new lang_string('settings:enablefactor_help', 'tool_mfa'), 0);
@@ -39,9 +43,11 @@ if ($ADMIN->fulltree) {
         new lang_string('settings:weight', 'tool_mfa'),
         new lang_string('settings:weight_help', 'tool_mfa'), 100, PARAM_INT));
 
-    $settings->add(new admin_setting_configduration('factor_totp/window',
+    $window = new admin_setting_configduration('factor_totp/window',
         new lang_string('settings:window', 'factor_totp'),
-        new lang_string('settings:window_help', 'factor_totp'), 30));
+        new lang_string('settings:window_help', 'factor_totp'), 15);
+    $window->set_max_duration(29);
+    $settings->add($window);
 
     $settings->add(new admin_setting_configcheckbox('factor_totp/totplink',
         new lang_string('settings:totplink', 'factor_totp'),

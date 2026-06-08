@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'error', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'core_error', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package   core
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -31,6 +31,7 @@ $string['agelocationverificationdisabled'] = 'Age and location verification disa
 $string['authnotexisting'] = 'The autorization plugin doesn\'t exist';
 $string['backupcontainexternal'] = 'This backup file contains external Moodle Network Hosts that are not configured locally';
 $string['backuptablefail'] = 'Backup tables could NOT be set up successfully!';
+$string['blockcannotadd'] = 'Cannot add block';
 $string['blockcannotconfig'] = 'This block does not support global configuration';
 $string['blockcannotinistantiate'] = 'Problem in instantiating block object';
 $string['blockcannotread'] = 'Could not read data for blockid= {$a}';
@@ -65,7 +66,6 @@ $string['cannotcreateuploaddir'] = 'Cannot create upload folder. The site admini
 $string['cannotcustomisefiltersblockuser'] = 'You cannot customise filters settings in user or block contexts.';
 $string['cannotdeletebackupids'] = 'Couldn\'t delete previous backup ids';
 $string['cannotdeletecategorycourse'] = 'Course \'{$a}\' failed to be deleted.';
-$string['cannotdeletecategoryquestions'] = 'Could not delete questions from category \'{$a}\'';
 $string['cannotdeletecourse'] = 'You do not have the permission to delete this course';
 $string['cannotdeletecustomfield'] = 'Error deleting custom field data';
 $string['cannotdeletedir'] = 'Cannot delete ({$a})';
@@ -96,7 +96,7 @@ $string['cannotfindinfo'] = 'Cannot find info for: "{$a}"';
 $string['cannotfindlang'] = 'Cannot find "{$a}" language pack!';
 $string['cannotfindteacher'] = 'Cannot find teacher';
 $string['cannotfinduser'] = 'Cannot find user named "{$a}"';
-$string['cannotgeoplugin'] = 'Cannot connect to the geoPlugin server at https://www.geoplugin.com. Please check your proxy settings or install the MaxMind GeoLite City data file.';
+$string['cannotgeoplugin'] = 'Cannot connect to the geoPlugin server at https://www.geoplugin.com. Please check your proxy settings or install the MaxMind GeoIP City data file.';
 $string['cannotgetblock'] = 'Could not retrieve blocks from the database';
 $string['cannotgetcats'] = 'Cannot get category record';
 $string['cannotgetdata'] = 'Cannot get data';
@@ -144,7 +144,6 @@ $string['cannotsavemd5file'] = 'Cannot save md5 file';
 $string['cannotsavezipfile'] = 'Cannot save ZIP file';
 $string['cannotservefile'] = 'Cannot serve file due to a server configuration problem.';
 $string['cannotsetparentforcatoritem'] = 'Cannot set parent for category or course item!';
-$string['cannotsetpassword'] = 'Could not set user password!';
 $string['cannotsetprefgrade'] = 'Could not set preference aggregationview to {$a} for this grade category';
 $string['cannotsettheme'] = 'Could not set the theme!';
 $string['cannotsetupblock'] = 'Blocks tables could NOT be set up successfully!';
@@ -262,7 +261,6 @@ $string['erroroutput'] = 'Error output, so disabling automatic redirect.';
 $string['errorparsingxml'] = 'Error parsing XML: {$a->errorstring} at line {$a->errorline}, char {$a->errorchar}';
 $string['errorreadingfile'] = 'Error reading file "{$a}"';
 $string['errorsavingrequest'] = 'An error occurred when trying to save your request.';
-$string['errorsettinguserpref'] = 'Error setting user preference';
 $string['errorunzippingfiles'] = 'Error unzipping files';
 $string['expiredkey'] = 'Expired key';
 $string['externalauthpassworderror'] = 'Non-empty password for external authentication';
@@ -279,6 +277,8 @@ $string['filternotenabled'] = 'Filter not enabled!';
 $string['filternotinstalled'] = 'Filter {$a} is not currently installed';
 $string['forumblockingtoomanyposts'] = 'You have exceeded the posting threshold set for this forum';
 $string['functionalityremoved'] = 'You are trying to access functionality that has been removed.';
+$string['gdfeaturenotsupported'] = 'The GD extension was not compiled with methods for {$a}';
+$string['gdmimetypenotsupported'] = 'MIME type not supported.';
 $string['generalexceptionmessage'] = 'Exception - {$a}';
 $string['gradepubdisable'] = 'Grade publishing disabled';
 $string['gradesneedregrading'] = 'The course grades need to be recalculated';
@@ -339,11 +339,14 @@ $string['invalidcoursenameshort'] = 'Invalid short course name';
 $string['invalidcountrycode'] = 'Invalid country code: {$a}';
 $string['invaliddata'] = 'Data submitted is invalid';
 $string['invaliddatarootpermissions'] = 'Invalid permissions detected when trying to create a directory. Turn debugging on for further details.';
+$string['invaliddatetimebetween'] = '{$a->after} must be before {$a->before}.';
+$string['invaliddatetimemode'] = 'Invalid mode for time modified filter: {$a}';
 $string['invaliddevicetype'] = 'Invalid device type';
 $string['invalidelementid'] = 'Incorrect element ID!';
 $string['invalidentry'] = 'This is not valid entry!';
 $string['invalidevent'] = 'Invalid event';
 $string['invalidfieldname'] = '"{$a}" is not a valid field name';
+$string['invalidfile'] = 'File not found';
 $string['invalidfiletype'] = '"{$a}" is not a valid file type';
 $string['invalidformatpara'] = 'Incorrect format for choose parameter';
 $string['invalidformdata'] = 'Incorrect form data';
@@ -391,6 +394,7 @@ $string['invalidxmlfile'] = '"{$a}" is not a valid XML file';
 $string['iplookupfailed'] = 'Cannot find geo information about this IP address {$a}';
 $string['iplookupprivate'] = 'Cannot display lookup of private IP address';
 $string['ipmismatch'] = 'Client IP address mismatch';
+$string['itemnotfound'] = 'No {$a->itemtype} was found with an identifier of \'{$a->identifier}\'';
 $string['listcantmovedown'] = 'Failed to move item down, as it is the last of its peers.';
 $string['listcantmoveleft'] = 'Failed to move item left, as it has no parent';
 $string['listcantmoveright'] = 'Failed to move item right, as there is no peer to make it a child of. Move it below another peer and then you can move it right.';
@@ -398,10 +402,10 @@ $string['listcantmoveup'] = 'Failed to move item up, as it is the first of its p
 $string['listnochildren'] = 'No children of item found';
 $string['listnoitem'] = 'Item not found';
 $string['listnopeers'] = 'No peers of item found';
-$string['listupdatefail'] = 'DB operation failed when editing list hierarchy';
+$string['listupdatefail'] = 'Database operation failed when editing list hierarchy.';
 $string['logfilenotavailable'] = 'Logs not available';
-$string['loginasnoenrol'] = 'You cannot use enrol or unenrol when in course "Login as" session';
-$string['loginasonecourse'] = 'You cannot enter this course.<br /> You have to terminate the "Login as" session before entering any other course.';
+$string['loginasnoenrol'] = 'You cannot use enrol or unenrol when using \'Log in as\'.';
+$string['loginasonecourse'] = 'You cannot enter this course. You must finish the \'Log in as\' session before entering any other course.';
 $string['maxbytesfile'] = 'The file {$a->file} is too large. The maximum size you can upload is {$a->size}.';
 $string['maxareabytes'] = 'The file is larger than the space remaining in this area.';
 $string['maxdraftitemids'] = 'Your file uploads are temporarily limited after you uploaded a high volume of files. Please wait then try again.';
@@ -439,7 +443,6 @@ $string['multiplerecordsfound'] = 'Multiple records found, only one record expec
 $string['multiplerestorenotallow'] = 'Multiple restore execution not allowed!';
 $string['mustbeloggedin'] = 'You must be logged in to do this';
 $string['mustbeteacher'] = 'You must be a teacher to look at this page';
-$string['myisamproblem'] = 'Database tables are using MyISAM database engine, it is recommended to use ACID compliant engine with full transaction support such as InnoDB.';
 $string['needcopy'] = 'You need to copy something first!';
 $string['needcoursecategroyid'] = 'Either course id or category must be specified';
 $string['needphpext'] = 'You need to add {$a} support to your PHP installation';
@@ -481,8 +484,8 @@ $string['nosite'] = 'Could not find a top-level course!';
 $string['nositeid'] = 'No site ID';
 $string['nostartdatenoenddate'] = 'A course end date can only be set if a start date is also set.';
 $string['nostatstodisplay'] = 'Sorry, there is no available data to display';
-$string['notallowedtoupdateprefremotely'] = 'You are not allowed to update this user preference remotely';
 $string['notavailable'] = 'That is not currently available';
+$string['notfound'] = 'Not found';
 $string['notlocalisederrormessage'] = '{$a}';
 $string['notmemberofgroup'] = 'You are not a member of this course group';
 $string['notownerofkey'] = 'You are not owner of this key';
@@ -522,7 +525,7 @@ $string['remotedownloadnotallowed'] = 'Download of components to your server isn
 $string['reportnotavailable'] = 'This type of report is only available for the site course';
 $string['requirecorrectaccess'] = 'Invalid url or port.';
 $string['requireloginerror'] = 'Course or activity not accessible.';
-$string['restorechecksumfailed'] = 'Some problem happened with the restore information stored in your session. Please check your PHP memory/DB package size limits. Restore stopped.';
+$string['restorechecksumfailed'] = 'There was a problem with the restore information stored in your session. Please check your PHP memory/database package size limits. Restore stopped.';
 $string['restore_path_element_missingmethod'] = 'Restore method {$a} is missing. It must be defined by a developer.';
 $string['restore_path_element_noobject'] = 'Restore object {$a} is not an object.';
 $string['restrictedcontextexception'] = 'Sorry, execution of external function violates context restriction.';
@@ -530,6 +533,7 @@ $string['restricteduser'] = 'Sorry, but your current account "{$a}" is restricte
 $string['reverseproxyabused'] = 'Reverse proxy enabled so the server cannot be accessed directly.<br />Please contact the server administrator.';
 $string['rpcerror'] = 'Ooops! Your MNET communication has failed! Here\'s that error message to pass on to your administrator: {$a}';
 $string['secretalreadyused'] = 'Change password confirmation link was already used, password was not changed';
+$string['sectioncantbefound'] = '<p><strong>This content can\'t be found.</strong></p><p>It may have been deleted, or the URL may be incorrect.</p>';
 $string['sectionnotexist'] = 'This section does not exist';
 $string['sendmessage'] = 'Send message';
 $string['sendmessagesent'] = 'Thanks for your feedback about:<br>{$a}';
@@ -548,6 +552,7 @@ $string['sessionipnomatch2'] = '<p>Sorry, but your IP number seems to have chang
 $string['sessioncannotobtainlock'] = '<p>Unable to obtain lock for session id {$a->id} within {$a->acquiretimeout}.</p>
 <p>It is likely that another page ({$a->whohaslock}) is still running in another browser tab, or it did not release the lock due to an error.</p>
 <p>You can wait until the session lock timeout ({$a->lockexpire}) or you can restart your browser session. If this error persists, please notify the server administrator.</p>';
+$string['sessionstarterror'] = 'Couldn\'t start session. Please try again later.';
 $string['shortnametaken'] = 'Short name is already used for another course ({$a})';
 $string['sitepolicynotagreed'] = 'Site policy not agreed: <a href="{$a}">Click here to open the site policy.</a>';
 $string['scheduledbackupsdisabled'] = 'Scheduled backups have been disabled by the server admin';
@@ -649,13 +654,11 @@ $string['alreadyloggedin'] = 'You are already logged in as {$a}, you need to log
 $string['youcannotdeletecategory'] = 'You cannot delete category \'{$a}\' because you can neither delete the contents, nor move them elsewhere.';
 $string['protected_cc_not_supported'] = 'Protected cartridges not supported.';
 
-// Deprecated since Moodle 4.1.
-$string['cannotswitcheditmodeon'] = 'Could not switch edit mode on';
+// Deprecated since Moodle 4.5.
+$string['cannotsetpassword'] = 'Could not set user password!';
+$string['myisamproblem'] = 'Database tables are using MyISAM database engine, it is recommended to use ACID compliant engine with full transaction support such as InnoDB.';
 
-// Deprecated since Moodle 4.3.
-$string['prefixtoolong'] = '<p>Error: database table prefix is too long ({$a->dbfamily})</p>
-<p>The site administrator must fix this problem. Maximum length for table prefixes in {$a->dbfamily} is {$a->maxlength} characters.</p>';
-
-// Deprecated since Moodle 4.4.
-$string['cannotmarktopic'] = 'Could not mark that section for this course';
-$string['unknownhelp'] = 'Unknown help section {$a}';
+// Deprecated since Moodle 5.0.
+$string['cannotdeletecategoryquestions'] = 'Could not delete questions from category \'{$a}\'';
+$string['errorsettinguserpref'] = 'Error setting user preference';
+$string['notallowedtoupdateprefremotely'] = 'You are not allowed to update this user preference remotely';

@@ -22,7 +22,6 @@
  * @package mod_data
  */
 
-use mod_data\local\importer\preset_existing_importer;
 use mod_data\manager;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,20 +29,11 @@ defined('MOODLE_INTERNAL') || die();
 class mod_data_renderer extends plugin_renderer_base {
 
     /**
-     * Rendering setting and mapping page to import a preset.
-     *
-     * @param stdClass $datamodule  Database module to import to.
-     * @param data_preset_importer $importer Importer instance to use for the importing.
-     * @return string
      * @deprecated since Moodle 4.1 MDL-75140 - please do not use this class any more.
-     * @todo MDL-75189 Final deprecation in Moodle 4.5.
      */
-    public function import_setting_mappings($datamodule, data_preset_importer $importer) {
-        debugging('import_setting_mappings is deprecated. Please use importing_preset instead', DEBUG_DEVELOPER);
-
-        $manager = \mod_data\manager::create_from_coursemodule($datamodule);
-        $fullname = $importer->get_directory();
-        return $this->importing_preset($datamodule, new preset_existing_importer($manager, $fullname));
+     #[\core\attribute\deprecated('mod_data_renderer::importing_preset()', since: '4.1', mdl: 'MDL-75140', final: true)]
+    public function import_setting_mappings(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
@@ -82,7 +72,7 @@ class mod_data_renderer extends plugin_renderer_base {
             foreach ($newfields as $nid => $newfield) {
                 $row = array();
                 $row[0] = html_writer::tag('label', $newfield->name, array('for'=>'id_'.$newfield->name));
-                $attrs = array('name' => 'field_' . $nid, 'id' => 'id_' . $newfield->name, 'class' => 'custom-select');
+                $attrs = ['name' => 'field_' . $nid, 'id' => 'id_' . $newfield->name, 'class' => 'form-select'];
                 $row[1] = html_writer::start_tag('select', $attrs);
 
                 $selected = false;
@@ -122,7 +112,7 @@ class mod_data_renderer extends plugin_renderer_base {
         }
 
         $html .= html_writer::start_tag('div', array('class'=>'overwritesettings'));
-        $attrs = ['type' => 'checkbox', 'name' => 'overwritesettings', 'id' => 'overwritesettings', 'class' => 'mr-2'];
+        $attrs = ['type' => 'checkbox', 'name' => 'overwritesettings', 'id' => 'overwritesettings', 'class' => 'me-2'];
         $html .= html_writer::empty_tag('input', $attrs);
         $html .= html_writer::tag('label', get_string('overwritesettings', 'data'), ['for' => 'overwritesettings']);
         $html .= html_writer::end_tag('div');
@@ -167,8 +157,13 @@ class mod_data_renderer extends plugin_renderer_base {
      *
      * @param manager $manager the instance manager
      * @return string The HTML output
+     *
+     * @deprecated since Moodle 4.5 - please do not use this function anymore
      */
+    #[\core\attribute\deprecated(null, reason: 'It is no longer used', since: '4.5')]
     public function render_fields_footer(manager $manager): string {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
+
         $cm = $manager->get_coursemodule();
         $pageurl = new moodle_url('/mod/data/templates.php', ['id' => $cm->id]);
         return $this->render_from_template('mod_data/fields_footer', [

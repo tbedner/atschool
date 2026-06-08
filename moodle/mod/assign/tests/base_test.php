@@ -83,6 +83,7 @@ final class base_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         global $DB;
+        parent::setUp();
 
         $this->resetAfterTest(true);
 
@@ -133,7 +134,7 @@ final class base_test extends \advanced_testcase {
     }
 
     /*
-     * For tests that make sense to use alot of data, create extra students/teachers.
+     * For tests that make sense to use a lot of data, create extra students/teachers.
      */
     protected function create_extra_users() {
         global $DB;

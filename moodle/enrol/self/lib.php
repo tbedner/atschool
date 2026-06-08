@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\single_button;
+use core_enrol\output\enrol_page;
+
 /**
  * Self enrolment plugin implementation.
  * @author Petr Skoda
@@ -134,11 +137,36 @@ class enrol_self_plugin extends enrol_plugin {
     }
 
     /**
+     * Returns edit icons for the page with list of instances.
+     *
+     * @param stdClass $instance
+     * @return array
+     */
+    public function get_action_icons(stdClass $instance): array {
+        global $OUTPUT;
+
+        $context = context_course::instance($instance->courseid);
+
+        $icons = [];
+        if (has_any_capability(['enrol/self:config', 'moodle/course:editcoursewelcomemessage'], $context)) {
+            $linkparams = [
+                'courseid' => $instance->courseid,
+                'id' => $instance->id,
+                'type' => $instance->enrol,
+            ];
+            $editlink = new moodle_url('/enrol/editinstance.php', $linkparams);
+            $icon = new pix_icon('t/edit', get_string('edit'), 'core', ['class' => 'iconsmall']);
+            $icons[] = $OUTPUT->action_icon($editlink, $icon);
+        }
+
+        return $icons;
+    }
+
+    /**
      * Self enrol user to course
      *
      * @param stdClass $instance enrolment instance
      * @param stdClass $data data needed for enrolment.
-     * @return bool|array true if enroled else eddor code and messege
      */
     public function enrol_self(stdClass $instance, $data = null) {
         global $DB, $USER, $CFG;
@@ -176,46 +204,61 @@ class enrol_self_plugin extends enrol_plugin {
         }
     }
 
-    /**
-     * Creates course enrol form, checks if form submitted
-     * and enrols user if necessary. It can also redirect.
-     *
-     * @param stdClass $instance
-     * @return string html text, usually a form in a text box
-     */
+    #[\Override]
     public function enrol_page_hook(stdClass $instance) {
-        global $CFG, $OUTPUT, $USER;
+        global $CFG, $OUTPUT, $USER, $PAGE;
 
-        require_once("$CFG->dirroot/enrol/self/locallib.php");
+        $buttonurl = null;
+        $buttontext = '';
+        $buttonattrs = [];
+        $body = '';
+        $title = $this->get_instance_name($instance);
 
         $enrolstatus = $this->can_self_enrol($instance);
-
-        if (true === $enrolstatus) {
-            // This user can self enrol using this instance.
-            $form = new enrol_self_enrol_form(null, $instance);
-            $instanceid = optional_param('instance', 0, PARAM_INT);
-            if ($instance->id == $instanceid) {
-                if ($data = $form->get_data()) {
-                    $this->enrol_self($instance, $data);
+        if ($enrolstatus === true) {
+            if ($instance->password) {
+                // Self-enrolment with password. Display a button to open a form in a modal.
+                $body = get_string('enrolkeyrequired', 'enrol_self');
+                $buttonurl = $PAGE->url;
+                $buttonattrs = [
+                    'data-id' => $instance->courseid,
+                    'data-instance' => $instance->id,
+                    'data-form' => enrol_self\form\enrol_form::class,
+                    'data-title' => $title,
+                ];
+                $PAGE->requires->js_call_amd('enrol_self/enrol_page', 'initEnrol', [$instance->id]);
+            } else {
+                // Self-enrolment without password. Display a button to self enrol. If button is pressed - enrol the user.
+                if (optional_param('action', null, PARAM_TEXT) === 'enrol' && confirm_sesskey()) {
+                    $this->enrol_self($instance, (object)[]);
+                    return '';
                 }
+                $body = get_string('nopassword', 'enrol_self');
+                $buttonurl = new moodle_url($PAGE->url, ['action' => 'enrol', 'sesskey' => sesskey()]);
             }
+            $buttontext = get_string('enrolme', 'enrol_self');
+        } else if (isguestuser()) {
+            // User is not logged in. Display a button to login.
+            $buttonurl = new moodle_url(get_login_url());
+            $body = get_string('noguestaccess', 'enrol');
+            $buttontext = get_string('continue');
+        } else if (!$enrolstatus) {
+            // No reason why user can not use this method, do not display anything.
+            return '';
         } else {
-            // This user can not self enrol using this instance. Using an empty form to keep
-            // the UI consistent with other enrolment plugins that returns a form.
-            $data = new stdClass();
-            $data->header = $this->get_instance_name($instance);
-            $data->info = $enrolstatus;
-
-            // The can_self_enrol call returns a button to the login page if the user is a
-            // guest, setting the login url to the form if that is the case.
-            $url = isguestuser() ? get_login_url() : null;
-            $form = new enrol_self_empty_form($url, $data);
+            $body = $enrolstatus;
         }
 
-        ob_start();
-        $form->display();
-        $output = ob_get_clean();
-        return $OUTPUT->box($output);
+        $notification = new \core\output\notification($body, 'info', false);
+        $notification->set_extra_classes(['mb-0']);
+        $enrolpage = new enrol_page(
+            instance: $instance,
+            header: $title,
+            body: $OUTPUT->render($notification),
+            buttons: $buttonurl ?
+                [new single_button($buttonurl, $buttontext, 'get', single_button::BUTTON_PRIMARY, $buttonattrs)] :
+                []);
+        return $OUTPUT->render($enrolpage);
     }
 
     /**
@@ -259,7 +302,7 @@ class enrol_self_plugin extends enrol_plugin {
      * This function doesn't check user capabilities. Use can_self_enrol to check capabilities.
      *
      * @param stdClass $instance enrolment instance
-     * @return bool - true means "Enrol me in this course" link could be available
+     * @return bool|string - true means "Enrol me in this course" link could be available
      */
     public function is_self_enrol_available(stdClass $instance) {
         global $CFG, $DB, $USER;
@@ -394,7 +437,7 @@ class enrol_self_plugin extends enrol_plugin {
      */
     #[\core\attribute\deprecated('enrol_plugin::send_course_welcome_message_to_user', since: '4.4', mdl: 'MDL-4188')]
     protected function email_welcome_message($instance, $user) {
-        \core\deprecation::emit_deprecation_if_present(__FUNCTION__);
+        \core\deprecation::emit_deprecation(__FUNCTION__);
         $this->send_course_welcome_message_to_user(
             instance: $instance,
             userid: $user->id,
@@ -828,139 +871,149 @@ class enrol_self_plugin extends enrol_plugin {
     public function edit_instance_form($instance, MoodleQuickForm $mform, $context) {
         global $CFG, $DB;
 
-        // Merge these two settings to one value for the single selection element.
-        if ($instance->notifyall and $instance->expirynotify) {
-            $instance->expirynotify = 2;
-        }
-        unset($instance->notifyall);
+        // Main fields.
+        if (has_capability('enrol/self:config', $context)) {
+            // Merge these two settings to one value for the single selection element.
+            if ($instance->notifyall && $instance->expirynotify) {
+                $instance->expirynotify = 2;
+            }
+            unset($instance->notifyall);
 
-        $nameattribs = array('size' => '20', 'maxlength' => '255');
-        $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'), $nameattribs);
-        $mform->setType('name', PARAM_TEXT);
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
+            $nameattribs = ['size' => '20', 'maxlength' => '255'];
+            $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'), $nameattribs);
+            $mform->setType('name', PARAM_TEXT);
+            $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
-        $options = $this->get_status_options();
-        $mform->addElement('select', 'status', get_string('status', 'enrol_self'), $options);
-        $mform->addHelpButton('status', 'status', 'enrol_self');
+            $options = $this->get_status_options();
+            $mform->addElement('select', 'status', get_string('status', 'enrol_self'), $options);
+            $mform->addHelpButton('status', 'status', 'enrol_self');
 
-        $options = $this->get_newenrols_options();
-        $mform->addElement('select', 'customint6', get_string('newenrols', 'enrol_self'), $options);
-        $mform->addHelpButton('customint6', 'newenrols', 'enrol_self');
-        $mform->disabledIf('customint6', 'status', 'eq', ENROL_INSTANCE_DISABLED);
+            $options = $this->get_newenrols_options();
+            $mform->addElement('select', 'customint6', get_string('newenrols', 'enrol_self'), $options);
+            $mform->addHelpButton('customint6', 'newenrols', 'enrol_self');
+            $mform->disabledIf('customint6', 'status', 'eq', ENROL_INSTANCE_DISABLED);
 
-        $passattribs = array('size' => '20', 'maxlength' => '50');
-        $mform->addElement('passwordunmask', 'password', get_string('password', 'enrol_self'), $passattribs);
-        $mform->addHelpButton('password', 'password', 'enrol_self');
-        if (empty($instance->id) and $this->get_config('requirepassword')) {
-            $mform->addRule('password', get_string('required'), 'required', null, 'client');
-        }
-        $mform->addRule('password', get_string('maximumchars', '', 50), 'maxlength', 50, 'server');
+            $passattribs = ['size' => '20', 'maxlength' => '50'];
+            $mform->addElement('passwordunmask', 'password', get_string('password', 'enrol_self'), $passattribs);
+            $mform->addHelpButton('password', 'password', 'enrol_self');
+            if (empty($instance->id) && $this->get_config('requirepassword')) {
+                $mform->addRule('password', get_string('required'), 'required', null, 'client');
+            }
+            $mform->addRule('password', get_string('maximumchars', '', 50), 'maxlength', 50, 'server');
 
-        $options = $this->get_groupkey_options();
-        $mform->addElement('select', 'customint1', get_string('groupkey', 'enrol_self'), $options);
-        $mform->addHelpButton('customint1', 'groupkey', 'enrol_self');
+            $options = $this->get_groupkey_options();
+            $mform->addElement('select', 'customint1', get_string('groupkey', 'enrol_self'), $options);
+            $mform->addHelpButton('customint1', 'groupkey', 'enrol_self');
 
-        $roles = $this->extend_assignable_roles($context, $instance->roleid);
-        $mform->addElement('select', 'roleid', get_string('role', 'enrol_self'), $roles);
+            $roles = $this->extend_assignable_roles($context, $instance->roleid);
+            $mform->addElement('select', 'roleid', get_string('role', 'enrol_self'), $roles);
 
-        $options = array('optional' => true, 'defaultunit' => 86400);
-        $mform->addElement('duration', 'enrolperiod', get_string('enrolperiod', 'enrol_self'), $options);
-        $mform->addHelpButton('enrolperiod', 'enrolperiod', 'enrol_self');
+            $options = ['optional' => true, 'defaultunit' => 86400];
+            $mform->addElement('duration', 'enrolperiod', get_string('enrolperiod', 'enrol_self'), $options);
+            $mform->addHelpButton('enrolperiod', 'enrolperiod', 'enrol_self');
 
-        $options = $this->get_expirynotify_options();
-        $mform->addElement('select', 'expirynotify', get_string('expirynotify', 'core_enrol'), $options);
-        $mform->addHelpButton('expirynotify', 'expirynotify', 'core_enrol');
+            $options = $this->get_expirynotify_options();
+            $mform->addElement('select', 'expirynotify', get_string('expirynotify', 'core_enrol'), $options);
+            $mform->addHelpButton('expirynotify', 'expirynotify', 'core_enrol');
 
-        $options = array('optional' => false, 'defaultunit' => 86400);
-        $mform->addElement('duration', 'expirythreshold', get_string('expirythreshold', 'core_enrol'), $options);
-        $mform->addHelpButton('expirythreshold', 'expirythreshold', 'core_enrol');
-        $mform->disabledIf('expirythreshold', 'expirynotify', 'eq', 0);
+            $options = ['optional' => false, 'defaultunit' => 86400];
+            $mform->addElement('duration', 'expirythreshold', get_string('expirythreshold', 'core_enrol'), $options);
+            $mform->addHelpButton('expirythreshold', 'expirythreshold', 'core_enrol');
+            $mform->disabledIf('expirythreshold', 'expirynotify', 'eq', 0);
 
-        $options = array('optional' => true);
-        $mform->addElement('date_time_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_self'), $options);
-        $mform->setDefault('enrolstartdate', 0);
-        $mform->addHelpButton('enrolstartdate', 'enrolstartdate', 'enrol_self');
+            $options = ['optional' => true];
+            $mform->addElement('date_time_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_self'), $options);
+            $mform->setDefault('enrolstartdate', 0);
+            $mform->addHelpButton('enrolstartdate', 'enrolstartdate', 'enrol_self');
 
-        $options = array('optional' => true);
-        $mform->addElement('date_time_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_self'), $options);
-        $mform->setDefault('enrolenddate', 0);
-        $mform->addHelpButton('enrolenddate', 'enrolenddate', 'enrol_self');
+            $options = ['optional' => true];
+            $mform->addElement('date_time_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_self'), $options);
+            $mform->setDefault('enrolenddate', 0);
+            $mform->addHelpButton('enrolenddate', 'enrolenddate', 'enrol_self');
 
-        $options = $this->get_longtimenosee_options();
-        $mform->addElement('select', 'customint2', get_string('longtimenosee', 'enrol_self'), $options);
-        $mform->addHelpButton('customint2', 'longtimenosee', 'enrol_self');
+            $options = $this->get_longtimenosee_options();
+            $mform->addElement('select', 'customint2', get_string('longtimenosee', 'enrol_self'), $options);
+            $mform->addHelpButton('customint2', 'longtimenosee', 'enrol_self');
 
-        $mform->addElement('text', 'customint3', get_string('maxenrolled', 'enrol_self'));
-        $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_self');
-        $mform->setType('customint3', PARAM_INT);
+            $mform->addElement('text', 'customint3', get_string('maxenrolled', 'enrol_self'));
+            $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_self');
+            $mform->setType('customint3', PARAM_INT);
 
-        require_once($CFG->dirroot.'/cohort/lib.php');
+            require_once($CFG->dirroot.'/cohort/lib.php');
 
-        $cohorts = array(0 => get_string('no'));
-        $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
-        if ($instance->customint5 && !isset($allcohorts[$instance->customint5])) {
-            $c = $DB->get_record('cohort',
-                                 array('id' => $instance->customint5),
-                                 'id, name, idnumber, contextid, visible',
-                                 IGNORE_MISSING);
-            if ($c) {
-                // Current cohort was not found because current user can not see it. Still keep it.
-                $allcohorts[$instance->customint5] = $c;
+            $cohorts = [0 => get_string('no')];
+            $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
+            if ($instance->customint5 && !isset($allcohorts[$instance->customint5])) {
+                $c = $DB->get_record('cohort',
+                                    ['id' => $instance->customint5],
+                                    'id, name, idnumber, contextid, visible',
+                                    IGNORE_MISSING);
+                if ($c) {
+                    // Current cohort was not found because current user can not see it. Still keep it.
+                    $allcohorts[$instance->customint5] = $c;
+                }
+            }
+            foreach ($allcohorts as $c) {
+                $cohorts[$c->id] = format_string($c->name, true, ['context' => context::instance_by_id($c->contextid)]);
+                if ($c->idnumber) {
+                    $cohorts[$c->id] .= ' ['.s($c->idnumber).']';
+                }
+            }
+            if ($instance->customint5 && !isset($allcohorts[$instance->customint5])) {
+                // Somebody deleted a cohort, better keep the wrong value so that random ppl can not enrol.
+                $cohorts[$instance->customint5] = get_string('unknowncohort', 'cohort', $instance->customint5);
+            }
+            if (count($cohorts) > 1) {
+                $mform->addElement('select', 'customint5', get_string('cohortonly', 'enrol_self'), $cohorts);
+                $mform->addHelpButton('customint5', 'cohortonly', 'enrol_self');
+            } else {
+                $mform->addElement('hidden', 'customint5');
+                $mform->setType('customint5', PARAM_INT);
+                $mform->setConstant('customint5', 0);
             }
         }
-        foreach ($allcohorts as $c) {
-            $cohorts[$c->id] = format_string($c->name, true, array('context' => context::instance_by_id($c->contextid)));
-            if ($c->idnumber) {
-                $cohorts[$c->id] .= ' ['.s($c->idnumber).']';
-            }
+
+        // Course welcome message.
+        if (has_any_capability(['enrol/self:config', 'moodle/course:editcoursewelcomemessage'], $context)) {
+            $mform->addElement('select', 'customint4', get_string('sendcoursewelcomemessage', 'enrol_self'),
+                    enrol_send_welcome_email_options());
+            $mform->addHelpButton('customint4', 'sendcoursewelcomemessage', 'enrol_self');
+
+            $options = [
+                'cols' => '60',
+                'rows' => '8',
+            ];
+            $mform->addElement('textarea', 'customtext1', get_string('customwelcomemessage', 'core_enrol'), $options);
+            $mform->setDefault('customtext1', get_string('customwelcomemessageplaceholder', 'core_enrol'));
+            $mform->hideIf(
+                elementname: 'customtext1',
+                dependenton: 'customint4',
+                condition: 'eq',
+                value: ENROL_DO_NOT_SEND_EMAIL,
+            );
+
+            // Static form elements cannot be hidden by hideIf() so we need to add a dummy group.
+            // See: https://tracker.moodle.org/browse/MDL-66251.
+            $group[] = $mform->createElement(
+                'static',
+                'customwelcomemessage_extra_help',
+                null,
+                get_string(
+                    identifier: 'customwelcomemessage_help',
+                    component: 'core_enrol',
+                ),
+            );
+            $mform->addGroup($group, 'group_customwelcomemessage_extra_help', '', ' ', false);
+            $mform->hideIf(
+                elementname: 'group_customwelcomemessage_extra_help',
+                dependenton: 'customint4',
+                condition: 'eq',
+                value: ENROL_DO_NOT_SEND_EMAIL,
+            );
         }
-        if ($instance->customint5 && !isset($allcohorts[$instance->customint5])) {
-            // Somebody deleted a cohort, better keep the wrong value so that random ppl can not enrol.
-            $cohorts[$instance->customint5] = get_string('unknowncohort', 'cohort', $instance->customint5);
-        }
-        if (count($cohorts) > 1) {
-            $mform->addElement('select', 'customint5', get_string('cohortonly', 'enrol_self'), $cohorts);
-            $mform->addHelpButton('customint5', 'cohortonly', 'enrol_self');
-        } else {
-            $mform->addElement('hidden', 'customint5');
-            $mform->setType('customint5', PARAM_INT);
-            $mform->setConstant('customint5', 0);
-        }
 
-        $mform->addElement('select', 'customint4', get_string('sendcoursewelcomemessage', 'enrol_self'),
-                enrol_send_welcome_email_options());
-        $mform->addHelpButton('customint4', 'sendcoursewelcomemessage', 'enrol_self');
-
-        $options = array('cols' => '60', 'rows' => '8');
-        $mform->addElement('textarea', 'customtext1', get_string('customwelcomemessage', 'core_enrol'), $options);
-        $mform->setDefault('customtext1', get_string('customwelcomemessageplaceholder', 'core_enrol'));
-        $mform->hideIf(
-            elementname: 'customtext1',
-            dependenton: 'customint4',
-            condition: 'eq',
-            value: ENROL_DO_NOT_SEND_EMAIL,
-        );
-
-        // Static form elements cannot be hidden by hideIf() so we need to add a dummy group.
-        // See: https://tracker.moodle.org/browse/MDL-66251.
-        $group[] = $mform->createElement(
-            'static',
-            'customwelcomemessage_extra_help',
-            null,
-            get_string(
-                identifier: 'customwelcomemessage_help',
-                component: 'core_enrol',
-            ),
-        );
-        $mform->addGroup($group, 'group_customwelcomemessage_extra_help', '', ' ', false);
-        $mform->hideIf(
-            elementname: 'group_customwelcomemessage_extra_help',
-            dependenton: 'customint4',
-            condition: 'eq',
-            value: ENROL_DO_NOT_SEND_EMAIL,
-        );
-
-        if (enrol_accessing_via_instance($instance)) {
+        // Enrolment changes warning.
+        if (has_capability('enrol/self:config', $context) && enrol_accessing_via_instance($instance)) {
             $warntext = get_string('instanceeditselfwarningtext', 'core_enrol');
             $mform->addElement('static', 'selfwarn', get_string('instanceeditselfwarning', 'core_enrol'), $warntext);
         }
@@ -1086,7 +1139,7 @@ class enrol_self_plugin extends enrol_plugin {
      * @param array $fields instance fields
      * @return int id of new instance, null if can not be created
      */
-    public function add_instance($course, array $fields = null) {
+    public function add_instance($course, ?array $fields = null) {
         // In the form we are representing 2 db columns with one field.
         if (!empty($fields) && !empty($fields['expirynotify'])) {
             if ($fields['expirynotify'] == 2) {
@@ -1146,22 +1199,11 @@ class enrol_self_plugin extends enrol_plugin {
     }
 
     /**
-     * Get the "from" contact which the email will be sent from.
-     *
-     * @param int $sendoption send email from constant ENROL_SEND_EMAIL_FROM_*
-     * @param $context context where the user will be fetched
-     * @return mixed|stdClass the contact user object.
      * @deprecated since Moodle 4.4
-     * @see \enrol_plugin::get_welcome_message_contact()
-     * @todo MDL-81185 Final deprecation in Moodle 4.8.
      */
-    #[\core\attribute\deprecated('enrol_plugin::get_welcome_message_contact', since: '4.4', mdl: 'MDL-4188')]
-    public function get_welcome_email_contact($sendoption, $context) {
-        \core\deprecation::emit_deprecation_if_present(__FUNCTION__);
-        return $this->get_welcome_message_contact(
-            sendoption: $sendoption,
-            context: $context,
-        );
+    #[\core\attribute\deprecated('enrol_plugin::get_welcome_message_contact', since: '4.4', mdl: 'MDL-4188', final: true)]
+    public function get_welcome_email_contact() {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
@@ -1265,6 +1307,6 @@ class enrol_self_plugin extends enrol_plugin {
 function enrol_self_get_fontawesome_icon_map() {
     return [
         'enrol_self:withkey' => 'fa-key',
-        'enrol_self:withoutkey' => 'fa-sign-in',
+        'enrol_self:withoutkey' => 'fa-solid fa-right-to-bracket',
     ];
 }

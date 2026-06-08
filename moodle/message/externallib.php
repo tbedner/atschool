@@ -195,7 +195,7 @@ class core_message_external extends external_api {
             // We are going to do some checking.
             // Code should match /messages/index.php checks.
             $success = true;
-
+            $cantsendtouser = '';
             // Check the user exists.
             if (empty($tousers[$message['touserid']])) {
                 $success = false;
@@ -212,7 +212,14 @@ class core_message_external extends external_api {
             // Check if the recipient can be messaged by the sender.
             if ($success && !\core_message\api::can_send_message($tousers[$message['touserid']]->id, $USER->id)) {
                 $success = false;
-                $errormessage = get_string('usercantbemessaged', 'message');
+                $fullname = fullname(\core_user::get_user($message['touserid']));
+                $errormessage = get_string(
+                    'usercantbemessaged',
+                    'message',
+                    $fullname
+                );
+                // Keep track of the user the message could not be sent to.
+                $cantsendtouser = $fullname;
             }
 
             // Now we can send the message (at least try).
@@ -239,6 +246,7 @@ class core_message_external extends external_api {
                     $errormessage = get_string('messageundeliveredbynotificationsettings', 'error');
                 }
                 $resultmsg['errormessage'] = $errormessage;
+                $resultmsg['cantsendtouser'] = $cantsendtouser;
             }
 
             $resultmessages[] = $resultmsg;
@@ -252,6 +260,9 @@ class core_message_external extends external_api {
                 '',
                 'id, conversationid, smallmessage, fullmessageformat, fullmessagetrust');
             $resultmessages = array_map(function($resultmessage) use ($messagerecords, $USER) {
+                if (!empty($resultmessage['errormessage'])) {
+                    return $resultmessage;
+                }
                 $id = $resultmessage['msgid'];
                 $resultmessage['conversationid'] = isset($messagerecords[$id]) ? $messagerecords[$id]->conversationid : null;
                 $resultmessage['useridfrom'] = $USER->id;
@@ -284,6 +295,7 @@ class core_message_external extends external_api {
                     'timecreated' => new external_value(PARAM_INT, 'The timecreated timestamp for the message', VALUE_OPTIONAL),
                     'conversationid' => new external_value(PARAM_INT, 'The conversation id for this message', VALUE_OPTIONAL),
                     'useridfrom' => new external_value(PARAM_INT, 'The user id who sent the message', VALUE_OPTIONAL),
+                    'cantsendtouser' => new external_value(PARAM_TEXT, 'The user that could not be sent to', VALUE_OPTIONAL),
                     'candeletemessagesforallusers' => new external_value(PARAM_BOOL,
                         'If the user can delete messages in the conversation for all users', VALUE_DEFAULT, false),
                 )
@@ -1069,6 +1081,7 @@ class core_message_external extends external_api {
                 'If the user can still message even if they get blocked'),
             'canmessage' => new external_value(PARAM_BOOL, 'If the user can be messaged'),
             'requirescontact' => new external_value(PARAM_BOOL, 'If the user requires to be contacts'),
+            'cancreatecontact' => new external_value(PARAM_BOOL, 'Is the user permitted to add a contact'),
         ];
 
         $result['contactrequests'] = new external_multiple_structure(
@@ -1333,7 +1346,7 @@ class core_message_external extends external_api {
      * @throws \moodle_exception if the messaging feature is disabled on the site.
      * @since 3.2
      */
-    public static function get_conversations($userid, $limitfrom = 0, $limitnum = 0, int $type = null, bool $favourites = null,
+    public static function get_conversations($userid, $limitfrom = 0, $limitnum = 0, ?int $type = null, ?bool $favourites = null,
             bool $mergeself = false) {
         global $CFG, $USER;
 
@@ -3028,7 +3041,6 @@ class core_message_external extends external_api {
      *
      * @return external_single_structure the structure
      * @since  Moodle 3.2
-     * @todo Remove loggedin and loggedoff from processors structure on MDL-73284.
      */
     protected static function get_preferences_structure() {
         return new external_single_structure(
@@ -3065,24 +3077,6 @@ class core_message_external extends external_api {
                                                     'lockedmessage' => new external_value(PARAM_TEXT,
                                                         'Text to display if locked', VALUE_OPTIONAL),
                                                     'userconfigured' => new external_value(PARAM_INT, 'Is configured?'),
-                                                    'loggedin' => new external_single_structure(
-                                                        array(
-                                                            'name' => new external_value(PARAM_NOTAGS, 'Name'),
-                                                            'displayname' => new external_value(PARAM_TEXT, 'Display name'),
-                                                            'checked' => new external_value(PARAM_BOOL, 'Is checked?'),
-                                                        ),
-                                                        'DEPRECATED ATTRIBUTE -
-                                                        Kept for backward compatibility, use enabled instead.',
-                                                    ),
-                                                    'loggedoff' => new external_single_structure(
-                                                        array(
-                                                            'name' => new external_value(PARAM_NOTAGS, 'Name'),
-                                                            'displayname' => new external_value(PARAM_TEXT, 'Display name'),
-                                                            'checked' => new external_value(PARAM_BOOL, 'Is checked?'),
-                                                        ),
-                                                        'DEPRECATED ATTRIBUTE -
-                                                        Kept for backward compatibility, use enabled instead.',
-                                                    ),
                                                     'enabled' => new external_value(PARAM_BOOL, 'Is enabled?'),
                                                 )
                                             ),

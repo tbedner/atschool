@@ -65,7 +65,7 @@ class edittour extends \moodleform {
         $mform->setType('id', PARAM_INT);
 
         // Name of the tour.
-        $mform->addElement('text', 'name', get_string('name', 'tool_usertours'));
+        $mform->addElement('text', 'name', get_string('name', 'tool_usertours'), ['size' => '80']);
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
         $mform->setType('name', PARAM_TEXT);
         $mform->addHelpButton('name', 'name', 'tool_usertours');
@@ -76,13 +76,13 @@ class edittour extends \moodleform {
         $mform->addHelpButton('description', 'description', 'tool_usertours');
 
         // Application.
-        $mform->addElement('text', 'pathmatch', get_string('pathmatch', 'tool_usertours'));
+        $mform->addElement('text', 'pathmatch', get_string('pathmatch', 'tool_usertours'), ['size' => '80']);
         $mform->setType('pathmatch', PARAM_RAW);
         $mform->addHelpButton('pathmatch', 'pathmatch', 'tool_usertours');
 
         $mform->addElement('checkbox', 'enabled', get_string('tourisenabled', 'tool_usertours'));
 
-        $mform->addElement('text', 'endtourlabel', get_string('endtourlabel', 'tool_usertours'));
+        $mform->addElement('text', 'endtourlabel', get_string('endtourlabel', 'tool_usertours'), ['size' => '80']);
         $mform->setType('endtourlabel', PARAM_TEXT);
         $mform->addHelpButton('endtourlabel', 'endtourlabel', 'tool_usertours');
 
@@ -112,5 +112,17 @@ class edittour extends \moodleform {
         }
 
         $this->add_action_buttons();
+    }
+
+    #[\Override]
+    public function validation($data, $files): array {
+        $errors = parent::validation($data, $files);
+
+        // Loop through each filter class and merge any validation errors.
+        foreach (helper::get_all_filters() as $filterclass) {
+            $errors = array_merge($errors, $filterclass::validate_form($data, $files));
+        }
+
+        return $errors;
     }
 }

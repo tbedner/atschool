@@ -163,7 +163,7 @@ class helper {
      *
      * @return int The representation of display options as int
      */
-    public static function decode_display_options(core $core, int $displayint = null): \stdClass {
+    public static function decode_display_options(core $core, ?int $displayint = null): \stdClass {
         $config = new \stdClass();
         if ($displayint === null) {
             $displayint = self::get_display_options($core, $config);
@@ -232,7 +232,7 @@ class helper {
      * @return \stored_file The file created
      */
     public static function create_fake_stored_file_from_path(string $filepath, int $userid = 0,
-            \context $context = null): \stored_file {
+            ?\context $context = null): \stored_file {
         if (is_null($context)) {
             $context = context_system::instance();
         }
@@ -261,11 +261,6 @@ class helper {
         $tools = array();
 
         // Getting information from available H5P tools one by one because their enabled/disabled options are totally different.
-        // Check the atto button status.
-        $link = \editor_atto\plugininfo\atto::get_manage_url();
-        $status = strpos(get_config('editor_atto', 'toolbar'), 'h5p') > -1;
-        $tools[] = self::convert_info_into_array('atto_h5p', $link, $status);
-
         // Check the Display H5P filter status.
         $link = \core\plugininfo\filter::get_manage_url();
         $status = filter_get_active_state('displayh5p', context_system::instance()->id);
@@ -476,7 +471,7 @@ class helper {
      * @param  factory $factory The \core_h5p\factory object
      * @return array|null The information export file otherwise null.
      */
-    public static function get_export_info(string $exportfilename, \moodle_url $url = null, ?factory $factory = null): ?array {
+    public static function get_export_info(string $exportfilename, ?\moodle_url $url = null, ?factory $factory = null): ?array {
 
         if (!$factory) {
             $factory = new factory();

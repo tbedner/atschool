@@ -1,5 +1,14 @@
 {
     "standard": {
+        "aiplacement": [
+            "courseassist",
+            "editor"
+        ],
+        "aiprovider": [
+            "azureai",
+            "ollama",
+            "openai"
+        ],
         "antivirus": [
             "clamav"
         ],
@@ -14,48 +23,12 @@
             "file",
             "onlinetext"
         ],
-        "atto": [
-            "accessibilitychecker",
-            "accessibilityhelper",
-            "align",
-            "backcolor",
-            "bold",
-            "charmap",
-            "clear",
-            "collapse",
-            "emojipicker",
-            "emoticon",
-            "equation",
-            "fontcolor",
-            "h5p",
-            "html",
-            "image",
-            "indent",
-            "italic",
-            "link",
-            "managefiles",
-            "media",
-            "noautolink",
-            "orderedlist",
-            "recordrtc",
-            "rtl",
-            "strike",
-            "subscript",
-            "superscript",
-            "table",
-            "title",
-            "underline",
-            "undo",
-            "unorderedlist"
-        ],
         "auth": [
-            "cas",
             "db",
             "email",
             "ldap",
             "lti",
             "manual",
-            "mnet",
             "nologin",
             "none",
             "oauth2",
@@ -92,7 +65,6 @@
             "login",
             "lp",
             "mentees",
-            "mnet_hosts",
             "myoverview",
             "myprofile",
             "navigation",
@@ -144,6 +116,7 @@
         "customfield": [
             "checkbox",
             "date",
+            "number",
             "select",
             "text",
             "textarea"
@@ -177,7 +150,6 @@
             "resources"
         ],
         "editor": [
-            "atto",
             "textarea",
             "tiny"
         ],
@@ -193,7 +165,6 @@
             "lti",
             "manual",
             "meta",
-            "mnet",
             "paypal",
             "self"
         ],
@@ -229,7 +200,6 @@
             "mediaplugin",
             "multilang",
             "tex",
-            "tidy",
             "urltolink"
         ],
         "format": [
@@ -252,6 +222,9 @@
             "direct",
             "xml"
         ],
+        "gradepenalty": [
+            "duedate"
+        ],
         "gradereport": [
             "grader",
             "history",
@@ -266,7 +239,7 @@
             "rubric"
         ],
         "h5plib": [
-            "v127"
+            "v128"
         ],
         "local": [],
         "logstore": [
@@ -291,20 +264,18 @@
         "message": [
             "airnotifier",
             "email",
-            "popup"
+            "popup",
+            "sms"
         ],
         "mlbackend": [
             "php",
             "python"
         ],
-        "mnetservice": [
-            "enrol"
-        ],
+        "mnetservice": [],
         "mod": [
             "assign",
             "bigbluebuttonbn",
             "book",
-            "chat",
             "choice",
             "data",
             "feedback",
@@ -317,10 +288,11 @@
             "lesson",
             "lti",
             "page",
+            "qbank",
             "quiz",
             "resource",
             "scorm",
-            "survey",
+            "subsection",
             "url",
             "wiki",
             "workshop"
@@ -332,8 +304,7 @@
         "portfolio": [
             "download",
             "flickr",
-            "googledocs",
-            "mahara"
+            "googledocs"
         ],
         "profilefield": [
             "checkbox",
@@ -479,12 +450,17 @@
             "simpledb",
             "solr"
         ],
+        "smsgateway": [
+            "aws",
+            "modica"
+        ],
         "theme": [
             "boost",
             "classic"
         ],
         "tiny": [
             "accessibilitychecker",
+            "aiplacement",
             "autosave",
             "equation",
             "h5p",
@@ -510,7 +486,6 @@
             "filetypes",
             "generator",
             "httpsreplace",
-            "innodb",
             "installaddon",
             "langimport",
             "licensemanager",
@@ -565,9 +540,45 @@
             "upload",
             "uploadsingle"
         ],
+        "atto": [
+            "accessibilitychecker",
+            "accessibilityhelper",
+            "align",
+            "backcolor",
+            "bold",
+            "charmap",
+            "clear",
+            "collapse",
+            "emojipicker",
+            "emoticon",
+            "equation",
+            "fontcolor",
+            "h5p",
+            "html",
+            "image",
+            "indent",
+            "italic",
+            "link",
+            "managefiles",
+            "media",
+            "noautolink",
+            "orderedlist",
+            "recordrtc",
+            "rtl",
+            "strike",
+            "subscript",
+            "superscript",
+            "table",
+            "title",
+            "underline",
+            "undo",
+            "unorderedlist"
+        ],
         "auth": [
+            "cas",
             "fc",
             "imap",
+            "mnet",
             "nntp",
             "pam",
             "pop3",
@@ -577,6 +588,7 @@
             "community",
             "course_overview",
             "messages",
+            "mnet_hosts",
             "participants",
             "quiz_results"
         ],
@@ -586,17 +598,21 @@
             "mongodb"
         ],
         "editor": [
+            "atto",
             "tinymce"
         ],
         "enrol": [
-            "authorize"
+            "authorize",
+            "mnet"
         ],
         "filter": [
-            "censor"
+            "censor",
+            "tidy"
         ],
         "h5plib": [
             "v124",
-            "v126"
+            "v126",
+            "v127"
         ],
         "logstore": [
             "legacy"
@@ -607,11 +623,17 @@
         "message": [
             "jabber"
         ],
+        "mnetservice": [
+            "enrol"
+        ],
         "mod": [
-            "assignment"
+            "assignment",
+            "chat",
+            "survey"
         ],
         "portfolio": [
             "boxnet",
+            "mahara",
             "picasa"
         ],
         "qformat": [
@@ -675,6 +697,7 @@
             "assignmentupgrade",
             "bloglevelupgrade",
             "health",
+            "innodb",
             "qeupgradehelper",
             "timezoneimport"
         ],

@@ -19,6 +19,8 @@
 }
 
 .activity-navigation {
+    margin-left: 15px;
+    margin-right: 15px;
     border-top: none;
 
     .nav-guide {
@@ -83,6 +85,18 @@
 
         .icon-arrow-right {
             background: transparent url('[[pix:theme|right-arrow]]') no-repeat 50% 50%;
+        }
+    }
+}
+
+.path-grade-report-grader {
+    .gradeparent tr.heading {
+        top: 130px;
+    }
+
+    &.hasaccessibilitybar {
+        .gradeparent tr.heading {
+            top: 160px;
         }
     }
 }

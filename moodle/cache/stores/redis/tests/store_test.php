@@ -16,8 +16,8 @@
 
 namespace cachestore_redis;
 
-use cache_store;
-use cache_definition;
+use core_cache\definition;
+use core_cache\store;
 use cachestore_redis;
 
 defined('MOODLE_INTERNAL') || die();
@@ -76,8 +76,8 @@ final class store_test extends \cachestore_tests {
      */
     protected function create_cachestore_redis(array $extraconfig = [], bool $ttl = false): cachestore_redis {
         if ($ttl) {
-            /** @var cache_definition $definition */
-            $definition = cache_definition::load('core/wibble', [
+            /** @var definition $definition */
+            $definition = definition::load('core/wibble', [
                 'mode' => 1,
                 'simplekeys' => true,
                 'simpledata' => true,
@@ -89,8 +89,8 @@ final class store_test extends \cachestore_tests {
                 'sharingoptions' => 15,
             ]);
         } else {
-            /** @var cache_definition $definition */
-            $definition = cache_definition::load_adhoc(cache_store::MODE_APPLICATION, 'cachestore_redis', 'phpunit_test');
+            /** @var definition $definition */
+            $definition = definition::load_adhoc(store::MODE_APPLICATION, 'cachestore_redis', 'phpunit_test');
         }
         $configuration = array_merge(cachestore_redis::unit_test_configuration(), $extraconfig);
         $store = new cachestore_redis('Test', $configuration);
@@ -155,10 +155,10 @@ final class store_test extends \cachestore_tests {
         $before = microtime(true);
         $this->assertFalse($store->acquire_lock('lock', '456'));
         $after = microtime(true);
-        $this->assertEqualsWithDelta(2, $after - $before, 0.5);
+        $this->assertEqualsWithDelta(2, $after - $before, 1);
 
-        // Wait another 2 seconds and then it should be able to get the lock because of timeout.
-        sleep(2);
+        // Wait another 3 seconds and then it should be able to get the lock because of timeout.
+        sleep(3);
         $this->assertTrue($store->acquire_lock('lock', '456'));
         $this->assertTrue($store->check_lock_state('lock', '456'));
 
@@ -200,9 +200,9 @@ final class store_test extends \cachestore_tests {
         $store = $this->create_cachestore_redis();
 
         $store->set('foo', [1, 2, 3, 4]);
-        $this->assertEquals(\cache_store::IO_BYTES_NOT_SUPPORTED, $store->get_last_io_bytes());
+        $this->assertEquals(store::IO_BYTES_NOT_SUPPORTED, $store->get_last_io_bytes());
         $store->get('foo');
-        $this->assertEquals(\cache_store::IO_BYTES_NOT_SUPPORTED, $store->get_last_io_bytes());
+        $this->assertEquals(store::IO_BYTES_NOT_SUPPORTED, $store->get_last_io_bytes());
     }
 
     /**

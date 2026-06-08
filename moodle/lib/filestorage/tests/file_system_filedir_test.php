@@ -39,6 +39,7 @@ final class file_system_filedir_test extends \advanced_testcase {
      * Shared test setUp.
      */
     public function setUp(): void {
+        parent::setUp();
         // Reset the file storage so that subsequent fetches to get_file_storage are called after
         // configuration is prepared.
         get_file_storage(true);
@@ -50,6 +51,7 @@ final class file_system_filedir_test extends \advanced_testcase {
     public function tearDown(): void {
         // Reset the file storage so that subsequent tests will use the standard file storage.
         get_file_storage(true);
+        parent::tearDown();
     }
 
     /**
@@ -1096,12 +1098,12 @@ final class file_system_filedir_test extends \advanced_testcase {
     public static function contenthash_dataprovider(): array {
         return array(
             array(
-                'contenthash'   => 'eee4943847a35a4b6942c6f96daafde06bcfdfab',
-                'contentdir'    => 'ee/e4',
+                'hash'   => 'eee4943847a35a4b6942c6f96daafde06bcfdfab',
+                'hashdir'    => 'ee/e4',
             ),
             array(
-                'contenthash'   => 'aef05a62ae81ca0005d2569447779af062b7cda0',
-                'contentdir'    => 'ae/f0',
+                'hash'   => 'aef05a62ae81ca0005d2569447779af062b7cda0',
+                'hashdir'    => 'ae/f0',
             ),
         );
     }

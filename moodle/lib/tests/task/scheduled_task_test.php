@@ -65,8 +65,6 @@ final class scheduled_task_test extends \advanced_testcase {
      * @param int[] $expected
      *
      * @dataProvider eval_cron_provider
-     *
-     * @covers ::eval_cron_field
      */
     public function test_eval_cron_field(string $field, int $min, int $max, array $expected): void {
         $testclass = new scheduled_test_task();
@@ -195,7 +193,6 @@ final class scheduled_task_test extends \advanced_testcase {
      * @param string $month Month restriction list for task
      * @param string|int $expected Expected run time (strtotime format or time int)
      * @dataProvider get_next_scheduled_time_detail_provider
-     * @covers ::get_next_scheduled_time
      */
     public function test_get_next_scheduled_time_detail(string $now, string $minute, string $hour,
             string $day, string $dayofweek, string $month, string|int $expected): void {
@@ -224,8 +221,6 @@ final class scheduled_task_test extends \advanced_testcase {
      *
      * We want frequent tasks to keep progressing as normal and not randomly stop for an hour, or
      * suddenly decide they need to happen in the past.
-     *
-     * @covers ::get_next_scheduled_time
      */
     public function test_get_next_scheduled_time_dst_continuity(): void {
         $this->resetAfterTest();
@@ -837,7 +832,7 @@ final class scheduled_task_test extends \advanced_testcase {
     public static function provider_schedule_overrides(): array {
         return array(
             array(
-                'scheduled_tasks' => array(
+                'overrides' => array(
                     '\core\task\scheduled_test_task' => array(
                         'schedule' => '10 13 1 2 4',
                         'disabled' => 0,
@@ -847,7 +842,7 @@ final class scheduled_task_test extends \advanced_testcase {
                         'disabled' => 1,
                     ),
                 ),
-                'task_full_classnames' => array(
+                'tasks' => array(
                     '\core\task\scheduled_test_task',
                     '\core\task\scheduled_test2_task',
                 ),
@@ -871,13 +866,13 @@ final class scheduled_task_test extends \advanced_testcase {
                 )
             ),
             array(
-                'scheduled_tasks' => array(
+                'overrides' => array(
                     '\core\task\*' => array(
                         'schedule' => '1 2 3 4 5',
                         'disabled' => 0,
                     )
                 ),
-                'task_full_classnames' => array(
+                'tasks' => array(
                     '\core\task\scheduled_test_task',
                     '\core\task\scheduled_test2_task',
                 ),
@@ -1074,7 +1069,7 @@ final class scheduled_task_test extends \advanced_testcase {
      */
     public static function is_component_enabled_provider(): array {
         return [
-            'Enabled component' => ['auth_cas', true],
+            'Enabled component' => ['auth_email', true],
             'Disabled component' => ['auth_ldap', false],
             'Invalid component' => ['auth_invalid', false],
         ];
@@ -1092,7 +1087,7 @@ final class scheduled_task_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         // Set cas as the only enabled auth component.
-        set_config('auth', 'cas');
+        set_config('auth', 'email');
 
         $task = new scheduled_test_task();
         $task->set_component($component);
@@ -1110,10 +1105,6 @@ final class scheduled_task_test extends \advanced_testcase {
 
     /**
      * Test disabling and enabling individual tasks.
-     *
-     * @covers ::disable
-     * @covers ::enable
-     * @covers ::has_default_configuration
      */
     public function test_disable_and_enable_task(): void {
         $this->resetAfterTest();
@@ -1161,9 +1152,6 @@ final class scheduled_task_test extends \advanced_testcase {
 
     /**
      * Test send messages when a task reaches the max fail delay time.
-     *
-     * @covers ::scheduled_task_failed
-     * @covers ::send_failed_task_max_delay_message
      */
     public function test_message_max_fail_delay(): void {
         $this->resetAfterTest();

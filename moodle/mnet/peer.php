@@ -79,6 +79,11 @@ class mnet_peer {
             return true;
         }
 
+        $securityhelper = new \core\files\curl_security_helper();
+        if ($securityhelper->url_is_blocked($wwwroot)) {
+            throw new moodle_exception('curlsecurityurlblocked', 'admin');
+        }
+
         $hostname = mnet_get_hostname_from_uri($wwwroot);
         // Get the IP address for that host - if this fails, it will return the hostname string
         $ip_address = gethostbyname($hostname);
@@ -318,15 +323,10 @@ class mnet_peer {
     }
 
     /**
-     * Get public key.
-     *
      * @deprecated since Moodle 4.3
-     * @todo MDL-78304 Final deprecation.
      */
-    function get_public_key() {
-        debugging('Function get_public_key() is deprecated.', DEBUG_DEVELOPER);
-        if (isset($this->public_key_ref)) return $this->public_key_ref;
-        $this->public_key_ref = openssl_pkey_get_public($this->public_key);
-        return $this->public_key_ref;
+    #[\core\attribute\deprecated(null, since: '4.3', mdl: 'MDL-77341', final: true)]
+    public function get_public_key(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 }

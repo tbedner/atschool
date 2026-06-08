@@ -95,7 +95,7 @@ function editors_get_enabled() {
     global $CFG;
 
     if (empty($CFG->texteditors)) {
-        $CFG->texteditors = 'atto,tiny,textarea';
+        $CFG->texteditors = 'tiny,textarea';
     }
     $active = array();
     foreach(explode(',', $CFG->texteditors) as $e) {
@@ -153,7 +153,7 @@ function editors_head_setup() {
     global $CFG;
 
     if (empty($CFG->texteditors)) {
-        $CFG->texteditors = 'atto,tiny,textarea';
+        $CFG->texteditors = 'tiny,textarea';
     }
     $active = explode(',', $CFG->texteditors);
 
@@ -234,7 +234,7 @@ abstract class texteditor {
      * @param obejct $fpoptions file picker options
      * @return void
      */
-    abstract public function use_editor($elementid, array $options=null, $fpoptions = null);
+    abstract public function use_editor($elementid, ?array $options=null, $fpoptions = null);
 
     /**
      * Setup all JS and CSS needed for editor.

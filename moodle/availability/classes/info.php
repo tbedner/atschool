@@ -173,7 +173,7 @@ abstract class info {
      * @return bool True if this item is available to the user, false otherwise
      */
     public function is_available(&$information, $grabthelot = false, $userid = 0,
-            \course_modinfo $modinfo = null) {
+            ?\course_modinfo $modinfo = null) {
         global $USER;
 
         // Default to no information.
@@ -262,7 +262,7 @@ abstract class info {
      * @return string Information string (for admin) about all restrictions on
      *   this item
      */
-    public function get_full_information(\course_modinfo $modinfo = null) {
+    public function get_full_information(?\course_modinfo $modinfo = null) {
         // Do nothing if there are no availability restrictions.
         if (is_null($this->availability)) {
             return '';
@@ -746,7 +746,11 @@ abstract class info {
                     $modulename = format_string($cm->get_name(), true, ['context' => $context]);
                     // We make sure that we add a data attribute to the name so we can change it later if the
                     // original module name changes.
-                    if ($cm->has_view() && $cm->get_user_visible()) {
+                    if (
+                        \course_modinfo::is_mod_type_visible_on_course($cm->modname)
+                        && $cm->has_view()
+                        && $cm->get_user_visible()
+                    ) {
                         // Help student by providing a link to the module which is preventing availability.
                         return \html_writer::link($cm->get_url(), $modulename, ['data-cm-name-for' => $cm->id]);
                     } else {

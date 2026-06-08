@@ -40,13 +40,6 @@ if (!function_exists('iconv')) {
     die();
 }
 
-// Make sure php5-json is available.
-if (!function_exists('json_encode') || !function_exists('json_decode')) {
-    // This also shouldn't happen.
-    echo 'Moodle requires the json PHP extension. Please install or enable the json extension.';
-    die();
-}
-
 // Make sure xml extension is available.
 if (!extension_loaded('xml')) {
     echo 'Moodle requires the xml PHP extension. Please install or enable the xml extension.';
@@ -948,9 +941,27 @@ admin_externalpage_setup('adminnotifications');
 
 $output = $PAGE->get_renderer('core', 'admin');
 
-echo $output->admin_notifications_page($maturity, $insecuredataroot, $errorsdisplayed, $cronoverdue, $dbproblems,
-                                       $maintenancemode, $availableupdates, $availableupdatesfetch, $buggyiconvnomb,
-                                       $registered, $cachewarnings, $eventshandlers, $themedesignermode, $devlibdir,
-                                       $mobileconfigured, $overridetossl, $invalidforgottenpasswordurl, $croninfrequent,
-                                       $showcampaigncontent, $showfeedbackencouragement, $servicesandsupportcontent,
-                                       $xmlrpcwarning);
+echo $output->admin_notifications_page(
+    $maturity,
+    $insecuredataroot,
+    $errorsdisplayed,
+    $cronoverdue,
+    $dbproblems,
+    $maintenancemode,
+    $availableupdates,
+    $availableupdatesfetch,
+    $buggyiconvnomb,
+    $registered,
+    $cachewarnings,
+    $eventshandlers,
+    $themedesignermode,
+    $devlibdir,
+    $mobileconfigured,
+    $overridetossl,
+    $invalidforgottenpasswordurl,
+    $croninfrequent,
+    $showcampaigncontent,
+    $showfeedbackencouragement,
+    $servicesandsupportcontent,
+    $xmlrpcwarning
+);

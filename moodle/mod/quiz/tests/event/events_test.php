@@ -28,6 +28,7 @@ namespace mod_quiz\event;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
 use context_module;
+use mod_quiz\external\submit_question_version;
 
 /**
  * Unit tests for quiz events.
@@ -36,6 +37,7 @@ use context_module;
  * @category   phpunit
  * @copyright  2013 Adrian Greeve
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \mod_quiz\external\submit_question_version
  */
 final class events_test extends \advanced_testcase {
 
@@ -67,6 +69,10 @@ final class events_test extends \advanced_testcase {
         $cat = $questiongenerator->create_question_category();
         $saq = $questiongenerator->create_question('shortanswer', null, ['category' => $cat->id]);
         $numq = $questiongenerator->create_question('numerical', null, ['category' => $cat->id]);
+
+        // Update the numq question so it has multiple versions. Needed to test
+        // the version updated event.
+        $questiongenerator->update_question($numq, null, ['name' => 'Second version of numq']);
 
         // Add them to the quiz.
         quiz_add_quiz_question($saq->id, $quiz);
@@ -112,21 +118,51 @@ final class events_test extends \advanced_testcase {
 
     public function test_attempt_submitted(): void {
 
-        list($quizobj, $quba, $attempt) = $this->prepare_quiz_data();
+        [$quizobj, , $attempt] = $this->prepare_quiz_data();
         $attemptobj = quiz_attempt::create($attempt->id);
 
         // Catch the event.
         $sink = $this->redirectEvents();
 
         $timefinish = time();
-        $attemptobj->process_finish($timefinish, false);
+        $attemptobj->process_submit($timefinish, false);
+        $events = $sink->get_events();
+        $sink->close();
+
+        // Validate the event.
+        $this->assertCount(1, $events);
+        $event = $events[0];
+        $this->assertInstanceOf('\mod_quiz\event\attempt_submitted', $event);
+        $this->assertEquals('quiz_attempts', $event->objecttable);
+        $this->assertEquals($quizobj->get_context(), $event->get_context());
+        $this->assertEquals($attempt->userid, $event->relateduserid);
+        $this->assertEquals(null, $event->other['submitterid']); // Should be the user, but PHP Unit complains...
+        $this->assertEventContextNotUsed($event);
+    }
+
+    /**
+     * The \mod_quiz\event\attempt_graded event should be fired when an attempt is graded.
+     *
+     * @return void
+     * @covers \mod_quiz\quiz_attempt::process_grade_submission
+     */
+    public function test_attempt_graded(): void {
+
+        [$quizobj, , $attempt] = $this->prepare_quiz_data();
+        $attemptobj = quiz_attempt::create($attempt->id);
+        $timefinish = time();
+        $attemptobj->process_submit($timefinish, false);
+
+        // Catch the event.
+        $sink = $this->redirectEvents();
+        $attemptobj->process_grade_submission($timefinish);
         $events = $sink->get_events();
         $sink->close();
 
         // Validate the event.
         $this->assertCount(3, $events);
         $event = $events[2];
-        $this->assertInstanceOf('\mod_quiz\event\attempt_submitted', $event);
+        $this->assertInstanceOf('\mod_quiz\event\attempt_graded', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEquals($attempt->userid, $event->relateduserid);
@@ -1199,6 +1235,28 @@ final class events_test extends \advanced_testcase {
         // Check that the event data is valid.
         $this->assertInstanceOf('\mod_quiz\event\slot_mark_updated', $event);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
+        $this->assertEventContextNotUsed($event);
+    }
+
+    public function test_slot_version_updated(): void {
+        $quizobj = $this->prepare_quiz();
+        $this->setAdminUser();
+
+        $quizobj->preload_questions();
+        [, $numqslotid] = array_column($quizobj->get_questions(null, false), 'slotid');
+
+        $sink = $this->redirectEvents();
+        submit_question_version::execute($numqslotid, 2);
+        $events = $sink->get_events();
+        $event = reset($events);
+
+        // Check that the event data is valid.
+        $expecteddesc = "The user with id '2' updated the slot with id '$numqslotid' " .
+            "belonging to the quiz with course module id '{$quizobj->get_cmid()}'. " .
+            "Its question version was changed from 'Always latest' to '2'.";
+        $this->assertInstanceOf('\mod_quiz\event\slot_version_updated', $event);
+        $this->assertEquals($quizobj->get_context(), $event->get_context());
+        $this->assertEquals($expecteddesc, $event->get_description());
         $this->assertEventContextNotUsed($event);
     }
 

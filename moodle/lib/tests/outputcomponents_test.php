@@ -25,12 +25,7 @@ use single_button;
 use single_select;
 use theme_config;
 use url_select;
-use user_picture;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->libdir . '/outputcomponents.php');
+use core\output\user_picture;
 
 /**
  * Unit tests for lib/outputcomponents.php.
@@ -618,54 +613,6 @@ EOF;
     }
 
     /**
-     * Test for checking the template context data for the single_select element legacy API.
-     * @covers \single_button
-     */
-    public function test_single_button_deprecated(): void {
-        global $PAGE;
-        $url = new \moodle_url('/');
-        $realname = 'realname';
-        $attributes = [
-            'data-dummy' => 'dummy',
-        ];
-
-        // Test that when we use a true boolean value for the 4th parameter this is set as primary type.
-        $singlebutton = new single_button($url, $realname, 'post', single_button::BUTTON_PRIMARY, $attributes);
-        $renderer = $PAGE->get_renderer('core');
-        $data = $singlebutton->export_for_template($renderer);
-        $this->assertEquals($realname, $data->label);
-        $this->assertEquals('post', $data->method);
-        $this->assertEquals('singlebutton', $data->classes);
-        $this->assertEquals('primary', $data->type);
-        $this->assertEquals($attributes['data-dummy'], $data->attributes[0]['value']);
-
-        // Test that when we use a false boolean value for the 4th parameter this is set as secondary type.
-        $singlebutton = new single_button($url, $realname, 'post', false, $attributes);
-        $this->assertDebuggingCalled();
-        $renderer = $PAGE->get_renderer('core');
-        $data = $singlebutton->export_for_template($renderer);
-        $this->assertEquals($realname, $data->label);
-        $this->assertEquals('post', $data->method);
-        $this->assertEquals('singlebutton', $data->classes);
-        $this->assertEquals('secondary', $data->type);
-        $this->assertEquals($attributes['data-dummy'], $data->attributes[0]['value']);
-
-        // Test that when we set the primary value, then this is reflected in the type.
-        $singlebutton->primary = false;
-        $this->assertDebuggingCalled();
-        $this->assertEquals(single_button::BUTTON_SECONDARY, $singlebutton->type);
-        $singlebutton->primary = true;
-        $this->assertDebuggingCalled();
-        $this->assertEquals(single_button::BUTTON_PRIMARY, $singlebutton->type);
-        // Then set the type directly.
-
-        $singlebutton->type = single_button::BUTTON_DANGER;
-        $data = $singlebutton->export_for_template($renderer);
-        $this->assertEquals('danger', $data->type);
-
-    }
-
-    /**
      * Test for checking the template context data for the url_select element.
      */
     public function test_url_select(): void {
@@ -747,6 +694,38 @@ EOF;
         // The rest should be fine.
         $this->assertTrue(in_array(['name' => 'class', 'value' => $labelclass], $data->labelattributes));
         $this->assertTrue(in_array(['name' => 'style', 'value' => $labelstyle], $data->labelattributes));
+    }
+
+    /**
+     * Test for checking the template context data for the url_select element.
+     * @covers \url_select::disable_option
+     * @covers \url_select::enable_option
+     */
+    public function test_url_select_disabled_options(): void {
+        global $PAGE;
+        $url1 = new \moodle_url("/#a");
+        $url2 = new \moodle_url("/#b");
+        $url3 = new \moodle_url("/#c");
+
+        $urls = [
+            $url1->out() => 'A',
+            $url2->out() => 'B',
+            $url3->out() => 'C',
+        ];
+        $urlselect = new url_select($urls,
+            null,
+            null,
+            'someformid',
+            null);
+        $renderer = $PAGE->get_renderer('core');
+        $urlselect->set_option_disabled($url2->out(), true);
+        $data = $urlselect->export_for_template($renderer);
+        $this->assertFalse($data->options[0]['disabled']);
+        $this->assertTrue($data->options[1]['disabled']);
+        $urlselect->set_option_disabled($url2->out(), false);
+        $data = $urlselect->export_for_template($renderer);
+        $this->assertFalse($data->options[0]['disabled']);
+        $this->assertFalse($data->options[1]['disabled']);
     }
 
     /**

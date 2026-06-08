@@ -73,14 +73,14 @@ class table implements \renderable {
         ];
         $table->colclasses = [
             'text-center',
-            'text-left',
-            'text-left',
+            'text-start',
+            'text-start',
             'text-center',
             'text-center',
             'text-center',
         ];
         $table->id = 'manage-licenses';
-        $table->attributes['class'] = 'admintable generaltable';
+        $table->attributes['class'] = 'admintable generaltable table table-hover';
         $table->data  = [];
 
         $rownumber = 0;

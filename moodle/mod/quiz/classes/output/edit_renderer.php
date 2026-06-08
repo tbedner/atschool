@@ -28,6 +28,7 @@ use core_question\local\bank\question_version_status;
 use \mod_quiz\structure;
 use \html_writer;
 use qbank_previewquestion\question_preview_options;
+use question_bank;
 use renderable;
 
 /**
@@ -52,8 +53,14 @@ class edit_renderer extends \plugin_renderer_base {
      * @param array $pagevars the variables from {@link question_edit_setup()}.
      * @return string HTML to output.
      */
-    public function edit_page(\mod_quiz\quiz_settings $quizobj, structure $structure,
-        \core_question\local\bank\question_edit_contexts $contexts, \moodle_url $pageurl, array $pagevars) {
+    public function edit_page(
+        \mod_quiz\quiz_settings $quizobj,
+        structure $structure,
+        \core_question\local\bank\question_edit_contexts $contexts,
+        \moodle_url $pageurl,
+        array $pagevars,
+    ) {
+
         $output = '';
 
         // Page title.
@@ -94,8 +101,11 @@ class edit_renderer extends \plugin_renderer_base {
 
             if ($structure->is_last_section($section)) {
                 $output .= \html_writer::start_div('last-add-menu');
-                $output .= html_writer::tag('span', $this->add_menu_actions($structure, 0,
-                        $pageurl, $contexts, $pagevars), ['class' => 'add-menu-outer']);
+                $output .= html_writer::tag(
+                    'span',
+                    $this->add_menu_actions($structure, 0, $pageurl, $contexts, $pagevars),
+                    ['class' => 'add-menu-outer pe-3']
+                );
                 $output .= \html_writer::end_div();
             }
 
@@ -111,11 +121,14 @@ class edit_renderer extends \plugin_renderer_base {
         if ($structure->can_be_edited()) {
             $thiscontext = $contexts->lowest();
             $this->page->requires->js_call_amd('mod_quiz/modal_quiz_question_bank', 'init', [
-                $thiscontext->id
+                $thiscontext->id,
+                $quizobj->get_cm()->id,
+                $quizobj->get_cm()->id,
             ]);
 
             $this->page->requires->js_call_amd('mod_quiz/modal_add_random_question', 'init', [
                 $thiscontext->id,
+                $quizobj->get_cm()->id,
                 $pagevars['cat'],
                 $pageurl->out_as_local_url(true),
                 $pageurl->param('cmid'),
@@ -189,8 +202,8 @@ class edit_renderer extends \plugin_renderer_base {
         $output .= html_writer::empty_tag('input', ['type' => 'text', 'id' => 'inputmaxgrade',
                 'name' => 'maxgrade', 'size' => ($structure->get_decimal_places_for_grades() + 2),
                 'value' => $structure->formatted_quiz_grade(),
-                'class' => 'form-control d-inline-block align-middle w-auto ml-1']);
-        $output .= html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-secondary ml-1 d-inline-block w-auto ',
+                'class' => 'form-control d-inline-block align-middle w-auto ms-1']);
+        $output .= html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-secondary ms-1 d-inline-block w-auto ',
                 'name' => 'savechanges', 'value' => get_string('save', 'quiz')]);
         $output .= html_writer::end_tag('fieldset');
         $output .= html_writer::end_tag('form');
@@ -213,7 +226,7 @@ class edit_renderer extends \plugin_renderer_base {
             'name'  => 'repaginate',
             'id'    => 'repaginatecommand',
             'value' => get_string('repaginatecommand', 'quiz'),
-            'class' => 'btn btn-secondary mr-1',
+            'class' => 'btn btn-secondary me-1',
             'data-header' => $header,
             'data-form'   => $form,
         ];
@@ -326,13 +339,13 @@ class edit_renderer extends \plugin_renderer_base {
         $hiddenurl->param('sesskey', sesskey());
 
         $select = html_writer::select($perpage, 'questionsperpage',
-                $structure->get_questions_per_page(), false, ['class' => 'custom-select']);
+                $structure->get_questions_per_page(), false, ['class' => 'form-select']);
 
         $buttonattributes = [
             'type' => 'submit',
             'name' => 'repaginate',
             'value' => get_string('go'),
-            'class' => 'btn btn-secondary ml-1'
+            'class' => 'btn btn-secondary ms-1'
         ];
 
         $formcontent = html_writer::tag('form', html_writer::div(
@@ -401,9 +414,9 @@ class edit_renderer extends \plugin_renderer_base {
             $sectionheadingtext = format_string($section->heading);
             $sectionheading = html_writer::span($sectionheadingtext, 'instancesection');
         } else {
-            // Use a sr-only default section heading, so we don't end up with an empty section heading.
+            // Use a visually-hidden default section heading, so we don't end up with an empty section heading.
             $sectionheadingtext = get_string('sectionnoname', 'quiz');
-            $sectionheading = html_writer::span($sectionheadingtext, 'instancesection sr-only');
+            $sectionheading = html_writer::span($sectionheadingtext, 'instancesection visually-hidden');
         }
 
         $output .= html_writer::start_tag('li', ['id' => 'section-'.$section->id,
@@ -520,6 +533,8 @@ class edit_renderer extends \plugin_renderer_base {
         foreach ($structure->get_slots_in_section($section->id) as $slot) {
             $output .= $this->question_row($structure, $slot, $contexts, $pagevars, $pageurl);
         }
+
+        $this->page->requires->js_call_amd('mod_quiz/question_slot', 'init');
         return html_writer::tag('ul', $output, ['class' => 'section img-text']);
     }
 
@@ -576,9 +591,11 @@ class edit_renderer extends \plugin_renderer_base {
 
         if ($structure->is_first_slot_on_page($slot)) {
             // Add the add-menu at the page level.
-            $addmenu = html_writer::tag('span', $this->add_menu_actions($structure,
-                    $pagenumber, $pageurl, $contexts, $pagevars),
-                    ['class' => 'add-menu-outer']);
+            $addmenu = html_writer::tag(
+                'span',
+                $this->add_menu_actions($structure, $pagenumber, $pageurl, $contexts, $pagevars),
+                ['class' => 'add-menu-outer pe-2']
+            );
 
             $addquestionform = $this->add_question_form($structure,
                     $pagenumber, $pageurl, $pagevars);
@@ -694,7 +711,7 @@ class edit_renderer extends \plugin_renderer_base {
         // Add a new section to the add_menu if possible. This is always added to the HTML
         // then hidden with CSS when no needed, so that as things are re-ordered, etc. with
         // Ajax it can be relevaled again when necessary.
-        $params = ['cmid' => $structure->get_cmid(), 'addsectionatpage' => $page];
+        $params = ['cmid' => $structure->get_cmid(), 'addsectionatpage' => $page, 'sesskey' => sesskey()];
 
         $actions['addasection'] = new \action_menu_link_secondary(
             new \moodle_url($pageurl, $params),
@@ -742,8 +759,23 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string HTML to output.
      */
     public function question(structure $structure, int $slot, \moodle_url $pageurl) {
+        global $DB;
+
         // Get the data required by the question_slot template.
         $slotid = $structure->get_slot_id_for_slot($slot);
+        $question = $structure->get_question_in_slot($slot);
+        $bank = $structure->get_source_bank($slot);
+
+        if ($bank?->issharedbank && question_has_capability_on($question, 'view')) {
+            $bankurl = (new \moodle_url('/question/edit.php',
+                [
+                    'cmid' => $bank->cminfo->id,
+                    'cat' => "{$question->category},{$question->contextid}",
+                ]
+            ))->out(false);
+        } else {
+            $bankurl = '';
+        }
 
         $output = '';
         $output .= html_writer::start_tag('div');
@@ -769,13 +801,15 @@ class edit_renderer extends \plugin_renderer_base {
             'questiondependencyicon' => ($structure->can_be_edited() ? $this->question_dependency_icon($structure, $slot) : ''),
             'versionselection' => false,
             'draftversion' => $structure->get_question_in_slot($slot)->status == question_version_status::QUESTION_STATUS_DRAFT,
+            'bankname' => $bank?->cminfo->get_formatted_name(),
+            'issharedbank' => $bank?->issharedbank,
+            'bankurl' => $bankurl,
         ];
 
         $data['versionoptions'] = [];
         if ($structure->get_slot_by_number($slot)->qtype !== 'random') {
             $data['versionselection'] = true;
             $data['versionoption'] = $structure->get_version_choices_for_slot($slot);
-            $this->page->requires->js_call_amd('mod_quiz/question_slot', 'init', [$slotid]);
         }
 
         // Render the question slot template.
@@ -801,7 +835,7 @@ class edit_renderer extends \plugin_renderer_base {
                 'name' => 'selectquestion[]',
                 'classes' => 'select-multiple-checkbox',
                 'label' => get_string('selectquestionslot', 'quiz', $questionslot),
-                'labelclasses' => 'sr-only',
+                'labelclasses' => 'visually-hidden',
             ]);
 
         return $this->render($checkbox);
@@ -839,7 +873,7 @@ class edit_renderer extends \plugin_renderer_base {
         $qtype = $structure->get_question_type_for_slot($slot);
         $slotinfo = $structure->get_slot_by_number($slot);
         $questionicons = '';
-        if ($qtype !== 'random') {
+        if ($qtype !== 'random' && question_bank::is_qtype_usable($qtype)) {
             $questionicons .= $this->question_preview_icon($structure->get_quiz(),
                     $structure->get_question_in_slot($slot),
                     null, null, $slotinfo->requestedversion ?: question_preview_options::ALWAYS_LATEST);
@@ -860,9 +894,15 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string The markup for the move action.
      */
     public function question_move_icon(structure $structure, $slot) {
-        return html_writer::link(new \moodle_url('#'),
-            $this->pix_icon('i/dragdrop', get_string('move'), 'moodle', ['class' => 'iconsmall', 'title' => '']),
-            ['class' => 'editing_move', 'data-action' => 'move']
+        $slotnumber = $structure->get_displayed_number_for_slot($slot);
+        return html_writer::link(
+            new \moodle_url('#'),
+            $this->pix_icon('i/dragdrop', '', 'moodle', ['class' => 'iconsmall']),
+            [
+                'class' => 'editing_move',
+                'data-action' => 'move',
+                'aria-label' => get_string('movequestionnumber', 'quiz', $slotnumber),
+            ]
         );
     }
 
@@ -895,6 +935,11 @@ class edit_renderer extends \plugin_renderer_base {
      */
     public function question_preview_icon($quiz, $questiondata, $label = null, $variant = null, $restartversion = null) {
         $question = clone($questiondata);
+
+        if (!question_bank::is_qtype_usable($question->qtype)) {
+            return '';
+        }
+
         if (isset($question->questionid)) {
 
             $question->id = $question->questionid;
@@ -949,13 +994,14 @@ class edit_renderer extends \plugin_renderer_base {
         $url = new \moodle_url('repaginate.php', ['quizid' => $structure->get_quizid(),
                 'slot' => $slot, 'repag' => $insertpagebreak ? 2 : 1, 'sesskey' => sesskey()]);
 
+        $slotname = $structure->get_displayed_number_for_slot($slot);
         if ($insertpagebreak) {
-            $title = get_string('addpagebreak', 'quiz');
-            $image = $this->image_icon('e/insert_page_break', $title);
+            $title = get_string('addpagebreakafter', 'quiz', $slotname);
+            $image = $this->image_icon('e/insert_page_break', '');
             $action = 'addpagebreak';
         } else {
-            $title = get_string('removepagebreak', 'quiz');
-            $image = $this->image_icon('e/remove_page_break', $title);
+            $title = get_string('removepagebreakafter', 'quiz', $slotname);
+            $image = $this->image_icon('e/remove_page_break', '');
             $action = 'removepagebreak';
         }
 
@@ -964,9 +1010,22 @@ class edit_renderer extends \plugin_renderer_base {
         if (!$structure->can_be_edited()) {
             $disabled = 'disabled';
         }
-        return html_writer::span($this->action_link($url, $image, null, ['title' => $title,
-                    'class' => 'page_split_join cm-edit-action', 'disabled' => $disabled, 'data-action' => $action]),
-                'page_split_join_wrapper');
+        return html_writer::span(
+            $this->action_link(
+                $url,
+                $image,
+                null,
+                [
+                    'title' => $title,
+                    'aria-label' => $title,
+                    'class' => 'page_split_join cm-edit-action btn btn-sm icon-no-margin',
+                    'disabled' => $disabled,
+                    'data-action' => $action,
+                    'role' => 'button',
+                ]
+            ),
+            'page_split_join_wrapper'
+        );
     }
 
     /**
@@ -984,13 +1043,11 @@ class edit_renderer extends \plugin_renderer_base {
         ];
         if ($structure->is_question_dependent_on_previous_slot($slot)) {
             $title = get_string('questiondependencyremove', 'quiz', $a);
-            $image = $this->pix_icon('t/locked', get_string('questiondependsonprevious', 'quiz'),
-                    'moodle', ['title' => '']);
+            $image = $this->pix_icon('t/locked', '');
             $action = 'removedependency';
         } else {
             $title = get_string('questiondependencyadd', 'quiz', $a);
-            $image = $this->pix_icon('t/unlocked', get_string('questiondependencyfree', 'quiz'),
-                    'moodle', ['title' => '']);
+            $image = $this->pix_icon('t/unlocked', '');
             $action = 'adddependency';
         }
 
@@ -1003,9 +1060,22 @@ class edit_renderer extends \plugin_renderer_base {
         if (!$structure->can_question_depend_on_previous_slot($slot)) {
             $extraclass = ' question_dependency_cannot_depend';
         }
-        return html_writer::span($this->action_link('#', $image, null, ['title' => $title,
-                'class' => 'cm-edit-action', 'disabled' => $disabled, 'data-action' => $action]),
-                'question_dependency_wrapper' . $extraclass);
+        return html_writer::span(
+            $this->action_link(
+                '#',
+                $image,
+                null,
+                [
+                    'title' => $title,
+                    'aria-label' => $title,
+                    'class' => 'cm-edit-action btn btn-link btn-sm icon-no-margin',
+                    'disabled' => $disabled,
+                    'data-action' => $action,
+                    'role' => 'button',
+                ]
+            ),
+            'question_dependency_wrapper' . $extraclass
+        );
     }
 
     /**
@@ -1029,7 +1099,7 @@ class edit_renderer extends \plugin_renderer_base {
 
         $instancename = quiz_question_tostring($question);
 
-        $qtype = \question_bank::get_qtype($question->qtype, false);
+        $qtype = question_bank::get_qtype($question->qtype, false);
         $namestr = $qtype->local_name();
 
         $icon = $this->pix_icon('icon', $namestr, $qtype->plugin_name(), ['title' => $namestr,
@@ -1040,10 +1110,30 @@ class edit_renderer extends \plugin_renderer_base {
         // Need plain question name without html tags for link title.
         $title = shorten_text(format_string($question->name), 100);
 
-        // Display the link itself.
-        $activitylink = $icon . html_writer::tag('span', $editicon . $instancename, ['class' => 'instancename']);
-        $output .= html_writer::link($editurl, $activitylink,
-                ['title' => get_string('editquestion', 'quiz').' '.$title]);
+        // If the question is invalid, don't show the link as it won't work.
+        if (!question_bank::is_qtype_usable($question->qtype)) {
+            $output .= html_writer::span($title);
+            $output .= html_writer::span(
+                get_string('invalidquestiontype', 'question', $question->originalqtype),
+                'badge bg-danger text-white ms-3'
+            );
+        } else {
+            $canedit = question_has_capability_on($question->questionid, 'edit');
+            $instancename = $canedit ? $editicon . $instancename : $instancename;
+            // Display the link, if the user has permission to edit. Otherwise, just display the name and icon.
+            $questionname = $icon . html_writer::tag('span', $instancename, ['class' => 'instancename']);
+            if ($canedit) {
+                $output .= html_writer::link(
+                    $editurl,
+                    $questionname,
+                    [
+                        'title' => get_string('editquestion', 'quiz') . ' ' . $title,
+                    ],
+                );
+            } else {
+                $output .= $questionname;
+            }
+        }
 
         return $output;
     }
@@ -1060,8 +1150,6 @@ class edit_renderer extends \plugin_renderer_base {
     public function random_question(structure $structure, $slotnumber, $pageurl) {
         $question = $structure->get_question_in_slot($slotnumber);
         $slot = $structure->get_slot_by_number($slotnumber);
-        $editurl = new \moodle_url('/mod/quiz/editrandom.php',
-                ['returnurl' => $pageurl->out_as_local_url(), 'slotid' => $slot->id]);
 
         $temp = clone($question);
         $temp->questiontext = '';
@@ -1076,13 +1164,13 @@ class edit_renderer extends \plugin_renderer_base {
         }
 
         $configuretitle = get_string('configurerandomquestion', 'quiz');
-        $qtype = \question_bank::get_qtype($question->qtype, false);
+        $qtype = question_bank::get_qtype($question->qtype, false);
         $namestr = $qtype->local_name();
         $icon = $this->pix_icon('icon', $namestr, $qtype->plugin_name(), ['class' => 'icon activityicon']);
 
         $editicon = $this->pix_icon('t/edit', $configuretitle, 'moodle', ['title' => '']);
         $qbankurlparams = [
-            'courseid' =>  $structure->get_courseid(),
+            'cmid' => $structure->get_source_bank($slotnumber)->cminfo->id,
             'filter' => json_encode($slot->filtercondition['filter']),
         ];
 
@@ -1092,8 +1180,17 @@ class edit_renderer extends \plugin_renderer_base {
         $qbanklink = ' ' . \html_writer::link($qbankurl,
                         get_string('seequestions', 'quiz'), ['class' => 'mod_quiz_random_qbank_link']);
 
-        return html_writer::link($editurl, $icon . $editicon, ['title' => $configuretitle]) .
-                ' ' . $instancename . ' ' . $qbanklink;
+        $editlink = html_writer::link(
+            $pageurl->out(),
+            $icon . $editicon,
+            [
+                'title' => $configuretitle,
+                'data-action' => 'editrandomquestion',
+                'data-slotid' => $slot->id,
+                'data-header' => get_string('randomediting', 'mod_quiz'),
+            ],
+        );
+        return $editlink . ' ' . $instancename . ' ' . $qbanklink;
     }
 
     /**
@@ -1242,7 +1339,7 @@ class edit_renderer extends \plugin_renderer_base {
         ], 'moodle');
 
         $this->page->requires->strings_for_js([
-                'addpagebreak',
+                'addpagebreakafter',
                 'cannotremoveallsectionslots',
                 'cannotremoveslots',
                 'confirmremovesectionheading',
@@ -1253,14 +1350,14 @@ class edit_renderer extends \plugin_renderer_base {
                 'sectionheadingedit',
                 'sectionheadingremove',
                 'sectionnoname',
-                'removepagebreak',
+                'removepagebreakafter',
                 'questiondependencyadd',
                 'questiondependencyfree',
                 'questiondependencyremove',
                 'questiondependsonprevious',
         ], 'quiz');
 
-        foreach (\question_bank::get_all_qtypes() as $qtype => $notused) {
+        foreach (question_bank::get_all_qtypes() as $qtype => $notused) {
             $this->page->requires->string_for_js('pluginname', 'qtype_' . $qtype);
         }
 

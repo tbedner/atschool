@@ -122,6 +122,11 @@ class user_badge_exporter extends exporter {
                 'optional' => true,
                 'null' => NULL_ALLOWED,
             ],
+            'coursefullname' => [
+                'type' => PARAM_TEXT,
+                'description' => 'Full name of the course',
+                'optional' => true,
+            ],
             'message' => [
                 'type' => PARAM_RAW,
                 'description' => 'Message',
@@ -181,6 +186,14 @@ class user_badge_exporter extends exporter {
                 'optional' => true,
                 'default' => 0,
             ],
+            'recipientid' => [
+                'type' => PARAM_INT,
+                'description' => 'Id of the awarded user',
+            ],
+            'recipientfullname' => [
+                'type' => PARAM_NOTAGS,
+                'description' => 'Full name of the awarded user',
+            ],
             'email' => [
                 'type' => PARAM_TEXT,
                 'description' => 'User email',
@@ -195,24 +208,6 @@ class user_badge_exporter extends exporter {
             'language' => [
                 'type' => PARAM_NOTAGS,
                 'description' => 'Language',
-                'optional' => true,
-                'null' => NULL_ALLOWED,
-            ],
-            'imageauthorname' => [
-                'type' => PARAM_TEXT,
-                'description' => 'Name of the image author',
-                'optional' => true,
-                'null' => NULL_ALLOWED,
-            ],
-            'imageauthoremail' => [
-                'type' => PARAM_TEXT,
-                'description' => 'Email of the image author',
-                'optional' => true,
-                'null' => NULL_ALLOWED,
-            ],
-            'imageauthorurl' => [
-                'type' => PARAM_URL,
-                'description' => 'URL of the image author',
                 'optional' => true,
                 'null' => NULL_ALLOWED,
             ],

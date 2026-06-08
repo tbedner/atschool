@@ -309,7 +309,7 @@ class mod_lti_mod_form extends moodleform_mod {
     }
 
     public function definition() {
-        global $PAGE, $OUTPUT, $COURSE;
+        global $CFG, $PAGE, $OUTPUT, $COURSE;
 
         if ($this->type) {
             component_callback("ltisource_$this->type", 'add_instance_hook');
@@ -369,7 +369,7 @@ class mod_lti_mod_form extends moodleform_mod {
                 || !empty($this->current->secureicon) || !empty($this->current->icon));
 
             $selectcontentindicatorinner = $iscontentitem ?
-                $OUTPUT->pix_icon('i/valid', get_string('contentselected', 'mod_lti'), 'moodle', ['class' => 'mr-1'])
+                $OUTPUT->pix_icon('i/valid', get_string('contentselected', 'mod_lti'), 'moodle', ['class' => 'me-1'])
                 . get_string('contentselected', 'mod_lti') : '';
             $selectcontentindicator = html_writer::div($selectcontentindicatorinner, '',
                 ['aria-role' => 'status', 'id' => 'id_selectcontentindicator']);
@@ -517,7 +517,11 @@ class mod_lti_mod_form extends moodleform_mod {
         $this->add_action_buttons();
 
         if ($supportscontentitemselection) {
-            $PAGE->requires->js_call_amd('mod_lti/mod_form', 'init', [$COURSE->id]);
+            $jsparams = [$COURSE->id];
+            // If local-network-access is enabled, pass the tool URL as well.
+            $jsparams[] = (isset($CFG->ltiallowlocalnetwork) && $CFG->ltiallowlocalnetwork) ? $tooltype->baseurl : '';
+
+            $PAGE->requires->js_call_amd('mod_lti/mod_form', 'init', $jsparams);
         }
     }
 

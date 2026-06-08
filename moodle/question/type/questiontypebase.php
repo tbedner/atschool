@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/question/engine/lib.php');
 require_once($CFG->libdir . '/questionlib.php');
 
+use core_question\versions;
 
 /**
  * This is the base class for Moodle question types.
@@ -494,7 +495,7 @@ class question_type {
             // Get the status field. It comes from the form, but for testing we can.
             $status = $form->status ?? $question->status ??
                 \core_question\local\bank\question_version_status::QUESTION_STATUS_READY;
-            $questionversion->version = get_next_version($questionbankentry->id);
+            $questionversion->version = versions::get_next_version($questionbankentry->id);
             $questionversion->status = $status;
         } else {
             $parentversion = get_question_version($form->parent);
@@ -904,7 +905,7 @@ class question_type {
      *                         specific information (it is passed by reference).
      */
     public function get_question_options($question) {
-        global $DB, $OUTPUT;
+        global $DB;
 
         if (!isset($question->options)) {
             $question->options = new stdClass();
@@ -921,9 +922,8 @@ class question_type {
                     $question->options->$field = $extra_data->$field;
                 }
             } else {
-                echo $OUTPUT->notification('Failed to load question options from the table ' .
+                debugging('Failed to load question options from the table ' .
                         $question_extension_table . ' for questionid ' . $question->id);
-                return false;
             }
         }
 
@@ -938,9 +938,8 @@ class question_type {
                     WHERE qa.question = ?
                     ORDER BY qa.id", array($question->id));
             if (!$answers) {
-                echo $OUTPUT->notification('Failed to load question answers from the table ' .
-                        $answerextensiontable . 'for questionid ' . $question->id);
-                return false;
+                debugging('Failed to load question answers from the table ' .
+                        $answerextensiontable . ' for questionid ' . $question->id);
             }
         } else {
             // Don't check for success or failure because some question types do
@@ -1396,7 +1395,9 @@ class question_type {
      * required to set up and save a question of any type for testing purposes.
      * Alternate DB table prefix may be used to facilitate data deletion.
      */
+    #[\core\attribute\deprecated(replacement: null, since: '5.0', mdl: 'MDL-71378')]
     public function generate_test($name, $courseid=null) {
+        \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
         $form = new stdClass();
         $form->name = $name;
         $form->questiontextformat = 1;

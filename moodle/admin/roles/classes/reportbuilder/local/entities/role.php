@@ -18,13 +18,12 @@ declare(strict_types=1);
 
 namespace core_role\reportbuilder\local\entities;
 
-use context;
-use context_helper;
-use lang_string;
-use stdClass;
+use core\{context, context_helper};
+use core\lang_string;
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\select;
 use core_reportbuilder\local\report\{column, filter};
+use stdClass;
 
 /**
  * Role entity
@@ -84,8 +83,6 @@ class role extends base {
      * @return column[]
      */
     protected function get_all_columns(): array {
-        global $DB;
-
         $contextalias = $this->get_table_alias('context');
         $rolealias = $this->get_table_alias('role');
 
@@ -96,17 +93,16 @@ class role extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
             ->add_fields("{$rolealias}.name, {$rolealias}.shortname, {$rolealias}.id, {$contextalias}.id AS contextid")
             ->add_fields(context_helper::get_preload_record_columns_sql($contextalias))
-            // The sorting is on name, unless empty (determined by single space - thanks Oracle) then we use shortname.
+            // The sorting is on name, unless empty then we use shortname.
             ->set_is_sortable(true, [
-                "CASE WHEN " . $DB->sql_concat("{$rolealias}.name", "' '") . " = ' '
+                "CASE WHEN COALESCE({$rolealias}.name, '') = ''
                       THEN {$rolealias}.shortname
                       ELSE {$rolealias}.name
                  END",
             ])
-            ->set_callback(static function($name, stdClass $role): string {
+            ->add_callback(static function(?string $name, stdClass $role): string {
                 if ($name === null) {
                     return '';
                 }
@@ -124,21 +120,17 @@ class role extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
             ->add_fields("{$rolealias}.name, {$rolealias}.shortname")
-            // The sorting is on name, unless empty (determined by single space - thanks Oracle) then we use shortname.
+            // The sorting is on name, unless empty then we use shortname.
             ->set_is_sortable(true, [
-                "CASE WHEN " . $DB->sql_concat("{$rolealias}.name", "' '") . " = ' '
+                "CASE WHEN COALESCE({$rolealias}.name, '') = ''
                       THEN {$rolealias}.shortname
                       ELSE {$rolealias}.name
                  END",
             ])
-            ->set_callback(static function($name, stdClass $role): string {
-                if ($name === null) {
-                    return '';
-                }
-
-                return role_get_name($role, null, ROLENAME_ORIGINAL);
+            ->add_callback(fn(?string $name, stdClass $role) => match ($name) {
+                null => '',
+                default => role_get_name($role, null, ROLENAME_ORIGINAL),
             });
 
         // Short name column.
@@ -148,15 +140,25 @@ class role extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rolealias}.shortname")
+            ->add_field("{$rolealias}.shortname")
+            ->set_is_sortable(true);
+
+        // Archetype column.
+        $columns[] = (new column(
+            'archetype',
+            new lang_string('archetype', 'core_role'),
+            $this->get_entity_name(),
+        ))
+            ->add_joins($this->get_joins())
+            ->add_field("{$rolealias}.archetype")
+            ->add_callback(fn(?string $archetype) => match ($archetype) {
+                null => '',
+                '' => get_string('none'),
+                default => get_string("archetype{$archetype}", 'core_role'),
+            })
             ->set_is_sortable(true);
 
         // Description column.
-        $descriptionfieldsql = "{$rolealias}.description";
-        if ($DB->get_dbfamily() === 'oracle') {
-            $descriptionfieldsql = $DB->sql_order_by_text($descriptionfieldsql, 1024);
-        }
         $columns[] = (new column(
             'description',
             new lang_string('description'),
@@ -164,14 +166,11 @@ class role extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_LONGTEXT)
-            ->add_field($descriptionfieldsql, 'description')
-            ->add_field("{$rolealias}.shortname")
-            ->set_callback(static function($description, stdClass $role): string {
-                if ($description === null) {
-                    return '';
-                }
-
-                return role_get_description($role);
+            ->add_fields("{$rolealias}.description, {$rolealias}.shortname")
+            ->set_is_sortable(true)
+            ->add_callback(fn(?string $description, stdClass $role) => match ($description) {
+                null => '',
+                default => role_get_description($role),
             });
 
         return $columns;
@@ -196,6 +195,22 @@ class role extends base {
             ->add_joins($this->get_joins())
             ->set_options_callback(static function(): array {
                 return role_get_names(null, ROLENAME_ORIGINAL, true);
+            });
+
+        // Archetype filter.
+        $filters[] = (new filter(
+            select::class,
+            'archetype',
+            new lang_string('archetype', 'core_role'),
+            $this->get_entity_name(),
+            "{$rolealias}.archetype",
+        ))
+            ->add_joins($this->get_joins())
+            ->set_options_callback(static function(): array {
+                return array_map(
+                    fn(string $archetype) => get_string("archetype{$archetype}", 'core_role'),
+                    get_role_archetypes(),
+                );
             });
 
         return $filters;

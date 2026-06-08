@@ -334,6 +334,66 @@ final class audience_test extends advanced_testcase {
     }
 
     /**
+     * Test retrieving SQL for single audience
+     */
+    public function test_user_audience_single_sql(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $userone = $this->getDataGenerator()->create_user();
+        $usertwo = $this->getDataGenerator()->create_user();
+        $userthree = $this->getDataGenerator()->create_user();
+
+        /** @var core_reportbuilder_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
+        $report = $generator->create_report(['name' => 'My report', 'source' => users::class]);
+
+        $audience = $generator->create_audience(['reportid' => $report->get('id'), 'classname' => manual::class,
+            'configdata' => [
+                'users' => [$userone->id, $usertwo->id],
+            ],
+        ]);
+
+        [$select, $params] = audience::user_audience_single_sql($audience->get_persistent(), 'u.id');
+        $users = $DB->get_fieldset_sql("SELECT u.id FROM {user} u WHERE {$select}", $params);
+        $this->assertEqualsCanonicalizing([$userone->id, $usertwo->id], $users);
+    }
+
+    /**
+     * Test retrieving SQL for multiple audiences
+     */
+    public function test_user_audience_sql(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $userone = $this->getDataGenerator()->create_user();
+        $usertwo = $this->getDataGenerator()->create_user();
+        $userthree = $this->getDataGenerator()->create_user();
+        $userfour = $this->getDataGenerator()->create_user();
+
+        /** @var core_reportbuilder_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
+        $report = $generator->create_report(['name' => 'My report', 'source' => users::class]);
+
+        $audienceone = $generator->create_audience(['reportid' => $report->get('id'), 'classname' => manual::class,
+            'configdata' => [
+                'users' => [$userone->id, $usertwo->id],
+            ],
+        ]);
+        $audiencetwo = $generator->create_audience(['reportid' => $report->get('id'), 'classname' => manual::class,
+            'configdata' => [
+                'users' => [$usertwo->id, $userthree->id],
+            ],
+        ]);
+
+        [$selects, $params] = audience::user_audience_sql([$audienceone->get_persistent(), $audiencetwo->get_persistent()]);
+        $users = $DB->get_fieldset_sql("SELECT u.id FROM {user} u WHERE " . implode(' OR ', $selects), $params);
+        $this->assertEqualsCanonicalizing([$userone->id, $usertwo->id, $userthree->id], $users);
+    }
+
+    /**
      * Test getting list of audiences in use within schedules for a report
      */
     public function test_get_audiences_for_report_schedules(): void {

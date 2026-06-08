@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\di;
+use core\hook;
+use core_user\hook\extend_user_menu;
+
 define('USER_FILTER_ENROLMENT', 1);
 define('USER_FILTER_GROUP', 2);
 define('USER_FILTER_LAST_ACCESS', 3);
@@ -914,7 +918,7 @@ function user_get_user_navigation_info($user, $page, $options = array()) {
 
                 // Get login failures string.
                 $a = new stdClass();
-                $a->attempts = html_writer::tag('span', $count, array('class' => 'value mr-1 font-weight-bold'));
+                $a->attempts = html_writer::tag('span', $count, array('class' => 'value me-1 fw-bold'));
                 $returnobject->metadata['userloginfail'] =
                     get_string('failedloginattempts', '', $a);
 
@@ -933,6 +937,14 @@ function user_get_user_navigation_info($user, $page, $options = array()) {
         if ($item->itemtype !== 'divider' && $item->itemtype !== 'invalid') {
             $custommenucount++;
         }
+    }
+
+    // Call to hook to add menu items.
+    $hook = new extend_user_menu();
+    di::get(core\hook\manager::class)->dispatch($hook);
+    $hookitems = $hook->get_navitems();
+    foreach ($hookitems as $menuitem) {
+        $returnobject->navitems[] = $menuitem;
     }
 
     if ($custommenucount > 0) {
@@ -1109,13 +1121,16 @@ function user_is_previously_used_password($userid, $password) {
  *
  * @param string $uuid The device UUID.
  * @param string $appid The app id. If empty all the devices matching the UUID for the user will be removed.
+ * @param int|null $userid The user id. If null, the current user will be used.
  * @return bool true if removed, false if the device didn't exists in the database
  * @since Moodle 2.9
  */
-function user_remove_user_device($uuid, $appid = "") {
+function user_remove_user_device($uuid, $appid = "", $userid = null) {
     global $DB, $USER;
 
-    $conditions = array('uuid' => $uuid, 'userid' => $USER->id);
+    $userid ??= $USER->id;
+
+    $conditions = ['uuid' => $uuid, 'userid' => $userid];
     if (!empty($appid)) {
         $conditions['appid'] = $appid;
     }
@@ -1306,32 +1321,64 @@ function user_process_profile_callbacks(stdClass $user, ?stdClass $course = null
 function user_get_tagged_users($tag, $exclusivemode = false, $fromctx = 0, $ctx = 0, $rec = 1, $page = 0) {
     global $PAGE;
 
-    if ($ctx && $ctx != context_system::instance()->id) {
-        $usercount = 0;
-    } else {
-        // Users can only be displayed in system context.
-        $usercount = $tag->count_tagged_items('core', 'user',
-                'it.deleted=:notdeleted', array('notdeleted' => 0));
-    }
     $perpage = $exclusivemode ? 24 : 5;
-    $content = '';
-    $excludedusers = 0;
+    $filteredusers = []; // Initialize an array to hold users that pass filtering.
 
-    if ($usercount) {
-        $userlist = $tag->get_tagged_items('core', 'user', $page * $perpage, $perpage,
-                'it.deleted=:notdeleted', array('notdeleted' => 0));
-        foreach ($userlist as $user) {
-            if (!user_can_view_profile($user)) {
-                unset($userlist[$user->id]);
-                $excludedusers++;
+    $totalusers = $tag->count_tagged_items('core', 'user', 'it.deleted=:notdeleted', ['notdeleted' => 0]);
+    $withinuserlimit = ($page * $perpage < $totalusers);
+    // Check if the requested page is within the user limit and if the context is valid or matches the system context.
+    if ($withinuserlimit && (!$ctx || $ctx == context_system::instance()->id)) {
+        // The output from get_tagged_items() will be filtered to check if users are visible to the current user.
+        // It’s possible that the count of users meeting the filtering criteria may fall short of the per-page limit,
+        // necessitating additional data beyond this limit.
+        // Implementing a batch approach addressed this issue by minimizing database queries.
+        $batch = 0;
+        // Increase the per-page limit to create a batch size for chunked querying.
+        // If the first chunk $perpagebatch doesn't return enough users, fetch the next chunk without re-querying the database.
+        $perpagebatch = $perpage * 2;
+
+        do {
+            $userlist = $tag->get_tagged_items(
+                component: 'core',
+                itemtype: 'user',
+                limitfrom: $perpagebatch * $batch,
+                limitnum: $perpagebatch,
+                subquery: 'it.deleted=:notdeleted',
+                params: ['notdeleted' => 0],
+            );
+
+            foreach ($userlist as $user) {
+                // Check if the user profile can be viewed.
+                if (user_can_view_profile($user)) {
+                    $filteredusers[] = $user;
+                    // If enough users have been collected for the requested page, exit both loops.
+                    if (count($filteredusers) > $perpage * ($page + 1)) {
+                        break 2;
+                    }
+                }
             }
-        }
+
+            $batch++;
+
+        } while (count($userlist) > 0); // If all the data is still insufficient, run another batch.
+
+    }
+
+    $usercount = count($filteredusers);
+
+    // Initialize the content to display tagged users.
+    $content = '';
+    if ($usercount > 0) {
+        // Prepare the paginated list of users, limiting it to the number of users per page.
+        $paginatedusers = array_slice($filteredusers, $page * $perpage, $perpage);
+
+        // Get the renderer for the user module to create the user list content.
         $renderer = $PAGE->get_renderer('core', 'user');
-        $content .= $renderer->user_list($userlist, $exclusivemode);
+        $content = $renderer->user_list($paginatedusers, $exclusivemode);
     }
 
     // Calculate the total number of pages.
-    $totalpages = ceil(($usercount - $excludedusers) / $perpage);
+    $totalpages = ceil($usercount / $perpage);
 
     return new core_tag\output\tagindex($tag, 'core', 'user', $content,
             $exclusivemode, $fromctx, $ctx, $rec, $page, $totalpages);

@@ -42,9 +42,8 @@ final class weblib_test extends advanced_testcase {
         $this->assertSame('Café', s('Café'));
         $this->assertSame('一, 二, 三', s('一, 二, 三'));
 
-        // Don't escape already-escaped numeric entities. (Note, this behaviour
-        // may not be desirable. Perhaps we should remove these tests and that
-        // functionality, but we can only do that if we understand why it was added.)
+        // Don't escape already-escaped numeric entities. This is a feature
+        // necessary to prevent double-escaping in Mustache templates via clean_string().
         $this->assertSame('An entity: &#x09ff;.', s('An entity: &#x09ff;.'));
         $this->assertSame('An entity: &#1073;.', s('An entity: &#1073;.'));
         $this->assertSame('An entity: &amp;amp;.', s('An entity: &amp;.'));
@@ -182,6 +181,36 @@ final class weblib_test extends advanced_testcase {
             'I really do not like this!',
             $result,
         );
+    }
+
+    /**
+     * Test conversion of dangerous characters and named entities to numeric entities.
+     *
+     * @covers ::clean_string
+     */
+    public function test_clean_string(): void {
+        $string = 'Žluťoučký koníček <tag> "test" \'example\' & escaped &amp; &lt; &gt; &quot; ';
+        $cleaned = clean_string($string);
+
+        $this->assertSame(
+            'Žluťoučký koníček &#60;tag&#62; &#34;test&#34; &#39;example&#39; &#38; escaped &#38; &#60; &#62; &#34; ',
+            $cleaned
+        );
+
+        // Repeated cleaning does not change result.
+        $this->assertSame($cleaned, clean_string($cleaned));
+
+        // Function s() does not modify it.
+        $this->assertSame($cleaned, s($cleaned));
+
+        // Function format_string() does not modify it.
+        $this->assertSame($cleaned, format_string($cleaned));
+
+        // Function clean_text() does not remove data.
+        $this->assertSame($cleaned, clean_string(clean_text($cleaned)));
+
+        // It can be converted back to raw UTF-8 characters.
+        $this->assertSame(core_text::entities_to_utf8($string), core_text::entities_to_utf8($cleaned));
     }
 
     /**
@@ -511,112 +540,6 @@ final class weblib_test extends advanced_testcase {
     }
 
     /**
-     * @covers \null_progress_trace
-     */
-    public function test_null_progress_trace(): void {
-        $this->resetAfterTest(false);
-
-        $trace = new null_progress_trace();
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $output = ob_get_contents();
-        $this->assertSame('', $output);
-        $this->expectOutputString('');
-    }
-
-    /**
-     * @covers \null_progress_trace
-     */
-    public function test_text_progress_trace(): void {
-        $this->resetAfterTest(false);
-
-        $trace = new text_progress_trace();
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $this->expectOutputString("do\n  re\n    mi\n");
-    }
-
-    /**
-     * @covers \html_progress_trace
-     */
-    public function test_html_progress_trace(): void {
-        $this->resetAfterTest(false);
-
-        $trace = new html_progress_trace();
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $this->expectOutputString("<p>do</p>\n<p>&#160;&#160;re</p>\n<p>&#160;&#160;&#160;&#160;mi</p>\n");
-    }
-
-    /**
-     * @covers \html_list_progress_trace
-     */
-    public function test_html_list_progress_trace(): void {
-        $this->resetAfterTest(false);
-
-        $trace = new html_list_progress_trace();
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $this->expectOutputString("<ul>\n<li>do<ul>\n<li>re<ul>\n<li>mi</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n");
-    }
-
-    /**
-     * @covers \progress_trace_buffer
-     */
-    public function test_progress_trace_buffer(): void {
-        $this->resetAfterTest(false);
-
-        $trace = new progress_trace_buffer(new html_progress_trace());
-        ob_start();
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $output = ob_get_contents();
-        ob_end_clean();
-        $this->assertSame("<p>do</p>\n<p>&#160;&#160;re</p>\n<p>&#160;&#160;&#160;&#160;mi</p>\n", $output);
-        $this->assertSame($output, $trace->get_buffer());
-
-        $trace = new progress_trace_buffer(new html_progress_trace(), false);
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $this->assertSame("<p>do</p>\n<p>&#160;&#160;re</p>\n<p>&#160;&#160;&#160;&#160;mi</p>\n", $trace->get_buffer());
-        $this->assertSame("<p>do</p>\n<p>&#160;&#160;re</p>\n<p>&#160;&#160;&#160;&#160;mi</p>\n", $trace->get_buffer());
-        $trace->reset_buffer();
-        $this->assertSame('', $trace->get_buffer());
-        $this->expectOutputString('');
-    }
-
-    /**
-     * @covers \combined_progress_trace
-     */
-    public function test_combined_progress_trace(): void {
-        $this->resetAfterTest(false);
-
-        $trace1 = new progress_trace_buffer(new html_progress_trace(), false);
-        $trace2 = new progress_trace_buffer(new text_progress_trace(), false);
-
-        $trace = new combined_progress_trace(array($trace1, $trace2));
-        $trace->output('do');
-        $trace->output('re', 1);
-        $trace->output('mi', 2);
-        $trace->finished();
-        $this->assertSame("<p>do</p>\n<p>&#160;&#160;re</p>\n<p>&#160;&#160;&#160;&#160;mi</p>\n", $trace1->get_buffer());
-        $this->assertSame("do\n  re\n    mi\n", $trace2->get_buffer());
-        $this->expectOutputString('');
-    }
-
-    /**
      * @covers ::set_debugging
      */
     public function test_set_debugging(): void {
@@ -644,7 +567,7 @@ final class weblib_test extends advanced_testcase {
 
         set_debugging(DEBUG_ALL);
         $this->assertEquals(DEBUG_ALL, $CFG->debug);
-        $this->assertFalse($CFG->debugdeveloper);
+        $this->assertTrue($CFG->debugdeveloper);
 
         set_debugging(DEBUG_NORMAL);
         $this->assertEquals(DEBUG_NORMAL, $CFG->debug);
@@ -1097,7 +1020,7 @@ EXPECTED;
 
         $html = "<p>This is a test.</p><p><img src=\"{$url1}\" alt=\"\"></p>
                 <br>Test content.<p></p><p><img src=\"{$url2}\" alt=\"\" width=\"2048\" height=\"1536\"
-                class=\"img-fluid atto_image_button_text-bottom\"><br></p>";
+                class=\"img-fluid \"><br></p>";
         $draftareas = array(
             array(
                 'urlbase' => 'draftfile.php',
@@ -1197,136 +1120,6 @@ EXPECTED;
      */
     public function test_get_html_lang_attribute_value(string $langcode, string $expected): void {
         $this->assertEquals($expected, get_html_lang_attribute_value($langcode));
-    }
-
-    /**
-     * Test the coding exceptions when returning URL as relative path from $CFG->wwwroot.
-     *
-     * @param moodle_url $url The URL pointing to a web resource.
-     * @param string $exmessage The expected output URL.
-     * @throws coding_exception If called on a non-local URL.
-     * @see \moodle_url::out_as_local_url()
-     * @covers \moodle_url::out_as_local_url
-     * @dataProvider out_as_local_url_coding_exception_provider
-     */
-    public function test_out_as_local_url_coding_exception(\moodle_url $url, string $exmessage): void {
-        $this->expectException(\coding_exception::class);
-        $this->expectExceptionMessage($exmessage);
-        $localurl = $url->out_as_local_url();
-    }
-
-    /**
-     * Data provider for throwing coding exceptions in <u>\moodle_url::out_as_local_url()</u>.
-     *
-     * @return array
-     * @throws moodle_exception On seriously malformed URLs (<u>parse_url</u>).
-     * @see \moodle_url::out_as_local_url()
-     * @see parse_url()
-     */
-    public static function out_as_local_url_coding_exception_provider(): array {
-        return [
-            'Google Maps CDN (HTTPS)' => [
-                new \moodle_url('https://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
-                'Coding error detected, it must be fixed by a programmer: out_as_local_url called on a non-local URL'
-            ],
-            'Google Maps CDN (HTTP)' => [
-                new \moodle_url('http://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
-                'Coding error detected, it must be fixed by a programmer: out_as_local_url called on a non-local URL'
-            ],
-        ];
-    }
-
-    /**
-     * Test URL as relative path from $CFG->wwwroot.
-     *
-     * @param moodle_url $url The URL pointing to a web resource.
-     * @param string $expected The expected local URL.
-     * @throws coding_exception If called on a non-local URL.
-     * @see \moodle_url::out_as_local_url()
-     * @covers \moodle_url::out_as_local_url
-     * @dataProvider out_as_local_url_provider
-     */
-    public function test_out_as_local_url(\moodle_url $url, string $expected): void {
-        $this->assertEquals($expected, $url->out_as_local_url(false));
-    }
-
-    /**
-     * Data provider for returning local paths via <u>\moodle_url::out_as_local_url()</u>.
-     *
-     * @return array
-     * @throws moodle_exception On seriously malformed URLs (<u>parse_url</u>).
-     * @see \moodle_url::out_as_local_url()
-     * @see parse_url()
-     */
-    public static function out_as_local_url_provider(): array {
-        global $CFG;
-        $wwwroot = rtrim($CFG->wwwroot, '/');
-
-        return [
-            'Environment XML file' => [
-                new \moodle_url('/admin/environment.xml'),
-                '/admin/environment.xml'
-            ],
-            'H5P JS internal resource' => [
-                new \moodle_url('/h5p/js/embed.js'),
-                '/h5p/js/embed.js'
-            ],
-            'A Moodle JS resource using the full path including the proper JS Handler' => [
-                new \moodle_url($wwwroot . '/lib/javascript.php/1/lib/editor/tiny/js/tinymce/tinymce.js'),
-                '/lib/javascript.php/1/lib/editor/tiny/js/tinymce/tinymce.js'
-            ],
-        ];
-    }
-
-    /**
-     * Test URL as relative path from $CFG->wwwroot.
-     *
-     * @param moodle_url $url The URL pointing to a web resource.
-     * @param bool $expected The expected result.
-     * @see \moodle_url::is_local_url()
-     * @covers \moodle_url::is_local_url
-     * @dataProvider is_local_url_provider
-     */
-    public function test_is_local_url(\moodle_url $url, bool $expected): void {
-        $this->assertEquals($expected, $url->is_local_url(), "'{$url}' is not a local URL!");
-    }
-
-    /**
-     * Data provider for testing <u>\moodle_url::is_local_url()</u>.
-     *
-     * @return array
-     * @see \moodle_url::is_local_url()
-     */
-    public static function is_local_url_provider(): array {
-        global $CFG;
-        $wwwroot = rtrim($CFG->wwwroot, '/');
-
-        return [
-            'Google Maps CDN (HTTPS)' => [
-                new \moodle_url('https://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
-                false
-            ],
-            'Google Maps CDN (HTTP)' => [
-                new \moodle_url('http://maps.googleapis.com/maps/api/js', ['key' => 'googlemapkey3', 'sensor' => 'false']),
-                false
-            ],
-            'wwwroot' => [
-                new \moodle_url($wwwroot),
-                true
-            ],
-            'wwwroot/' => [
-                new \moodle_url($wwwroot . '/'),
-                true
-            ],
-            'Environment XML file' => [
-                new \moodle_url('/admin/environment.xml'),
-                true
-            ],
-            'H5P JS internal resource' => [
-                new \moodle_url('/h5p/js/embed.js'),
-                true
-            ],
-        ];
     }
 
     /**

@@ -232,13 +232,14 @@ class provider implements
      * @param int $courseid The course id. Provide this if you want course completion and activity completion deleted.
      * @param int $cmid The course module id. Provide this if you only want activity completion deleted.
      */
-    public static function delete_completion(\stdClass $user = null, int $courseid = null, int $cmid = null) {
+    public static function delete_completion(?\stdClass $user = null, ?int $courseid = null, ?int $cmid = null) {
         global $DB;
 
         if (isset($cmid)) {
             $params = (isset($user)) ? ['userid' => $user->id, 'coursemoduleid' => $cmid] : ['coursemoduleid' => $cmid];
             // Only delete the record for course modules completion.
             $DB->delete_records('course_modules_completion', $params);
+            $DB->delete_records('course_modules_viewed', $params);
             return;
         }
 
@@ -285,7 +286,7 @@ class provider implements
      * @param int $courseid The course id. Provide this if you want course completion and activity completion deleted.
      * @param int $cmid The course module id. Provide this if you only want activity completion deleted.
      */
-    public static function delete_completion_by_approved_userlist(approved_userlist $userlist, int $courseid = null, int $cmid = null) {
+    public static function delete_completion_by_approved_userlist(approved_userlist $userlist, ?int $courseid = null, ?int $cmid = null) {
         global $DB;
         $userids = $userlist->get_userids();
 

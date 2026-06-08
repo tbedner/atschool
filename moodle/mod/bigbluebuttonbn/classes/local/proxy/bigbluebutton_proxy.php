@@ -94,7 +94,7 @@ class bigbluebutton_proxy extends proxy_base {
     private static function internal_get_join_url(
         instance $instance,
         ?string $jointime,
-        string $userfullname = null,
+        ?string $userfullname = null,
         bool $isguestjoin = false
     ): string {
         $data = [
@@ -325,7 +325,7 @@ class bigbluebutton_proxy extends proxy_base {
                 'features' => ['showroom', 'welcomemessage', 'voicebridge', 'waitformoderator', 'userlimit',
                     'recording', 'sendnotifications', 'lock', 'preuploadpresentation', 'permissions', 'schedule', 'groups',
                     'modstandardelshdr', 'availabilityconditionsheader', 'tagshdr', 'competenciessection',
-                    'completionattendance', 'completionengagement', 'activitycompletionheader',
+                    'completionattendance', 'completionengagement', 'activitycompletionheader', 'modstandardgrade',
                 ],
             ],
             instance::TYPE_RECORDING_ONLY => [

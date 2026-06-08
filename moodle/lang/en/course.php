@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'course', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'core_course', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package   core_course
  * @copyright 2018 Adrian Greeve <adriangreeve.com>
@@ -40,6 +40,10 @@ $string['activitydate:closed'] = 'Closed:';
 $string['activitydate:closes'] = 'Closes:';
 $string['activitydate:opened'] = 'Opened:';
 $string['activitydate:opens'] = 'Opens:';
+$string['activitynavigation'] = 'Activity navigation';
+$string['activitynavigation:jumptoactivity'] = 'Jump to activity';
+$string['activitynavigation:nexta'] = 'Next activity: {$a}';
+$string['activitynavigation:preva'] = 'Previous activity: {$a}';
 $string['aria:coursecategory'] = 'Course category';
 $string['aria:courseshortname'] = 'Course short name';
 $string['aria:coursename'] = 'Course name';
@@ -78,14 +82,13 @@ $string['coursenotyetfinished'] = 'The course has not yet finished';
 $string['courseparticipants'] = 'Course participants';
 $string['coursetoolong'] = 'The course is too long';
 $string['customfield_islocked'] = 'Locked';
-$string['customfield_islocked_help'] = 'If the field is locked, only users with the capability to change locked custom fields (by default users with the default role of manager only) will be able to change it in the course settings.';
+$string['customfield_islocked_help'] = 'If the field is locked, only users with the capability to change locked course custom fields (users with the default role of manager) will be able to change it in the course settings.';
 $string['customfield_notvisible'] = 'Nobody';
 $string['customfield_visibility'] = 'Visible to';
 $string['customfield_visibility_help'] = 'This setting determines who can view the custom field name and value in the list of courses or in the available custom field filter of the Dashboard.';
 $string['customfield_visibletoall'] = 'Everyone';
 $string['customfield_visibletoteachers'] = 'Teachers';
 $string['customfieldsettings'] = 'Common course custom fields settings';
-$string['daystakingcourse'] = 'Days taking course';
 $string['defaultsettingscategory'] = 'Default settings';
 $string['downloadcourseconfirmation'] = 'You are about to download a zip file of course content (excluding items which cannot be downloaded and any files larger than {$a}).';
 $string['downloadcoursecontent'] = 'Download course content';
@@ -97,6 +100,10 @@ The setting has no effect on mobile app content download for offline usage.';
 $string['enabledownloadcoursecontent'] = 'Enable download course content';
 $string['errorendbeforestart'] = 'The end date ({$a}) is before the course start date.';
 $string['favourite'] = 'Starred course';
+$string['filterbothactive'] = 'First ({$a->first}) Last ({$a->last})';
+$string['filterbyname'] = 'Filter by name';
+$string['filterfirstactive'] = 'First ({$a->first})';
+$string['filterlastactive'] = 'Last ({$a->last})';
 $string['gradetopassnotset'] = 'This course does not have a grade to pass set. It may be set in the grade item of the course (Gradebook setup).';
 $string['hideendedcoursestask'] = 'Hide courses on end date';
 $string['informationformodule'] = 'Information about the {$a} activity';
@@ -112,6 +119,12 @@ $string['norecentaccessesinfomessage'] = 'Hi {$a->userfirstname},
 <p>A number of students in {$a->coursename} have not accessed the course recently.</p>';
 $string['noteachinginfomessage'] = 'Hi {$a->userfirstname},
 <p>Courses with start dates in the next week have been identified as having no teacher or student enrolments.</p>';
+$string['overview_info'] = 'An overview of all activities in the course, with dates and other information.';
+$string['overview_missing_notice'] = 'Go to the {$a}.';
+$string['overview_missing_title'] = '{$a} information not available.';
+$string['overview_modname'] = '{$a} overview';
+$string['overview_page_title'] = 'Course activities: {$a}';
+$string['overview_table_caption'] = 'Table listing all {$a} activities';
 $string['participants:perpage'] = 'Number of participants per page';
 $string['participants:perpage_help'] = 'The number of users shown per page on the participants page in each course.';
 $string['participantsnavigation'] = 'Participants tertiary navigation.';
@@ -132,6 +145,7 @@ $string['searchresults'] = 'Search results: {$a}';
 $string['sectionlink'] = 'Permalink';
 $string['showstartedcoursestask'] = 'Show courses on start date';
 $string['submitsearch'] = 'Submit search';
+$string['subsectiondescriptionwarning'] = '<strong>Subsection descriptions will be discontinued in Moodle 5.2</strong>. To add a description, use a <strong>Text and media area</strong> instead.';
 $string['studentsatriskincourse'] = 'Students at risk in {$a} course';
 $string['studentsatriskinfomessage'] = 'Hi {$a->userfirstname},
 <p>Students in the {$a->coursename} course have been identified as being at risk.</p>';
@@ -165,5 +179,5 @@ $string['targetlabelteachingno'] = 'Courses at risk of not starting';
 $string['totalactivities'] = 'Activities: {$a}';
 $string['gotosection'] = 'Go to section {$a}';
 
-// Deprecated since Moodle 4.3.
-$string['aria:courseimage'] = 'Course image';
+// Deprecated since Moodle 4.5.
+$string['daystakingcourse'] = 'Days taking course';

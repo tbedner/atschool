@@ -38,6 +38,7 @@ $string['customwelcomemessage'] = 'Custom welcome message';
 $string['customwelcomemessage_help'] = 'Accepted formats: Plain text or Moodle-auto format. HTML tags and multi-lang tags are also accepted, as well as the following placeholders:
 <ul>
 <li>Course name {$a->coursename}</li>
+<li>Link to course page {$a->courselink}</li>
 <li>Link to user\'s profile page {$a->profileurl}</li>
 <li>User email {$a->email}</li>
 <li>User fullname {$a->fullname}</li>
@@ -45,7 +46,7 @@ $string['customwelcomemessage_help'] = 'Accepted formats: Plain text or Moodle-a
 <li>User last name {$a->lastname}</li>
 <li>User course role {$a->courserole}</li>
 </ul>';
-$string['customwelcomemessageplaceholder'] = 'Dear {$a->fullname}, you are enrolled in the course {$a->coursename}.';
+$string['customwelcomemessageplaceholder'] = 'Hi {$a->firstname}, you are enrolled in the course {$a->coursename}.';
 $string['defaultenrol'] = 'Add instance to new courses';
 $string['defaultenrol_desc'] = 'It is possible to add this plugin to all new courses by default.';
 $string['deleteinstanceconfirm'] = 'You are about to delete the enrolment method "{$a->name}". All {$a->users} users currently enrolled using this method will be unenrolled and any course-related data such as users\' grades, group membership or forum subscriptions will be deleted.

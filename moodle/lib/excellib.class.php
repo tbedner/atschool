@@ -24,20 +24,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once("$CFG->libdir/phpspreadsheet/vendor/autoload.php");
-
-use \PhpOffice\PhpSpreadsheet\Spreadsheet;
-use \PhpOffice\PhpSpreadsheet\IOFactory;
-use \PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use \PhpOffice\PhpSpreadsheet\Cell\DataType;
-use \PhpOffice\PhpSpreadsheet\Shared\Date;
-use \PhpOffice\PhpSpreadsheet\Style\Alignment;
-use \PhpOffice\PhpSpreadsheet\Style\Border;
-use \PhpOffice\PhpSpreadsheet\Style\Fill;
-use \PhpOffice\PhpSpreadsheet\Style\Font;
-use \PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use \PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\CellAddress;
+use PhpOffice\PhpSpreadsheet\Cell\CellRange;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
  * Define and operate over one Moodle Workbook.
@@ -109,6 +109,9 @@ class MoodleExcelWorkbook {
      */
     public function close() {
         global $CFG;
+
+        // If this file was requested from a form, then mark download as complete.
+        \core_form\util::form_download_complete();
 
         foreach ($this->objspreadsheet->getAllSheets() as $sheet) {
             $sheet->setSelectedCells('A1');
@@ -202,10 +205,12 @@ class MoodleExcelWorksheet {
     public function write_string($row, $col, $str, $format = null) {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
         $col += 1;
+
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
         $str = \core\dataformat::escape_spreadsheet_formula($str);
 
-        $this->worksheet->getStyleByColumnAndRow($col, $row + 1)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
-        $this->worksheet->setCellValueExplicitByColumnAndRow($col, $row + 1, $str, DataType::TYPE_STRING);
+        $this->worksheet->getStyle($celladdress)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $this->worksheet->getCell($celladdress)->setValueExplicit($str, DataType::TYPE_STRING);
         $this->apply_format($row, $col, $format);
     }
 
@@ -221,8 +226,10 @@ class MoodleExcelWorksheet {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
         $col += 1;
 
-        $this->worksheet->getStyleByColumnAndRow($col, $row + 1)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_GENERAL);
-        $this->worksheet->setCellValueExplicitByColumnAndRow($col, $row + 1, $num, DataType::TYPE_NUMERIC);
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
+
+        $this->worksheet->getStyle($celladdress)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_GENERAL);
+        $this->worksheet->getCell($celladdress)->setValueExplicit($num, DataType::TYPE_NUMERIC);
         $this->apply_format($row, $col, $format);
     }
 
@@ -238,8 +245,11 @@ class MoodleExcelWorksheet {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
         $col += 1;
 
-        $this->worksheet->setCellValueByColumnAndRow($col, $row + 1, $url);
-        $this->worksheet->getCellByColumnAndRow($col, $row + 1)->getHyperlink()->setUrl($url);
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
+
+        $cell = $this->worksheet->getCell($celladdress);
+        $cell->setValue($url);
+        $cell->getHyperlink()->setUrl($url);
         $this->apply_format($row, $col, $format);
     }
 
@@ -264,9 +274,10 @@ class MoodleExcelWorksheet {
             $getdate['seconds']
         );
 
-        $this->worksheet->setCellValueByColumnAndRow($col, $row + 1, $exceldate);
-        $style = $this->worksheet->getStyleByColumnAndRow($col, $row + 1);
-        $style->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_XLSX22);
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
+
+        $this->worksheet->getCell($celladdress)->setValue($exceldate);
+        $this->worksheet->getStyle($celladdress)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_XLSX22);
         $this->apply_format($row, $col, $format);
     }
 
@@ -282,7 +293,8 @@ class MoodleExcelWorksheet {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
         $col += 1;
 
-        $this->worksheet->setCellValueExplicitByColumnAndRow($col, $row + 1, $formula, DataType::TYPE_FORMULA);
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
+        $this->worksheet->getCell($celladdress)->setValueExplicit($formula, DataType::TYPE_FORMULA);
         $this->apply_format($row, $col, $format);
     }
 
@@ -297,7 +309,8 @@ class MoodleExcelWorksheet {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
         $col += 1;
 
-        $this->worksheet->setCellValueByColumnAndRow($col, $row + 1, '');
+        $celladdress = CellAddress::fromColumnAndRow($col, $row + 1);
+        $this->worksheet->getCell($celladdress)->setValue('');
         $this->apply_format($row, $col, $format);
     }
 
@@ -446,7 +459,12 @@ class MoodleExcelWorksheet {
     */
     public function merge_cells($firstrow, $firstcol, $lastrow, $lastcol) {
         // For PhpSpreadsheet library, the column indexes start on 1 (instead of 0 as before).
-        $this->worksheet->mergeCellsByColumnAndRow($firstcol + 1, $firstrow + 1, $lastcol + 1, $lastrow + 1);
+        $this->worksheet->mergeCells(
+            new CellRange(
+                CellAddress::fromColumnAndRow($firstcol + 1, $firstrow + 1),
+                CellAddress::fromColumnAndRow($lastcol + 1, $lastrow + 1),
+            )
+        );
     }
 
     protected function apply_format($row, $col, $format = null) {
@@ -455,7 +473,7 @@ class MoodleExcelWorksheet {
         } else if (is_array($format)) {
             $format = new MoodleExcelFormat($format);
         }
-        $this->worksheet->getStyleByColumnAndRow($col, $row + 1)->applyFromArray($format->get_format_array());
+        $this->worksheet->getStyle(CellAddress::fromColumnAndRow($col, $row + 1))->applyFromArray($format->get_format_array());
     }
 
     protected function apply_column_format($col, $format = null) {

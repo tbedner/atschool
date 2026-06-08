@@ -1480,13 +1480,14 @@ function assign_capability($capability, $permission, $roleid, $contextid, $overw
  * @param string $capability the name of the capability
  * @param int $roleid the role id
  * @param int|context $contextid null means all contexts
+ * @param bool $showdebug if true, will show debugging messages
  * @return boolean true or exception
  */
-function unassign_capability($capability, $roleid, $contextid = null) {
+function unassign_capability($capability, $roleid, $contextid = null, bool $showdebug = true) {
     global $DB, $USER;
 
     // Capability must exist.
-    if (!$capinfo = get_capability_info($capability)) {
+    if (!get_capability_info($capability, $showdebug)) {
         throw new coding_exception("Capability '{$capability}' was not found! This has to be fixed in code.");
     }
 
@@ -2460,7 +2461,11 @@ function capabilities_cleanup($component, $newcapdef = null) {
                 // Delete from roles.
                 if ($roles = get_roles_with_capability($cachedcap->name)) {
                     foreach ($roles as $role) {
-                        if (!unassign_capability($cachedcap->name, $role->id)) {
+                        if (!unassign_capability(
+                            capability: $cachedcap->name,
+                            roleid: $role->id,
+                            showdebug: false, // Suppress debugging messages in the get_capability_info().
+                        )) {
                             throw new \moodle_exception('cannotunassigncap', 'error', '',
                                 (object)array('cap' => $cachedcap->name, 'role' => $role->name));
                         }
@@ -2595,10 +2600,11 @@ function is_inside_frontpage(context $context) {
 /**
  * Returns capability information (cached)
  *
- * @param string $capabilityname
+ * @param string $capabilityname the capability name.
+ * @param bool $showdebug if true, will show debugging messages.
  * @return ?stdClass object or null if capability not found
  */
-function get_capability_info($capabilityname) {
+function get_capability_info(string $capabilityname, bool $showdebug = true): ?stdClass {
     $caps = get_all_capabilities();
 
     // Check for deprecated capability.
@@ -2608,12 +2614,17 @@ function get_capability_info($capabilityname) {
             if (isset($caps[$deprecatedinfo['replacement']])) {
                 $capabilityname = $deprecatedinfo['replacement'];
             } else {
-                debugging("Capability '{$capabilityname}' was supposed to be replaced with ".
-                    "'{$deprecatedinfo['replacement']}', which does not exist !");
+                if ($showdebug) {
+                    debugging("Capability '{$capabilityname}' was supposed to be replaced with ".
+                        "'{$deprecatedinfo['replacement']}', which does not exist !");
+                }
             }
         }
-        $fullmessage = $deprecatedinfo['fullmessage'];
-        debugging($fullmessage, DEBUG_DEVELOPER);
+
+        if ($showdebug) {
+            $fullmessage = $deprecatedinfo['fullmessage'];
+            debugging($fullmessage, DEBUG_DEVELOPER);
+        }
     }
     if (!isset($caps[$capabilityname])) {
         return null;
@@ -2870,12 +2881,12 @@ function get_roles_used_in_context(context $context, $includeparents = true) {
  * It is using the CFG->profileroles to limit the list to only interesting roles.
  * (The permission tab has full details of user role assignments.)
  *
- * @param int $userid
+ * @param int $userid ID of the user whose course roles are filtered by visibility
  * @param int $courseid
  * @return string
  */
 function get_user_roles_in_course($userid, $courseid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $USER;
     if ($courseid == SITEID) {
         $context = context_system::instance();
     } else {
@@ -2915,7 +2926,7 @@ function get_user_roles_in_course($userid, $courseid) {
     $rolestring = '';
 
     if ($roles = $DB->get_records_sql($sql, $params)) {
-        $viewableroles = get_viewable_roles($context, $userid);
+        $viewableroles = get_viewable_roles($context, $USER->id);
 
         $rolenames = array();
         foreach ($roles as $roleid => $unused) {
@@ -2972,7 +2983,7 @@ function user_can_assign(context $context, $targetroleid) {
  * @param context $context optional context for course role name aliases
  * @return array of role records with optional coursealias property
  */
-function get_all_roles(context $context = null) {
+function get_all_roles(?context $context = null) {
     global $DB;
 
     if (!$context or !$coursecontext = $context->get_course_context(false)) {
@@ -3373,7 +3384,7 @@ function get_switchable_roles(context $context, $rolenamedisplay = ROLENAME_ALIA
  * Gets a list of roles that this user can view in a context
  *
  * @param context $context a context.
- * @param int $userid id of user.
+ * @param int $userid id of user whose viewable roles we are fetching
  * @param int $rolenamedisplay the type of role name to display. One of the
  *      ROLENAME_X constants. Default ROLENAME_ALIAS.
  * @return array an array $roleid => $rolename.
@@ -3785,14 +3796,13 @@ function get_with_capability_join(context $context, $capability, $useridcolumn) 
                                                           AND roleid IN (" . implode(',', array_keys($prohibited[$cap])) . "))";
 
                 } else {
-                    $unions[] = "SELECT userid
-                                   FROM {role_assignments}
-                                  WHERE contextid IN ($ctxids) AND roleid IN (" . implode(',', array_keys($needed[$cap])) . ")
-                                        AND userid NOT IN (
-                                            SELECT userid
-                                              FROM {role_assignments}
-                                             WHERE contextid IN ($ctxids)
-                                                   AND roleid IN (" . implode(',', array_keys($prohibited[$cap])) . "))";
+                    $unions[] = "SELECT ra.userid
+                                   FROM {role_assignments} ra
+                              LEFT JOIN {role_assignments} rap ON (rap.userid = ra.userid
+                                        AND rap.contextid IN ($ctxids)
+                                        AND rap.roleid IN (" . implode(',', array_keys($prohibited[$cap])) . "))
+                                  WHERE ra.contextid IN ($ctxids) AND ra.roleid IN (" . implode(',', array_keys($needed[$cap])) . ")
+                                        AND rap.id IS NULL";
                 }
             }
         }
@@ -4411,11 +4421,6 @@ function role_switch($roleid, context $context) {
         load_all_capabilities();
     }
 
-    // Make sure that course index is refreshed.
-    if ($coursecontext = $context->get_course_context()) {
-        core_courseformat\base::session_cache_reset(get_course($coursecontext->instanceid));
-    }
-
     // Add the switch RA
     if ($roleid == 0) {
         unset($USER->access['rsw'][$context->path]);
@@ -4424,6 +4429,12 @@ function role_switch($roleid, context $context) {
 
     $USER->access['rsw'][$context->path] = $roleid;
 
+    // Dispatch the hook for post user switch.
+    $hook = new \core\hook\access\after_role_switched(
+            context: $context,
+            roleid: $roleid
+        );
+    \core\di::get(\core\hook\manager::class)->dispatch($hook);
     return true;
 }
 
@@ -4647,7 +4658,7 @@ function role_get_description(stdClass $role) {
  * @param bool $returnmenu true means id=>localname, false means id=>rolerecord
  * @return array Array of context-specific role names, or role objects with a ->localname field added.
  */
-function role_get_names(context $context = null, $rolenamedisplay = ROLENAME_ALIAS, $returnmenu = null) {
+function role_get_names(?context $context = null, $rolenamedisplay = ROLENAME_ALIAS, $returnmenu = null) {
     return role_fix_names(get_all_roles($context), $context, $rolenamedisplay, $returnmenu);
 }
 
@@ -4660,7 +4671,7 @@ function role_get_names(context $context = null, $rolenamedisplay = ROLENAME_ALI
  * @param bool $returnmenu null means keep the same format as $roleoptions, true means id=>localname, false means id=>rolerecord
  * @return array Array of context-specific role names, or role objects with a ->localname field added.
  */
-function role_fix_names($roleoptions, context $context = null, $rolenamedisplay = ROLENAME_ALIAS, $returnmenu = null) {
+function role_fix_names($roleoptions, ?context $context = null, $rolenamedisplay = ROLENAME_ALIAS, $returnmenu = null) {
     global $DB;
 
     if (empty($roleoptions)) {

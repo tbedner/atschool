@@ -48,11 +48,22 @@ class completion extends base {
      */
     protected function get_default_tables(): array {
         return [
-            'course_completion',
             'course',
+            'course_completions',
             'grade_grades' ,
             'grade_items',
             'user',
+        ];
+    }
+
+    /**
+     * Database tables that this entity no longer uses
+     *
+     * @return string[]
+     */
+    protected function get_deprecated_tables(): array {
+        return [
+            'course_completions' => 'course_completion',
         ];
     }
 
@@ -92,8 +103,8 @@ class completion extends base {
      */
     protected function get_all_columns(): array {
         [
-            'course_completion' => $coursecompletion,
             'course' => $course,
+            'course_completions' => $coursecompletion,
             'grade_grades' => $grade,
             'grade_items' => $gradeitem,
             'user' => $user,
@@ -224,7 +235,7 @@ class completion extends base {
         $currenttime = time();
         $columns[] = (new column(
             'dayscourse',
-            new lang_string('daystakingcourse', 'course'),
+            new lang_string('daystakingcourse', 'completion'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -236,9 +247,10 @@ class completion extends base {
                         {$coursecompletion}.timecompleted
                         ELSE
                         {$currenttime}
-                    END - {$course}.startdate) / " . DAYSECS . "
+                    END - {$course}.startdate)
                 END)", 'dayscourse')
-            ->set_is_sortable(true);
+            ->set_is_sortable(true)
+            ->set_callback([format::class, 'format_time']);
 
         // Days since last completion (days since last enrolment date until completion or until current date if not completed).
         $columns[] = (new column(
@@ -255,9 +267,10 @@ class completion extends base {
                         {$coursecompletion}.timecompleted
                         ELSE
                         {$currenttime}
-                    END - {$coursecompletion}.timeenrolled) / " . DAYSECS . "
+                    END - {$coursecompletion}.timeenrolled)
                 END)", 'daysuntilcompletion')
-            ->set_is_sortable(true);
+            ->set_is_sortable(true)
+            ->set_callback([format::class, 'format_time']);
 
         // Student course grade.
         $columns[] = (new column(
@@ -293,7 +306,7 @@ class completion extends base {
      * @return filter[]
      */
     protected function get_all_filters(): array {
-        $coursecompletion = $this->get_table_alias('course_completion');
+        $coursecompletion = $this->get_table_alias('course_completions');
 
         // Completed status filter.
         $filters[] = (new filter(

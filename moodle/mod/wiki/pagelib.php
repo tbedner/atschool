@@ -715,7 +715,7 @@ class page_wiki_comments extends page_wiki {
                 $t->data[] = $row3;
             }
 
-            echo html_writer::tag('div', html_writer::table($t), array('class'=>'no-overflow'));
+            echo html_writer::tag('div', html_writer::table($t), ['class' => 'table-responsive']);
 
         }
     }
@@ -1370,7 +1370,7 @@ class page_wiki_history extends page_wiki {
 
                 $table->head = array(get_string('diff', 'wiki') . $icon, get_string('version'), get_string('user'), get_string('modified'), '');
                 $table->data = $contents;
-                $table->attributes['class'] = 'table generaltable';
+                $table->attributes['class'] = 'table generaltable table-hover';
                 $table->rowclasses = $rowclass;
 
                 // Print the form.
@@ -1967,7 +1967,7 @@ class page_wiki_restoreversion extends page_wiki {
         echo $OUTPUT->container_start('mt-2', 'wiki_restoreform');
         $yesbutton = new single_button($restoreurl, get_string('yes'), 'post');
         $nobutton = new single_button($return, get_string('no'), 'post');
-        $nobutton->class .= ' ml-2';
+        $nobutton->class .= ' ms-2';
         echo $OUTPUT->render($yesbutton);
         echo $OUTPUT->render($nobutton);
         echo $OUTPUT->container_end();
@@ -2584,7 +2584,7 @@ class page_wiki_admin extends page_wiki {
         $contents = array();
         $table = new html_table();
         $table->head = array('', get_string('pagename','wiki'));
-        $table->attributes['class'] = 'table generaltable';
+        $table->attributes['class'] = 'table generaltable table-hover';
         $swid = $this->subwiki->id;
         if ($showorphan) {
             if ($orphanedpages = wiki_get_orphaned_pages($swid)) {
@@ -2742,7 +2742,7 @@ class page_wiki_admin extends page_wiki {
                 $table = new html_table();
                 $table->head = array(get_string('deleteversions', 'wiki'), get_string('version'), get_string('user'), get_string('modified'), '');
                 $table->data = $contents;
-                $table->attributes['class'] = 'table generaltable';
+                $table->attributes['class'] = 'table generaltable table-hover';
                 $table->rowclasses = $rowclass;
 
                 ///Print the form

@@ -27,6 +27,7 @@ require_once($CFG->dirroot . '/grade/export/lib.php');
 
 use \core_grades\output\action_bar;
 use \core_grades\output\general_action_bar;
+use \core\output\single_select;
 
 /**
  * This class iterates over all users that are graded in a course.
@@ -134,7 +135,7 @@ class graded_users_iterator {
      * @return boolean success
      */
     public function init() {
-        global $CFG, $DB;
+        global $CFG, $DB, $USER;
 
         $this->close();
 
@@ -149,18 +150,29 @@ class graded_users_iterator {
 
         list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($coursecontext->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
         list($gradebookroles_sql, $params) = $DB->get_in_or_equal(explode(',', $CFG->gradebookroles), SQL_PARAMS_NAMED, 'grbr');
-        list($enrolledsql, $enrolledparams) = get_enrolled_sql($coursecontext, '', 0, $this->onlyactive);
+        list($enrolledsql, $enrolledparams) = get_enrolled_sql($coursecontext, '', $this->groupid, $this->onlyactive);
 
         $params = array_merge($params, $enrolledparams, $relatedctxparams);
 
-        if ($this->groupid) {
-            $groupsql = "INNER JOIN {groups_members} gm ON gm.userid = u.id";
-            $groupwheresql = "AND gm.groupid = :groupid";
-            // $params contents: gradebookroles
-            $params['groupid'] = $this->groupid;
+        if (
+            empty($this->groupid) &&
+            groups_get_course_groupmode($this->course) == SEPARATEGROUPS &&
+            !has_capability('moodle/site:accessallgroups', $coursecontext)
+        ) {
+            $groups = groups_get_all_groups($this->course->id, $USER->id, 0, 'g.id');
+            if (count($groups) > 0) {
+                [$groupmembersql, $groupmemberparams] = groups_get_members_ids_sql(
+                    array_column($groups, 'id'),
+                    $coursecontext,
+                );
+
+                $groupsql = "JOIN ({$groupmembersql}) jg ON jg.id = u.id";
+                $params = array_merge($params, $groupmemberparams);
+            } else {
+                $groupsql = "JOIN (SELECT 0 AS id) jg ON jg.id = u.id";
+            }
         } else {
             $groupsql = "";
-            $groupwheresql = "";
         }
 
         if (empty($this->sortfield1)) {
@@ -212,7 +224,6 @@ class graded_users_iterator {
                                      AND ra.contextid $relatedctxsql
                              ) rainner ON rainner.userid = u.id
                          WHERE u.deleted = 0
-                             $groupwheresql
                     ORDER BY $order";
         $this->users_rs = $DB->get_recordset_sql($users_sql, $params);
 
@@ -241,7 +252,6 @@ class graded_users_iterator {
                                   ) rainner ON rainner.userid = u.id
                               WHERE u.deleted = 0
                               AND g.itemid $itemidsql
-                              $groupwheresql
                          ORDER BY $order, g.itemid ASC";
             $this->grades_rs = $DB->get_recordset_sql($grades_sql, $params);
         } else {
@@ -412,12 +422,25 @@ class graded_users_iterator {
  * @param int    $includeall bool include all option
  * @param bool   $return If true, will return the HTML, otherwise, will print directly
  * @return null
+ * @todo Final deprecation on Moodle 6.0. See MDL-84680.
  */
+#[\core\attribute\deprecated('grade_get_graded_users_select()', since: '5.0', mdl: 'MDL-84673')]
 function print_graded_users_selector($course, $actionpage, $userid=0, $groupid=0, $includeall=true, $return=false) {
-    global $CFG, $USER, $OUTPUT;
+    \core\deprecation::emit_deprecation(__FUNCTION__);
+    global $OUTPUT;
     return $OUTPUT->render(grade_get_graded_users_select(substr($actionpage, 0, strpos($actionpage, '/')), $course, $userid, $groupid, $includeall));
 }
 
+/**
+ * Return a selection popup form of the graded users in a course.
+ *
+ * @param string $report name of the report
+ * @param int    $course id of the course
+ * @param int    $userid id of the currently selected user (or 'all' if they are all selected)
+ * @param int    $groupid id of requested group, 0 means all
+ * @param bool   $includeall bool include all option
+ * @return single_select
+ */
 function grade_get_graded_users_select($report, $course, $userid, $groupid, $includeall) {
     global $USER, $CFG;
 
@@ -992,6 +1015,20 @@ function print_grade_page_head(int $courseid, string $active_type, ?string $acti
         $output = $OUTPUT->heading($heading);
     }
 
+    // If any grade penalty plugins are enabled, notify the user that grade penalties will not be applied to imported grades.
+    if ($active_type === 'import') {
+        foreach (core_plugin_manager::instance()->get_plugins_of_type('gradepenalty') as $plugin) {
+            if ($plugin->is_enabled()) {
+                $output .= $OUTPUT->notification(
+                    get_string('gradepenalties', 'gradeimport_csv'),
+                    \core\output\notification::NOTIFY_INFO,
+                    false,
+                );
+                break;
+            }
+        }
+    }
+
     if ($return) {
         $returnval .= $output;
     } else {
@@ -1434,69 +1471,35 @@ class grade_structure {
     public $items;
 
     /**
-     * Returns icon of element
-     *
-     * @param array &$element An array representing an element in the grade_tree
-     * @param bool  $spacerifnone return spacer if no icon found
-     *
-     * @return string icon or spacer
      * @deprecated since Moodle 4.4 - please use {@see grade_helper::get_element_icon()}
-     * @todo MDL-79907 This will be deleted in Moodle 4.8.
      */
-    public function get_element_icon(&$element, $spacerifnone=false) {
-        debugging('The function get_element_icon() is deprecated, please use grade_helper::get_element_icon() instead.',
-            DEBUG_DEVELOPER);
-        return grade_helper::get_element_icon($element, $spacerifnone);
+    #[\core\attribute\deprecated('grade_helper::get_element_icon', since: '4.4', mdl: 'MDL-77326', final: true)]
+    public function get_element_icon(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
-     * Returns the string that describes the type of the element.
-     *
-     * @param array $element An array representing an element in the grade_tree
-     * @return string The string that describes the type of the grade element
      * @deprecated since Moodle 4.4 - please use {@see grade_helper::get_element_type_string()}
-     * @todo MDL-79907 This will be deleted in Moodle 4.8.
      */
-    public function get_element_type_string(array $element): string {
-        debugging('The function get_element_type_string() is deprecated,' .
-            ' please use grade_helper::get_element_type_string() instead.',
-            DEBUG_DEVELOPER);
-        return grade_helper::get_element_type_string($element);
+    #[\core\attribute\deprecated('grade_helper::get_element_type_string', since: '4.4', mdl: 'MDL-77326', final: true)]
+    public function get_element_type_string(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
-     * Returns name of element optionally with icon and link
-     *
-     * @param array &$element An array representing an element in the grade_tree
-     * @param bool  $withlink Whether or not this header has a link
-     * @param bool  $icon Whether or not to display an icon with this header
-     * @param bool  $spacerifnone return spacer if no icon found
-     * @param bool  $withdescription Show description if defined by this item.
-     * @param bool  $fulltotal If the item is a category total, returns $categoryname."total"
-     *                         instead of "Category total" or "Course total"
-     * @param moodle_url|null $sortlink Link to sort column.
-     *
-     * @return string header
      * @deprecated since Moodle 4.4 - please use {@see grade_helper::get_element_header()}
-     * @todo MDL-79907 This will be deleted in Moodle 4.8.
      */
-    public function get_element_header(array &$element, bool $withlink = false, bool $icon = true,
-            bool $spacerifnone = false, bool $withdescription = false, bool $fulltotal = false,
-            ?moodle_url $sortlink = null) {
-        debugging('The function get_element_header() is deprecated, please use grade_helper::get_element_header() instead.',
-            DEBUG_DEVELOPER);
-        return grade_helper::get_element_header($element, $withlink, $icon, $spacerifnone, $withdescription,
-            $fulltotal, $sortlink);
+    #[\core\attribute\deprecated('grade_helper::get_element_header', since: '4.4', mdl: 'MDL-77326', final: true)]
+    public function get_element_header(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
      * @deprecated since Moodle 4.4 - please use {@see grade_helper::get_activity_link()}
-     * @todo MDL-79907 This will be deleted in Moodle 4.8.
      */
-    private function get_activity_link($element) {
-        debugging('The function get_activity_link() is deprecated, please use grade_helper::get_activity_link() instead.',
-            DEBUG_DEVELOPER);
-        return grade_helper::get_activity_link($element);
+    #[\core\attribute\deprecated('grade_helper::get_activity_link', since: '4.4', mdl: 'MDL-77326', final: true)]
+    private function get_activity_link(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
@@ -1620,9 +1623,11 @@ class grade_structure {
 
         if ($menuitems) {
             $menu = new action_menu($menuitems);
-            $icon = $OUTPUT->pix_icon('i/moremenu', get_string('actions'));
-            $extraclasses = 'btn btn-link btn-icon icon-size-3 d-flex align-items-center justify-content-center no-caret';
+            $label = get_string('actions');
+            $icon = $OUTPUT->pix_icon('i/moremenu', '') . \core\output\html_writer::span($label, 'visually-hidden d-inline-block');
+            $extraclasses = 'btn btn-link btn-icon d-flex no-caret';
             $menu->set_menu_trigger($icon, $extraclasses);
+            $menu->triggerattributes['title'] = $label;
             $menu->set_menu_left();
 
             return $OUTPUT->render($menu);
@@ -2783,6 +2788,7 @@ class grade_tree extends grade_structure {
         $this->courseid   = $courseid;
         $this->levels     = array();
         $this->context    = context_course::instance($courseid);
+        $this->items      = [];
 
         if (!empty($COURSE->id) && $COURSE->id == $this->courseid) {
             $course = $COURSE;
@@ -3418,29 +3424,11 @@ abstract class grade_helper {
     protected static $aggregationstrings = null;
 
     /**
-     * Cached grade tree plugin strings
-     * @var array
-     */
-    protected static $langstrings = [];
-
-    /**
-     * First checks the cached language strings, then returns match if found, or uses get_string()
-     * to get it from the DB, caches it then returns it.
-     *
      * @deprecated since 4.3
-     * @todo MDL-78780 This will be deleted in Moodle 4.7.
-     * @param string $strcode
-     * @param string|null $section Optional language section
-     * @return string
      */
-    public static function get_lang_string(string $strcode, ?string $section = null): string {
-        debugging('grade_helper::get_lang_string() is deprecated, please use' .
-            ' get_string() instead.', DEBUG_DEVELOPER);
-
-        if (empty(self::$langstrings[$strcode])) {
-            self::$langstrings[$strcode] = get_string($strcode, $section);
-        }
-        return self::$langstrings[$strcode];
+    #[\core\attribute\deprecated('get_string', since: '4.3', mdl: 'MDL-78561', final: true)]
+    public static function get_lang_string(): void {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 
     /**
@@ -3903,15 +3891,14 @@ abstract class grade_helper {
 
                 $iscourse   = $element['object']->is_course_item();
                 $iscategory = $element['object']->is_category_item();
-                $isscale    = $element['object']->gradetype == GRADE_TYPE_SCALE;
-                $isvalue    = $element['object']->gradetype == GRADE_TYPE_VALUE;
+                $gradetype  = $element['object']->gradetype;
                 $isoutcome  = !empty($element['object']->outcomeid);
 
                 if ($element['object']->is_calculated()) {
                     $icon->pix = 'i/calc';
                     $icon->title = s(get_string('calculatedgrade', 'grades'));
 
-                } else if (($iscourse || $iscategory) && ($isscale || $isvalue)) {
+                } else if (($iscourse || $iscategory) && $gradetype != GRADE_TYPE_NONE) {
                     if ($category = $element['object']->get_item_category()) {
                         $aggrstrings = self::get_aggregation_strings();
                         $stragg = $aggrstrings[$category->aggregation];
@@ -3958,6 +3945,9 @@ abstract class grade_helper {
                         $icon->pix = 'i/manual_item';
                         $icon->title = s(get_string('manualitem', 'grades'));
                     }
+                } else {
+                    // No matching icon.
+                    $none = true;
                 }
                 break;
 

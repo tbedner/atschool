@@ -252,15 +252,18 @@ class renderer extends \plugin_renderer_base {
         $this->page->set_heading($this->page->course->fullname);
 
         $description = $header->preface;
-        if ($header->showintro || $header->activity) {
-            $description = $this->output->box_start('generalbox boxaligncenter');
-            if ($header->showintro) {
-                $description .= format_module_intro('assign', $header->assign, $header->coursemoduleid);
-            }
-            if ($header->activity) {
-                $description .= $this->format_activity_text($header->assign, $header->coursemoduleid);
-            }
-            $description .= $header->postfix;
+        $introcontent = '';
+        if ($header->showintro) {
+            $introcontent .= format_module_intro('assign', $header->assign, $header->coursemoduleid);
+        }
+        if ($header->activity) {
+            $introcontent .= $this->format_activity_text($header->assign, $header->coursemoduleid);
+        }
+        $introcontent .= $header->postfix ?? '';
+
+        if (trim($introcontent) !== '') {
+            $description .= $this->output->box_start('generalbox boxaligncenter');
+            $description .= $introcontent;
             $description .= $this->output->box_end();
         }
 
@@ -298,12 +301,14 @@ class renderer extends \plugin_renderer_base {
 
         if (isset($summary->cm)) {
             $currenturl = new \moodle_url('/mod/assign/view.php', array('id' => $summary->cm->id));
-            $o .= groups_print_activity_menu($summary->cm, $currenturl->out(), true);
+            $o .= groups_print_activity_menu($summary->cm, $currenturl->out(), true, participationonly: false);
         }
 
         $o .= $this->output->box_start('boxaligncenter gradingsummarytable');
         $t = new \html_table();
-        $t->attributes['class'] = 'generaltable table-bordered';
+        $t->attributes['class'] = 'generaltable table table-striped table-bordered table-hover';
+        $t->caption = get_string('gradingsummary', 'assign');
+        $t->captionhide = true; // Hidden because it matches the title above.
 
         // Visibility Status.
         $cell1content = get_string('hiddenfromstudents');
@@ -410,6 +415,8 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->heading(get_string('feedback', 'assign'), 3);
         $o .= $this->output->box_start('boxaligncenter feedbacktable');
         $t = new \html_table();
+        $t->caption = get_string('feedback', 'assign');
+        $t->captionhide = true; // Hidden because it matches the title above.
 
         // Grade.
         if (isset($status->gradefordisplay)) {
@@ -649,7 +656,9 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->box_start('boxaligncenter submissionsummarytable');
 
         $t = new \html_table();
-        $t->attributes['class'] = 'generaltable table-bordered';
+        $t->attributes['class'] = 'generaltable table table-striped table-bordered table-hover';
+        $t->caption = get_string('submissionstatusheading', 'assign');
+        $t->captionhide = true; // Hidden because it matches the title above.
 
         $warningmsg = '';
         if ($status->teamsubmissionenabled) {
@@ -675,7 +684,8 @@ class renderer extends \plugin_renderer_base {
             $this->add_table_row_tuple($t, $cell1content, $cell2content);
         }
 
-        if ($status->attemptreopenmethod != ASSIGN_ATTEMPT_REOPEN_METHOD_NONE) {
+        // If multiple attempts are allowed.
+        if ($status->maxattempts > 1 || $status->maxattempts == ASSIGN_UNLIMITED_ATTEMPTS) {
             $currentattempt = 1;
             if (!$status->teamsubmissionenabled) {
                 if ($status->submission) {
@@ -935,6 +945,8 @@ class renderer extends \plugin_renderer_base {
             $o .= $this->heading(get_string('attemptheading', 'assign', $attemptsummaryparams), 4);
 
             $t = new \html_table();
+            $t->caption = get_string('attemptheading', 'assign', $attemptsummaryparams);
+            $t->captionhide = true; // Hidden because it matches the title above.
 
             if ($submission) {
                 $cell1content = get_string('submissionstatus', 'assign');
@@ -1059,7 +1071,7 @@ class renderer extends \plugin_renderer_base {
             $link = '';
             if ($showviewlink) {
                 $previewstr = get_string('viewsubmission', 'assign');
-                $icon = $this->output->pix_icon('t/preview', $previewstr);
+                $icon = $this->output->pix_icon('t/viewdetails', $previewstr);
 
                 $expandstr = get_string('viewfull', 'assign');
                 $expandicon = $this->output->pix_icon('t/switch_plus', $expandstr);
@@ -1130,24 +1142,7 @@ class renderer extends \plugin_renderer_base {
         $o .= $this->output->box_start('boxaligncenter gradingtable position-relative');
 
         $this->page->requires->js_init_call('M.mod_assign.init_grading_table', array());
-        $this->page->requires->string_for_js('nousersselected', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmgrantextension', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmlock', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmremovesubmission', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmreverttodraft', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmunlock', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmaddattempt', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmdownloadselected', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmsetmarkingworkflowstate', 'assign');
-        $this->page->requires->string_for_js('batchoperationconfirmsetmarkingallocation', 'assign');
-        $this->page->requires->string_for_js('editaction', 'assign');
-        foreach ($table->plugingradingbatchoperations as $plugin => $operations) {
-            foreach ($operations as $operation => $description) {
-                $this->page->requires->string_for_js('batchoperationconfirm' . $operation,
-                                                     'assignfeedback_' . $plugin);
-            }
-        }
-        $o .= $this->flexible_table($table, $table->get_rows_per_page(), true);
+        $o .= $this->flexible_table($table, $table->get_rows_per_page(), false);
         $o .= $this->output->box_end();
 
         return $o;
@@ -1176,7 +1171,7 @@ class renderer extends \plugin_renderer_base {
             $link = '';
             if ($showviewlink) {
                 $previewstr = get_string('viewfeedback', 'assign');
-                $icon = $this->output->pix_icon('t/preview', $previewstr);
+                $icon = $this->output->pix_icon('t/viewdetails', $previewstr);
 
                 $expandstr = get_string('viewfull', 'assign');
                 $expandicon = $this->output->pix_icon('t/switch_plus', $expandstr);
@@ -1236,10 +1231,19 @@ class renderer extends \plugin_renderer_base {
     /**
      * Render a course index summary
      *
+     * @deprecated since Moodle 5.0 (MDL-83888).
+     * @todo MDL-84429 Final deprecation in Moodle 6.0.
      * @param \assign_course_index_summary $indexsummary
      * @return string
      */
+    #[\core\attribute\deprecated(
+        since: '5.0',
+        mdl: 'MDL-83888',
+        reason: 'The assign_course_index_summary class is not used anymore.',
+    )]
     public function render_assign_course_index_summary(\assign_course_index_summary $indexsummary) {
+        \core\deprecation::emit_deprecation([$this, __FUNCTION__]);
+
         $o = '';
 
         $strplural = get_string('modulenameplural', 'assign');

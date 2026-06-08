@@ -54,7 +54,7 @@ if (!$config->optoutbyemailsetting) {
 }
 
 // Check to see if the attempt is coming from a valid email.
-if (!sha1($CFG->dbpass . $courseid . $userid) == $key) {
+if (!sha1(tool_coursearchiver_processor::get_coursearchiver_keyid() . $courseid . $userid) == $key) {
     echo $OUTPUT->container(get_string('error_key', 'tool_coursearchiver'), 'coursearchiver_myformerror');
     echo $OUTPUT->footer();
     die();
@@ -67,8 +67,12 @@ if (!$course = tool_coursearchiver_processor::optout_course($courseid, $userid))
     die();
 }
 
-echo $OUTPUT->container(html_writer::tag('div',
-                                         get_string('course_skipped', 'tool_coursearchiver', $course),
-                                         ['style' => 'margin:15px;text-align:center;font-size:1.4em;font-weight:bold']));
+echo $OUTPUT->container(
+    html_writer::tag(
+        'div',
+        get_string('course_skipped', 'tool_coursearchiver', $course),
+        ['style' => 'margin:15px;text-align:center;font-size:1.4em;font-weight:bold']
+    )
+);
 
 echo $OUTPUT->footer();

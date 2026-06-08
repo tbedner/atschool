@@ -103,7 +103,20 @@ abstract class base_task implements checksumable, executable, loggable {
         }
     }
 
+    /**
+     * Check if a setting with the given name exists.
+     *
+     * This method find first in the current settings and then in the plan settings.
+     *
+     * @param string $name Setting name
+     * @return bool
+     */
     public function setting_exists($name) {
+        foreach ($this->settings as $setting) {
+            if ($setting->get_name() == $name) {
+                return true;
+            }
+        }
         return $this->plan->setting_exists($name);
     }
 
@@ -266,7 +279,13 @@ abstract class base_task implements checksumable, executable, loggable {
      */
     abstract protected function define_settings();
 
-    protected function add_setting($setting) {
+    /**
+     * Add a setting to the task.
+     *
+     * @param base_setting $setting
+     * @return void
+     */
+    public function add_setting($setting) {
         if (! $setting instanceof base_setting) {
             throw new base_setting_exception('wrong_base_setting_specified');
         }

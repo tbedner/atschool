@@ -131,7 +131,7 @@ class standard_action_bar implements renderable, templatable {
             'label' => get_string("searchindefinition", "glossary"),
         ];
 
-        $checkbox = $OUTPUT->render_from_template('core/checkbox', $check);
+        $checkbox = \html_writer::div($OUTPUT->render_from_template('core/checkbox', $check), 'mt-1');
 
         $hiddenfields = [
             (object) ['name' => 'id', 'value' => $this->cm->id],
@@ -280,7 +280,7 @@ class standard_action_bar implements renderable, templatable {
 
         if (count($options) > 1) {
             $select = new url_select(array_flip($options), $active, null);
-            $select->set_label(get_string('explainalphabet', 'glossary'), ['class' => 'sr-only']);
+            $select->set_label(get_string('explainalphabet', 'glossary'), ['class' => 'visually-hidden']);
             return $select->export_for_template($output);
         }
 

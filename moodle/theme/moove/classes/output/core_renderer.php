@@ -197,7 +197,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         $context->hastwocolumns = false;
-        if ($context->hasidentityproviders || $CFG->auth_instructions) {
+        if ($CFG->auth_instructions) {
             $context->hastwocolumns = true;
         }
 
@@ -205,7 +205,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             foreach ($context->identityproviders as $key => $provider) {
                 $isfacebook = false;
 
-                if (strpos($provider['iconurl'], 'facebook') !== false) {
+                if (!empty($provider['iconurl']) && strpos($provider['iconurl'], 'facebook') !== false) {
                     $isfacebook = true;
                 }
 
@@ -279,72 +279,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         return parent::favicon();
-    }
-
-    /**
-     * Renders the header bar.
-     *
-     * @param \context_header $contextheader Header bar object.
-     * @return string HTML for the header bar.
-     */
-    protected function render_context_header(\context_header $contextheader) {
-        if ($this->page->pagelayout == 'mypublic') {
-            return '';
-        }
-
-        // Generate the heading first and before everything else as we might have to do an early return.
-        if (!isset($contextheader->heading)) {
-            $heading = $this->heading($this->page->heading, $contextheader->headinglevel, 'h2');
-        } else {
-            $heading = $this->heading($contextheader->heading, $contextheader->headinglevel, 'h2');
-        }
-
-        // All the html stuff goes here.
-        $html = html_writer::start_div('page-context-header');
-
-        // Image data.
-        if (isset($contextheader->imagedata)) {
-            // Header specific image.
-            $html .= html_writer::div($contextheader->imagedata, 'page-header-image mr-2');
-        }
-
-        // Headings.
-        if (isset($contextheader->prefix)) {
-            $prefix = html_writer::div($contextheader->prefix, 'text-muted text-uppercase small line-height-3');
-            $heading = $prefix . $heading;
-        }
-        $html .= html_writer::tag('div', $heading, ['class' => 'page-header-headings']);
-
-        // Buttons.
-        if (isset($contextheader->additionalbuttons)) {
-            $html .= html_writer::start_div('btn-group header-button-group');
-            foreach ($contextheader->additionalbuttons as $button) {
-                if (!isset($button->page)) {
-                    // Include js for messaging.
-                    if ($button['buttontype'] === 'togglecontact') {
-                        \core_message\helper::togglecontact_requirejs();
-                    }
-                    if ($button['buttontype'] === 'message') {
-                        \core_message\helper::messageuser_requirejs();
-                    }
-                    $image = $this->pix_icon($button['formattedimage'], $button['title'], 'moodle', [
-                        'class' => 'iconsmall',
-                        'role' => 'presentation',
-                    ]);
-                    $image .= html_writer::span($button['title'], 'header-button-title');
-                } else {
-                    $image = html_writer::empty_tag('img', [
-                        'src' => $button['formattedimage'],
-                        'role' => 'presentation',
-                    ]);
-                }
-                $html .= html_writer::link($button['url'], html_writer::tag('span', $image), $button['linkattributes']);
-            }
-            $html .= html_writer::end_div();
-        }
-        $html .= html_writer::end_div();
-
-        return $html;
     }
 
     /**
@@ -434,7 +368,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string Final html code.
      */
     public function get_navbar_callbacks_data() {
-        $callbacks = get_plugins_with_function('moove_additional_header', 'lib.php');
+        $callbacks = get_plugins_with_function('moove_additional_header', 'lib.php', true, true);
 
         if (!$callbacks) {
             return '';
@@ -459,7 +393,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string Final html code.
      */
     public function get_module_footer_callbacks_data() {
-        $callbacks = get_plugins_with_function('moove_module_footer', 'lib.php');
+        $callbacks = get_plugins_with_function('moove_module_footer', 'lib.php', true, true);
 
         if (!$callbacks) {
             return '';
@@ -515,7 +449,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 break;
             case \moodle_page::STATE_PRINTING_HEADER :
                 // We should hopefully never get here.
-                throw new coding_exception('You cannot redirect while printing the page header');
+                throw new \coding_exception('You cannot redirect while printing the page header');
                 break;
             case \moodle_page::STATE_IN_BODY :
                 // We really shouldn't be here but we can deal with this.
@@ -542,5 +476,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $output .= $this->footer();
 
         return $output;
+    }
+
+    /**
+     * Renders the "breadcrumb" for all pages in boost.
+     *
+     * @return string the HTML for the navbar.
+     */
+    public function navbar(): string {
+        $newnav = new \theme_moove\output\boostnavbar($this->page);
+        return $this->render_from_template('core/navbar', $newnav);
     }
 }

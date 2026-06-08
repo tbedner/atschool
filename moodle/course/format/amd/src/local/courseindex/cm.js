@@ -29,6 +29,7 @@ import Templates from 'core/templates';
 import Prefetch from 'core/prefetch';
 import Config from 'core/config';
 import Pending from "core/pending";
+import log from "core/log";
 
 // Prefetch the completion icons template.
 const completionTemplate = 'core_courseformat/local/courseindex/cmcompletion';
@@ -46,6 +47,7 @@ export default class Component extends DndCmItem {
         this.selectors = {
             CM_NAME: `[data-for='cm_name']`,
             CM_COMPLETION: `[data-for='cm_completion']`,
+            DND_ALLOWED: `[data-courseindexdndallowed='true']`,
         };
         // Default classes to toggle on refresh.
         this.classes = {
@@ -67,8 +69,14 @@ export default class Component extends DndCmItem {
      * @return {Component}
      */
     static init(target, selectors) {
+        let element = document.querySelector(target);
+        // TODO Remove this if condition as part of MDL-83851.
+        if (!element) {
+            log.debug('Init component with id is deprecated, use a query selector instead.');
+            element = document.getElementById(target);
+        }
         return new this({
-            element: document.getElementById(target),
+            element,
             selectors,
         });
     }
@@ -79,7 +87,9 @@ export default class Component extends DndCmItem {
      * @param {Object} state the course state.
      */
     stateReady(state) {
-        this.configDragDrop(this.id);
+        if (document.querySelector(this.selectors.DND_ALLOWED)) {
+            this.configDragDrop(this.id);
+        }
         const cm = state.cm.get(this.id);
         const course = state.course;
         // Refresh completion icon.
@@ -177,7 +187,7 @@ export default class Component extends DndCmItem {
         }
         // Check if the completion value has changed.
         const completionElement = this.getElement(this.selectors.CM_COMPLETION);
-        if (completionElement.dataset.value == element.completionstate) {
+        if (!completionElement || completionElement.dataset.value == element.completionstate) {
             return;
         }
 
@@ -222,7 +232,13 @@ export default class Component extends DndCmItem {
      * @return {String} the anchor link.
      */
     _getActivitySectionURL(cm) {
-        const section = this.reactive.get('section', cm.sectionid);
+        let section = this.reactive.get('section', cm.sectionid);
+
+        // If the section is delegated get its parent section if it has one.
+        if (section.component && section.parentsectionid) {
+            section = this.reactive.get('section', section.parentsectionid);
+        }
+
         if (!section) {
             return '#';
         }

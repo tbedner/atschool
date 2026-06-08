@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mod_quiz_generator extends testing_module_generator {
 
-    public function create_instance($record = null, array $options = null) {
+    public function create_instance($record = null, ?array $options = null) {
         global $CFG;
 
         require_once($CFG->dirroot.'/mod/quiz/locallib.php');
@@ -184,7 +184,8 @@ class mod_quiz_generator extends testing_module_generator {
         if ($finishattempt) {
             // If a timefinish is not specified, use the current time.
             $timefinish = $timefinish ?? time();
-            $attemptobj->process_finish($timefinish, false);
+            $attemptobj->process_submit($timefinish, false);
+            $attemptobj->process_grade_submission(time());
         }
     }
 

@@ -289,7 +289,7 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                     array('title' => $titleunescaped, 'class' => 'text-truncate'));
             }
 
-            $toc .= html_writer::start_tag('div', array('class' => 'action-list d-flex ml-auto'));
+            $toc .= html_writer::start_tag('div', array('class' => 'action-list d-flex ms-auto'));
             if ($i != 1) {
                 $toc .= html_writer::link(new moodle_url('move.php', array('id' => $cm->id, 'chapterid' => $ch->id, 'up' => '1', 'sesskey' => $USER->sesskey)),
                         $OUTPUT->pix_icon('t/up', get_string('movechapterup', 'mod_book', $title)),
@@ -305,17 +305,17 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                     array('title' => get_string('editchapter', 'mod_book', $titleunescaped)));
 
             $deleteaction = new confirm_action(get_string('deletechapter', 'mod_book', $titleunescaped));
-            $toc .= $OUTPUT->action_icon(
-                    new moodle_url('delete.php', [
-                            'id'        => $cm->id,
-                            'chapterid' => $ch->id,
-                            'sesskey'   => sesskey(),
-                            'confirm'   => 1,
-                        ]),
-                    new pix_icon('t/delete', get_string('deletechapter', 'mod_book', $title)),
-                    $deleteaction,
-                    ['title' => get_string('deletechapter', 'mod_book', $titleunescaped)]
-                );
+            $toc .= $OUTPUT->action_link(
+                new moodle_url('delete.php', [
+                    'id'        => $cm->id,
+                    'chapterid' => $ch->id,
+                    'sesskey'   => sesskey(),
+                    'confirm'   => 1,
+                ]),
+                $OUTPUT->pix_icon('t/delete', get_string('deletechapter', 'mod_book', $title)),
+                $deleteaction,
+                ['title' => get_string('deletechapter', 'mod_book', $titleunescaped)]
+            );
 
             if ($ch->hidden) {
                 $toc .= html_writer::link(new moodle_url('show.php', array('id' => $cm->id, 'chapterid' => $ch->id, 'sesskey' => $USER->sesskey)),
@@ -352,9 +352,6 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
             $titleunescaped = trim(format_string($ch->title, true, array('context' => $context, 'escape' => false)));
             if (!$ch->hidden || ($ch->hidden && $viewhidden)) {
                 if (!$ch->subchapter) {
-                    $nch++;
-                    $ns = 0;
-
                     if ($first) {
                         $toc .= html_writer::start_tag('li');
                     } else {
@@ -363,12 +360,20 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                         $toc .= html_writer::start_tag('li');
                     }
 
-                    if ($book->numbering == BOOK_NUM_NUMBERS) {
-                          $title = "$nch. $title";
+                    // Don't show numbering for hidden chapters, so that numbering is consistent with what students see
+                    // and the edit mode.
+                    if (!$ch->hidden) {
+                        $nch++;
+                        $ns = 0;
+                        if ($book->numbering == BOOK_NUM_NUMBERS) {
+                            $title = "$nch. $title";
+                        }
+                    } else {
+                        if ($book->numbering == BOOK_NUM_NUMBERS) {
+                            $title = "x. $title";
+                        }
                     }
                 } else {
-                    $ns++;
-
                     if ($first) {
                         $toc .= html_writer::start_tag('li');
                         $toc .= html_writer::start_tag('ul');
@@ -377,8 +382,21 @@ function book_get_toc($chapters, $chapter, $book, $cm, $edit) {
                         $toc .= html_writer::start_tag('li');
                     }
 
-                    if ($book->numbering == BOOK_NUM_NUMBERS) {
-                          $title = "$nch.$ns. $title";
+                    // Don't show numbering for hidden subchapters, so that numbering is consistent with what students see
+                    // and the edit mode.
+                    if (!$ch->hidden) {
+                        $ns++;
+                        if ($book->numbering == BOOK_NUM_NUMBERS) {
+                            $title = "$nch.$ns. $title";
+                        }
+                    } else {
+                        if ($book->numbering == BOOK_NUM_NUMBERS) {
+                            if (empty($chapters[$ch->parent]->hidden)) {
+                                $title = "$nch.x. $title";
+                            } else {
+                                $title = "x.x. $title";
+                            }
+                        }
                     }
                 }
 

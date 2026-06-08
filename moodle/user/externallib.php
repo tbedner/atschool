@@ -150,6 +150,8 @@ class core_user_external extends \core_external\external_api {
         $transaction = $DB->start_delegated_transaction();
 
         $userids = array();
+        $newpasswordusers = [];
+
         foreach ($params['users'] as $user) {
             // Make sure that the username, firstname and lastname are not blank.
             foreach (array('username', 'firstname', 'lastname') as $fieldname) {
@@ -246,9 +248,10 @@ class core_user_external extends \core_external\external_api {
             }
 
             if ($createpassword) {
-                setnew_password_and_mail($userobject);
                 unset_user_preference('create_password', $userobject);
                 set_user_preference('auth_forcepasswordchange', 1, $userobject);
+                // Queue this user for email notification after user creation is finalized.
+                $newpasswordusers[] = $userobject;
             }
 
             // Trigger event.
@@ -267,6 +270,11 @@ class core_user_external extends \core_external\external_api {
         }
 
         $transaction->allow_commit();
+
+        // After database commit, send password emails to queued users.
+        foreach ($newpasswordusers as $userobject) {
+            setnew_password_and_mail($userobject);
+        }
 
         return $userids;
     }
@@ -410,18 +418,6 @@ class core_user_external extends \core_external\external_api {
         if (!empty($preferences)) {
             $userpref = ['id' => $userid];
             foreach ($preferences as $preference) {
-
-                /*
-                 * Rename user message provider preferences to avoid orphan settings on old app versions.
-                 * @todo Remove this "translation" block on MDL-73284.
-                 */
-                if (preg_match('/message_provider_.*_loggedin/', $preference['type']) ||
-                        preg_match('/message_provider_.*_loggedoff/', $preference['type'])) {
-                    $nameparts = explode('_', $preference['type']);
-                    array_pop($nameparts);
-                    $preference['type'] = implode('_', $nameparts).'_enabled';
-                }
-
                 $userpref['preference_' . $preference['type']] = $preference['value'];
             }
             useredit_update_user_preference($userpref);
@@ -671,7 +667,7 @@ class core_user_external extends \core_external\external_api {
                     useredit_update_user_preference($userpref);
                 }
                 if (isset($user['suspended']) and $user['suspended']) {
-                    \core\session\manager::kill_user_sessions($user['id']);
+                    \core\session\manager::destroy_user_sessions($user['id']);
                 }
 
                 $transaction->allow_commit();
@@ -1858,17 +1854,7 @@ class core_user_external extends \core_external\external_api {
 
             try {
 
-                // Support legacy preferences from the old M.util.set_user_preference API (always using the current user).
-                if (isset($USER->ajax_updatable_user_prefs[$pref['name']])) {
-                    debugging('Updating preferences via ajax_updatable_user_prefs is deprecated. ' .
-                        'Please use the "core_user/repository" module instead.', DEBUG_DEVELOPER);
-
-                    set_user_preference($pref['name'], $pref['value']);
-                    $saved[] = array(
-                        'name' => $pref['name'],
-                        'userid' => $USER->id,
-                    );
-                } else if (core_user::can_edit_preference($pref['name'], $user)) {
+                if (core_user::can_edit_preference($pref['name'], $user)) {
                     $value = core_user::clean_preference($pref['value'], $pref['name']);
                     set_user_preference($pref['name'], $value, $user->id);
                     $saved[] = array(

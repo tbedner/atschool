@@ -109,23 +109,6 @@ function blog_user_can_view_user_entry($targetuserid, $blogentry=null) {
 }
 
 /**
- * remove all associations for the blog entries of a particular user
- * @param int userid - id of user whose blog associations will be deleted
- */
-function blog_remove_associations_for_user($userid) {
-    global $DB;
-    throw new coding_exception('function blog_remove_associations_for_user() is not finished');
-    /*
-    $blogentries = blog_fetch_entries(array('user' => $userid), 'lasmodified DESC');
-    foreach ($blogentries as $entry) {
-        if (blog_user_can_edit_entry($entry)) {
-            blog_remove_associations_for_entry($entry->id);
-        }
-    }
-     */
-}
-
-/**
  * remove all associations for the blog entries of a particular course
  * @param int courseid - id of user whose blog associations will be deleted
  */
@@ -170,7 +153,7 @@ function blog_sync_external_entries($externalblog) {
     $rssfile = $rss->registry->create('File', array($externalblog->url));
     $filetest = $rss->registry->create('Locator', array($rssfile));
 
-    if (!$filetest->is_feed($rssfile)) {
+    if (empty($rssfile->success) || !$filetest->is_feed($rssfile)) {
         $externalblog->failedlastsync = 1;
         $DB->update_record('blog_external', $externalblog);
         return false;
@@ -338,7 +321,7 @@ function blog_is_enabled_for_user() {
  * @param stdClass $userid Load for a specific user
  * @return array An array of options organised by type.
  */
-function blog_get_all_options(moodle_page $page, stdClass $userid = null) {
+function blog_get_all_options(moodle_page $page, ?stdClass $userid = null) {
     global $CFG, $DB, $USER;
 
     $options = array();
@@ -400,7 +383,7 @@ function blog_get_all_options(moodle_page $page, stdClass $userid = null) {
  * @param stdClass $user
  * @return array The array of options for the requested user
  */
-function blog_get_options_for_user(stdClass $user=null) {
+function blog_get_options_for_user(?stdClass $user=null) {
     global $CFG, $USER;
     // Cache.
     static $useroptions = array();
@@ -471,7 +454,7 @@ function blog_get_options_for_user(stdClass $user=null) {
  * @param stdClass $user The user to load options for null == current user
  * @return array The array of options
  */
-function blog_get_options_for_course(stdClass $course, stdClass $user=null) {
+function blog_get_options_for_course(stdClass $course, ?stdClass $user=null) {
     global $CFG, $USER;
     // Cache.
     static $courseoptions = array();

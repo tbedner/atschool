@@ -22,6 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core_course\output\activity_icon;
+use core\output\local\properties\iconsize;
+
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
@@ -199,16 +202,24 @@ class core_backup_renderer extends plugin_renderer_base {
                         $table->head = array(get_string('module', 'backup'), get_string('title', 'backup'), get_string('userinfo', 'backup'));
                         $table->colclasses = array('modulename', 'moduletitle', 'userinfoincluded');
                         $table->align = array('left', 'left', 'center');
-                        $table->attributes = array('class' => 'activitytable generaltable');
+                        $table->attributes = ['class' => 'activitytable table generaltable'];
                         $table->data = array();
                     }
                     $name = get_string('pluginname', $activity->modulename);
-                    $icon = new image_icon('monologo', '', $activity->modulename, ['class' => 'iconlarge icon-pre']);
-                    $table->data[] = array(
-                        $this->output->render($icon).$name,
+                    $icon = activity_icon::from_modname($activity->modulename)
+                        ->set_icon_size(iconsize::SIZE4)
+                        ->set_colourize(false);
+
+                    $content = $this->output->container(
+                        contents: $this->output->render($icon) . $name,
+                        classes: 'd-flex align-items-center',
+                    );
+
+                    $table->data[] = [
+                        $content,
                         format_string($activity->title),
                         ($activity->settings[$activitykey.'_userinfo']) ? $yestick : $notick,
-                    );
+                    ];
                 }
                 if (!empty($table)) {
                     $html .= $this->backup_detail_pair(get_string('sectionactivities', 'backup'), html_writer::table($table));
@@ -278,8 +289,8 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param int $currentcourse
      * @return string
      */
-    public function course_selector(moodle_url $nextstageurl, $wholecourse = true, restore_category_search $categories = null,
-                                    restore_course_search $courses = null, $currentcourse = null) {
+    public function course_selector(moodle_url $nextstageurl, $wholecourse = true, ?restore_category_search $categories = null,
+                                    ?restore_course_search $courses = null, $currentcourse = null) {
         global $CFG;
         require_once($CFG->dirroot.'/course/lib.php');
 
@@ -395,7 +406,7 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param import_course_search $courses
      * @return string
      */
-    public function import_course_selector(moodle_url $nextstageurl, import_course_search $courses = null) {
+    public function import_course_selector(moodle_url $nextstageurl, ?import_course_search $courses = null) {
         $html  = html_writer::start_tag('div', array('class' => 'import-course-selector backup-restore'));
         $html .= html_writer::start_tag('form', array('method' => 'post', 'action' => $nextstageurl->out_omit_querystring()));
         foreach ($nextstageurl->params() as $key => $value) {
@@ -429,7 +440,7 @@ class core_backup_renderer extends plugin_renderer_base {
         $count ++;
         $html  = html_writer::start_tag('div', ['class' => 'detail-pair', 'role' => 'row']);
         $html .= html_writer::tag('div', $label, ['class' => 'detail-pair-label mb-2', 'role' => 'cell']);
-        $html .= html_writer::tag('div', $value, ['class' => 'detail-pair-value pl-2', 'role' => 'cell']);
+        $html .= html_writer::tag('div', $value, ['class' => 'detail-pair-value ps-2', 'role' => 'cell']);
         $html .= html_writer::end_tag('div');
         return $html;
     }
@@ -522,7 +533,7 @@ class core_backup_renderer extends plugin_renderer_base {
     public function substage_buttons($haserrors) {
         $output  = html_writer::start_tag('div', array('continuebutton'));
         if (!$haserrors) {
-            $attrs = ['type' => 'submit', 'value' => get_string('continue'), 'class' => 'btn btn-primary mr-1'];
+            $attrs = ['type' => 'submit', 'value' => get_string('continue'), 'class' => 'btn btn-primary me-1'];
             $output .= html_writer::empty_tag('input', $attrs);
         }
         $attrs = array('type' => 'submit', 'name' => 'cancel', 'value' => get_string('cancel'), 'class' => 'btn btn-secondary');
@@ -576,7 +587,7 @@ class core_backup_renderer extends plugin_renderer_base {
      * @param array $options
      * @return string
      */
-    public function backup_files_viewer(array $options = null) {
+    public function backup_files_viewer(?array $options = null) {
         $files = new backup_files_viewer($options);
         return $this->render($files);
     }
@@ -679,7 +690,7 @@ class core_backup_renderer extends plugin_renderer_base {
             }
 
             $table = new html_table();
-            $table->attributes['class'] = 'backup-files-table generaltable';
+            $table->attributes['class'] = 'backup-files-table table generaltable table-hover';
             $table->head = $tablehead;
             $table->width = '100%';
             $table->data = [];
@@ -880,7 +891,7 @@ class core_backup_renderer extends plugin_renderer_base {
                 'type' => 'submit',
                 'name' => 'searchcourses',
                 'value' => get_string('search'),
-                'class' => 'btn btn-secondary ml-1'
+                'class' => 'btn btn-secondary ms-1'
             );
             $output .= html_writer::empty_tag('input', $attrs);
             $output .= html_writer::end_tag('div');
@@ -946,7 +957,7 @@ class core_backup_renderer extends plugin_renderer_base {
             'type' => 'submit',
             'name' => 'searchcourses',
             'value' => get_string('search'),
-            'class' => 'btn btn-secondary ml-1'
+            'class' => 'btn btn-secondary ms-1'
         );
         $output .= html_writer::empty_tag('input', $attrs);
         $output .= html_writer::end_tag('div');
@@ -1040,7 +1051,7 @@ class core_backup_renderer extends plugin_renderer_base {
         $tablehead = array(get_string('course'), get_string('time'), get_string('status', 'backup'));
 
         $table = new html_table();
-        $table->attributes['class'] = 'backup-files-table generaltable';
+        $table->attributes['class'] = 'backup-files-table table generaltable table-hover';
         $table->head = $tablehead;
         $tabledata = array();
 
@@ -1081,7 +1092,7 @@ class core_backup_renderer extends plugin_renderer_base {
         );
 
         $table = new html_table();
-        $table->attributes['class'] = 'backup-files-table generaltable';
+        $table->attributes['class'] = 'backup-files-table table generaltable table-hover';
         $table->head = $tablehead;
 
         $tabledata = array();
@@ -1093,8 +1104,9 @@ class core_backup_renderer extends plugin_renderer_base {
             $sourceurl = new \moodle_url('/course/view.php', array('id' => $copy->sourceid));
 
             $tablerow = array(
-                html_writer::link($sourceurl, $copy->source),
-                $copy->destination,
+                html_writer::link($sourceurl, format_string($copy->source, true,
+                    ['context' => context_course::instance($copy->sourceid)])),
+                format_string($copy->destination, true, ['context' => context_course::instance($copy->sourceid)]),
                 userdate($copy->timecreated),
                 get_string($copy->operation),
                 $this->get_status_display($copy->status, $copy->backupid, $copy->restoreid, $copy->operation)
@@ -1147,7 +1159,7 @@ class backup_files_viewer implements renderable {
      * Constructor of backup_files_viewer class
      * @param array $options
      */
-    public function __construct(array $options = null) {
+    public function __construct(?array $options = null) {
         global $CFG, $USER;
         $fs = get_file_storage();
         $this->currentcontext = $options['currentcontext'];

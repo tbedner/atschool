@@ -94,6 +94,7 @@ $params = array();
 $PAGE->set_context($context);
 $PAGE->set_url('/my/index.php', $params);
 $PAGE->set_pagelayout('mydashboard');
+$PAGE->set_docs_path('dashboard');
 $PAGE->add_body_class('limitedwidth');
 $PAGE->set_pagetype('my-index');
 $PAGE->blocks->add_region('content');
@@ -103,13 +104,17 @@ $PAGE->set_heading($pagetitle);
 
 if (!isguestuser()) {   // Skip default home page for guests
     if (get_home_page() != HOMEPAGE_MY) {
-        if (optional_param('setdefaulthome', false, PARAM_BOOL)) {
+        if (optional_param('setdefaulthome', false, PARAM_BOOL) && confirm_sesskey()) {
             set_user_preference('user_home_page_preference', HOMEPAGE_MY);
+            redirect($PAGE->url);
         } else if (!empty($CFG->defaulthomepage) && $CFG->defaulthomepage == HOMEPAGE_USER) {
             $frontpagenode = $PAGE->settingsnav->add(get_string('frontpagesettings'), null, navigation_node::TYPE_SETTING, null);
             $frontpagenode->force_open();
-            $frontpagenode->add(get_string('makethismyhome'), new moodle_url('/my/', array('setdefaulthome' => true)),
-                    navigation_node::TYPE_SETTING);
+            $frontpagenode->add(
+                get_string('makethismyhome'),
+                new moodle_url('/my/', ['setdefaulthome' => 1, 'sesskey' => sesskey()]),
+                navigation_node::TYPE_SETTING,
+            );
         }
     }
 }

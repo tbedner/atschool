@@ -46,6 +46,9 @@ $factor = \tool_mfa\plugininfo\factor::get_factor('email');
 // Require login to force $SESSION and user, and pass for that session.
 if (!empty($instance) && $pass != 0 && $secret != 0) {
     require_login();
+    if ((int)$instance->userid !== (int)$USER->id) {
+        throw new moodle_exception('error:parameters', 'factor_email');
+    }
     if ($factor->get_state() === \tool_mfa\plugininfo\factor::STATE_LOCKED) {
         // Redirect through to auth, this will bounce them to the next factor.
         redirect(new moodle_url('/admin/tool/mfa/auth.php'));
@@ -84,7 +87,7 @@ if ($fromform = $form->get_data()) {
         $DB->set_field('tool_mfa', 'revoked', 1, ['userid' => $user->id, 'factor' => 'email']);
 
         // Remotely logout all sessions for user.
-        $manager = \core\session\manager::kill_user_sessions($instance->userid);
+        \core\session\manager::destroy_user_sessions($instance->userid);
 
         // Log event.
         $ip = $instance->createdfromip;

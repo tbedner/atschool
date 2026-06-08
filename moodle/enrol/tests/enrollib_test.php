@@ -43,6 +43,9 @@ final class enrollib_test extends advanced_testcase {
 
         $this->resetAfterTest();
 
+        // Use a mock incrementing clock to ensure deterministic and testable time values.
+        $clock = $this->mock_clock_with_incrementing(1750000000);
+
         $studentrole = $DB->get_record('role', array('shortname'=>'student'));
         $this->assertNotEmpty($studentrole);
         $teacherrole = $DB->get_record('role', array('shortname'=>'teacher'));
@@ -96,13 +99,14 @@ final class enrollib_test extends advanced_testcase {
 
         $manual->enrol_user($maninstance2, $user1->id);
         $manual->enrol_user($maninstance2, $user2->id);
-        $manual->enrol_user($maninstance2, $user3->id, 0, 1, time()+(60*60));
+        $manual->enrol_user($maninstance2, $user3->id, 0, 1, $clock->time() + HOURSECS);
 
         $manual->enrol_user($maninstance3, $user1->id);
         $manual->enrol_user($maninstance3, $user2->id);
-        $manual->enrol_user($maninstance3, $user3->id, 0, 1, time()-(60*60));
+        $manual->enrol_user($maninstance3, $user3->id, 0, 1, $clock->time() - HOURSECS);
         $manual->enrol_user($maninstance3, $user4->id, 0, 0, 0, ENROL_USER_SUSPENDED);
 
+        $manual->enrol_user($maninstance4, $user5->id, 0, $clock->time());
 
         $courses = enrol_get_all_users_courses($CFG->siteguest);
         $this->assertSame(array(), $courses);
@@ -151,6 +155,10 @@ final class enrollib_test extends advanced_testcase {
         $courses = enrol_get_all_users_courses($user4->id, true);
         $this->assertCount(0, $courses);
         $this->assertEquals(array(), array_keys($courses));
+
+        $courses = enrol_get_all_users_courses($user5->id, true);
+        $this->assertCount(1, $courses);
+        $this->assertEquals([$course4->id], array_keys($courses));
 
         // Make sure sorting and columns work.
 
@@ -386,7 +394,7 @@ final class enrollib_test extends advanced_testcase {
             'The teacher can un-enrol users in a course' =>
                 [
                     'excludedcapabilities' => [],
-                    'results' => [
+                    'expected' => [
                         // Whether certain enrolment related data still exists in the course after the deletion.
                         // When the user has the capabilities to un-enrol users and the enrolment plugins allow manual
                         // unenerolment than all course enrolment data should be removed.
@@ -406,7 +414,7 @@ final class enrollib_test extends advanced_testcase {
                         // Exclude the following capabilities for the editing teacher.
                         'enrol/self:unenrol'
                     ],
-                    'results' => [
+                    'expected' => [
                         // When the user does not have the capabilities to un-enrol self enrolled users, the data
                         // related to this enrolment method should not be removed. Everything else should be removed.
                         'Manual course enrolment instance exists' => false,
@@ -426,7 +434,7 @@ final class enrollib_test extends advanced_testcase {
                         'enrol/manual:unenrol',
                         'enrol/self:unenrol'
                     ],
-                    'results' => [
+                    'expected' => [
                         // When the user does not have the capabilities to un-enrol self and manually enrolled users,
                         // the data related to these enrolment methods should not be removed.
                         'Manual course enrolment instance exists' => true,
@@ -1739,7 +1747,7 @@ final class enrollib_test extends advanced_testcase {
     /**
      * Test the behaviour of validate_enrol_plugin_data().
      *
-     * @covers ::validate_enrol_plugin_data
+     * @covers \enrol_plugin::validate_enrol_plugin_data
      */
     public function test_validate_enrol_plugin_data(): void {
         $this->resetAfterTest();
@@ -1761,7 +1769,7 @@ final class enrollib_test extends advanced_testcase {
     /**
      * Test the behaviour of update_enrol_plugin_data().
      *
-     * @covers ::update_enrol_plugin_data
+     * @covers \enrol_plugin::update_enrol_plugin_data
      */
     public function test_update_enrol_plugin_data(): void {
         global $DB;
@@ -1826,5 +1834,46 @@ final class enrollib_test extends advanced_testcase {
         $expectedinstance->enrolenddate = $expectedinstance->enrolstartdate + $expectedinstance->enrolperiod;
         $modifiedinstance = $manualplugin->update_enrol_plugin_data($course->id, $enrolmentdata, $instance);
         $this->assertEquals($expectedinstance, $modifiedinstance);
+    }
+
+    /**
+     * Test case for checking the email greetings in various user notification emails.
+     *
+     * @covers \enrol_plugin::send_course_welcome_message_to_user
+     */
+    public function test_email_greetings(): void {
+        global $DB;
+        $this->resetAfterTest();
+
+        // Create course.
+        $course = $this->getDataGenerator()->create_course([
+            'fullname' => 'Course 1',
+            'shortname' => 'C1',
+        ]);
+        // Create user.
+        $student = $this->getDataGenerator()->create_user();
+        // Get manual plugin.
+        $manualplugin = enrol_get_plugin('manual');
+        $maninstance = $DB->get_record(
+            'enrol',
+            ['courseid' => $course->id, 'enrol' => 'manual'],
+            '*',
+            MUST_EXIST,
+        );
+
+        $messagesink = $this->redirectMessages();
+        $manualplugin->send_course_welcome_message_to_user(
+            instance: $maninstance,
+            userid: $student->id,
+            sendoption: ENROL_SEND_EMAIL_FROM_NOREPLY,
+            message: '',
+        );
+        $messages = $messagesink->get_messages_by_component_and_type(
+            'moodle',
+            'enrolcoursewelcomemessage',
+        );
+        $this->assertNotEmpty($messages);
+        $message = reset($messages);
+        $this->assertStringContainsString('Hi ' . $student->firstname, quoted_printable_decode($message->fullmessage));
     }
 }

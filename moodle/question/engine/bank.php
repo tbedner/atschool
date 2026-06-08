@@ -27,8 +27,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\notification;
+use core_cache\application_cache;
+use core_cache\data_source_interface;
+use core_cache\definition;
 use core_question\local\bank\question_version_status;
 use core_question\output\question_version_info;
+use qbank_previewquestion\question_preview_options;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -77,6 +82,23 @@ abstract class question_bank {
     public static function is_qtype_installed($qtypename) {
         $plugindir = core_component::get_plugin_directory('qtype', $qtypename);
         return $plugindir && is_readable($plugindir . '/questiontype.php');
+    }
+
+    /**
+     * Check if a given question type is one that is installed and usable.
+     *
+     * Use this before doing things like rendering buttons/options which will only work for
+     * installed question types.
+     *
+     * When loaded through most of the core_question areas, qtype will still be the uninstalled type, e.g. 'mytype',
+     * but when we get to the quiz pages, it will have been converted to 'missingtype'. So we need to check that
+     * as well here.
+     *
+     * @param string $qtypename e.g. 'multichoice'.
+     * @return bool
+     */
+    public static function is_qtype_usable(string $qtypename): bool {
+        return self::is_qtype_installed($qtypename) && $qtypename !== 'missingtype';
     }
 
     /**
@@ -290,6 +312,49 @@ abstract class question_bank {
         $definition = self::get_qtype($questiondata->qtype, false)->make_question($questiondata, false);
         question_version_info::$pendingdefinitions[$definition->id] = $definition;
         return $definition;
+    }
+
+    /**
+     * Render a throw-away preview of a question.
+     *
+     * If the question cannot be rendered (e.g. because it is not installed)
+     * then display a message instead.
+     *
+     * @param question_definition $question a question.
+     * @return string HTML to output.
+     */
+    public static function render_preview_of_question(question_definition $question): string {
+        global $DB, $OUTPUT, $USER;
+
+        if (!self::is_qtype_usable($question->qtype->name())) {
+            // TODO MDL-84902 ideally this would be changed to render at least the qeuestion text.
+            // See, for example, test_render_missing in question/type/missingtype/tests/missingtype_test.php.
+            return $OUTPUT->notification(
+                get_string('invalidquestiontype', 'question', $question->qtype->name()),
+                notification::NOTIFY_WARNING,
+                closebutton: false);
+        }
+
+        // TODO MDL-84902 remove this dependency on a class from qbank_previewquestion plugin.
+        if (!class_exists(question_preview_options::class)) {
+            debugging('Preview cannot be rendered. The standard plugin ' .
+                'qbank_previewquestion plugin has been removed.', DEBUG_DEVELOPER);
+            return '';
+        }
+
+        $quba = question_engine::make_questions_usage_by_activity(
+            'core_question_preview', context_user::instance($USER->id));
+        $options = new question_preview_options($question);
+        $quba->set_preferred_behaviour($options->behaviour);
+
+        $slot = $quba->add_question($question, $options->maxmark);
+        $quba->start_question($slot, $options->variant);
+
+        $transaction = $DB->start_delegated_transaction();
+        question_engine::save_questions_usage_by_activity($quba);
+        $transaction->allow_commit();
+
+        return $quba->render_question($slot, $options, '1');
     }
 
     /**
@@ -511,7 +576,7 @@ abstract class question_bank {
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_finder implements cache_data_source {
+class question_finder implements data_source_interface {
     /** @var question_finder the singleton instance of this class. */
     protected static $questionfinder = null;
 
@@ -525,13 +590,13 @@ class question_finder implements cache_data_source {
         return self::$questionfinder;
     }
 
-    /* See cache_data_source::get_instance_for_cache. */
-    public static function get_instance_for_cache(cache_definition $definition) {
+    #[\Override]
+    public static function get_instance_for_cache(definition $definition) {
         return self::get_instance();
     }
 
     /**
-     * @return cache_application the question definition cache we are using.
+     * @return application_cache the question definition cache we are using.
      */
     protected function get_data_cache() {
         // Do not double cache here because it may break cache resetting.
@@ -578,16 +643,15 @@ class question_finder implements cache_data_source {
         $sql = "SELECT q.id, q.id AS id2
                   FROM {question} q
                   JOIN {question_versions} qv ON qv.questionid = q.id
+             LEFT JOIN {question_versions} qv2 ON (   qv2.questionbankentryid = qv.questionbankentryid
+                                                  AND qv2.version > qv.version
+                                                  AND qv2.status = :readystatusqv
+                                                  )
                   JOIN {question_bank_entries} qbe ON qbe.id = qv.questionbankentryid
                  WHERE qbe.questioncategoryid {$qcsql}
                        AND q.parent = 0
                        AND qv.status = :readystatus
-                       AND qv.version = (SELECT MAX(v.version)
-                                          FROM {question_versions} v
-                                          JOIN {question_bank_entries} be
-                                            ON be.id = v.questionbankentryid
-                                         WHERE be.id = qbe.id
-                                           AND v.status = :readystatusqv)
+                       AND qv2.questionbankentryid IS NULL
                        {$extraconditions}";
 
         return $DB->get_records_sql_menu($sql, $qcparams + $extraparams);
@@ -697,7 +761,7 @@ class question_finder implements cache_data_source {
                 $qubaids->from_where_params() + $params + $extraparams);
     }
 
-    /* See cache_data_source::load_for_cache. */
+    #[\Override]
     public function load_for_cache($questionid) {
         global $DB;
 
@@ -721,7 +785,7 @@ class question_finder implements cache_data_source {
         return $questiondata;
     }
 
-    /* See cache_data_source::load_many_for_cache. */
+    #[\Override]
     public function load_many_for_cache(array $questionids) {
         global $DB;
 

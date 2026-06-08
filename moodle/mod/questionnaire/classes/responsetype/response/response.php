@@ -25,7 +25,6 @@ namespace mod_questionnaire\responsetype\response;
  * @copyright 2019, onwards Poet
  */
 class response {
-
     // Class properties.
 
     /** @var int $id The id of the response this applies to. */
@@ -40,7 +39,7 @@ class response {
     /** @var int $submitted The most recent submission date of this response. */
     public $submitted;
 
-    /** @var boolean $complete Flag for final submission of this response. */
+    /** @var bool $complete Flag for final submission of this response. */
     public $complete;
 
     /** @var int $grade Numeric grade for this response (if applicable). */
@@ -59,8 +58,15 @@ class response {
      * @param null $grade
      * @param bool $addanswers
      */
-    public function __construct($id = null, $questionnaireid = null, $userid = null, $submitted = null, $complete = null,
-                                $grade = null, $addanswers = true) {
+    public function __construct(
+        $id = null,
+        $questionnaireid = null,
+        $userid = null,
+        $submitted = null,
+        $complete = null,
+        $grade = null,
+        $addanswers = true
+    ) {
         $this->id = $id;
         $this->questionnaireid = $questionnaireid;
         $this->userid = $userid;
@@ -92,8 +98,14 @@ class response {
             }
         }
 
-        return new response($responsedata['id'], $responsedata['questionnaireid'], $responsedata['userid'],
-            $responsedata['submitted'], $responsedata['complete'], $responsedata['grade']);
+        return new response(
+            $responsedata['id'],
+            $responsedata['questionnaireid'],
+            $responsedata['userid'],
+            $responsedata['submitted'],
+            $responsedata['complete'],
+            $responsedata['grade']
+        );
     }
 
     /**
@@ -101,7 +113,7 @@ class response {
      *
      * @param \stdClass $responsedata All of the responsedata as an object.
      * @param array $questions
-     * @return bool|response A response object.
+     * @return response A response object.
      */
     public static function response_from_webform($responsedata, $questions) {
         global $USER;
@@ -151,7 +163,7 @@ class response {
         }
 
         foreach ($questions as $question) {
-            if ($question->supports_responses() && isset($processedresponses->{'q'.$question->id})) {
+            if ($question->supports_responses() && isset($processedresponses->{'q' . $question->id})) {
                 $response->answers[$question->id] = $question->responsetype::answers_from_appdata($processedresponses, $question);
             }
         }
@@ -169,5 +181,6 @@ class response {
         $this->answers += \mod_questionnaire\responsetype\boolean::response_answers_by_question($this->id);
         $this->answers += \mod_questionnaire\responsetype\date::response_answers_by_question($this->id);
         $this->answers += \mod_questionnaire\responsetype\text::response_answers_by_question($this->id);
+        $this->answers += \mod_questionnaire\responsetype\file::response_answers_by_question($this->id);
     }
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'reportbuilder', language 'en'
+ * Strings for component 'core_reportbuilder', language 'en'
  *
  * @package    core_reportbuilder
  * @copyright  2020 Sara Arjona <sara@moodle.com>
@@ -31,6 +31,7 @@ $string['aggregatecolumn'] = 'Aggregate column \'{$a}\'';
 $string['aggregationavg'] = 'Average';
 $string['aggregationcount'] = 'Count';
 $string['aggregationcountdistinct'] = 'Count distinct';
+$string['aggregationdate'] = 'Date';
 $string['aggregationgroupconcat'] = 'Comma separated values';
 $string['aggregationgroupconcatdistinct'] = 'Comma separated distinct values';
 $string['aggregationmax'] = 'Maximum';
@@ -64,8 +65,8 @@ $string['columnadded'] = 'Added column \'{$a}\'';
 $string['columnaggregated'] = 'Aggregated column \'{$a}\'';
 $string['columndeleted'] = 'Deleted column \'{$a}\'';
 $string['columnmoved'] = 'Moved column \'{$a}\'';
-$string['columnsortdirectionasc'] = 'Sort column \'{$a}\' ascending';
-$string['columnsortdirectiondesc'] = 'Sort column \'{$a}\' descending';
+$string['columnsortdirectionasc'] = 'Change initial sorting for column \'{$a}\' to ascending';
+$string['columnsortdirectiondesc'] = 'Change initial sorting for column \'{$a}\' to descending';
 $string['columnsortdisable'] = 'Disable initial sorting for column \'{$a}\'';
 $string['columnsortenable'] = 'Enable initial sorting for column \'{$a}\'';
 $string['columnsortupdated'] = 'Updated sorting for column \'{$a}\'';
@@ -102,6 +103,9 @@ $string['deletereportconfirm'] = 'Are you sure you want to delete the report \'{
 $string['deleteschedule'] = 'Delete schedule';
 $string['deletescheduleconfirm'] = 'Are you sure you want to delete the schedule \'{$a}\'?';
 $string['disableschedule'] = 'Disable schedule';
+$string['duplicateaudiences'] = 'Duplicate audiences';
+$string['duplicatereport'] = 'Duplicate report';
+$string['duplicateschedules'] = 'Duplicate schedules';
 $string['editaudience'] = 'Edit audience \'{$a}\'';
 $string['editdetails'] = 'Edit details';
 $string['editor'] = 'Editor';
@@ -116,6 +120,7 @@ $string['enableschedule'] = 'Enable schedule';
 $string['entitycourse'] = 'Course';
 $string['entityuser'] = 'User';
 $string['errorreportcreate'] = 'You cannot create a new report';
+$string['errorreportduplicate'] = 'You cannot duplicate this report';
 $string['errorreportedit'] = 'You cannot edit this report';
 $string['errorreportview'] = 'You cannot view this report';
 $string['errorsourceinvalid'] = 'Could not find valid report source';
@@ -126,7 +131,6 @@ $string['filterdateafter'] = 'After';
 $string['filterdatebefore'] = 'Before';
 $string['filterdatecurrent'] = 'Current';
 $string['filterdatedays'] = 'day(s)';
-$string['filterdatefrom'] = 'Date from';
 $string['filterdatefuture'] = 'In the future';
 $string['filterdatehours'] = 'hour(s)';
 $string['filterdatelast'] = 'Last';
@@ -135,7 +139,6 @@ $string['filterdatemonths'] = 'month(s)';
 $string['filterdatenext'] = 'Next';
 $string['filterdatepast'] = 'In the past';
 $string['filterdateseconds'] = 'second(s)';
-$string['filterdateto'] = 'Date to';
 $string['filterdateweeks'] = 'week(s)';
 $string['filterdateyears'] = 'year(s)';
 $string['filterdeleted'] = 'Deleted filter \'{$a}\'';
@@ -143,6 +146,7 @@ $string['filterdoesnotcontain'] = 'Does not contain';
 $string['filterendswith'] = 'Ends with';
 $string['filterequalorgreaterthan'] = 'Greater than or equal';
 $string['filterequalorlessthan'] = 'Less than or equal';
+$string['filterfieldfrom'] = '{$a} from';
 $string['filterfieldoperator'] = '{$a} operator';
 $string['filterfieldto'] = '{$a} to';
 $string['filterfieldunit'] = '{$a} unit';
@@ -197,7 +201,6 @@ $string['privacy:metadata:filter'] = 'Report filter definitions';
 $string['privacy:metadata:filter:uniqueidentifier'] = 'Unique identifier of the filter';
 $string['privacy:metadata:filter:usercreated'] = 'The ID of the user who created the filter';
 $string['privacy:metadata:filter:usermodified'] = 'The ID of the user who last modified the filter';
-$string['privacy:metadata:preference:reportfilter'] = 'Stored report filter values';
 $string['privacy:metadata:report'] = 'Report definitions';
 $string['privacy:metadata:report:conditiondata'] = 'Configuration data for the report conditions';
 $string['privacy:metadata:report:name'] = 'The name of the report';
@@ -223,6 +226,10 @@ $string['privacy:metadata:schedule:timescheduled'] = 'The time the schedule will
 $string['privacy:metadata:schedule:usercreated'] = 'The ID of the user who created the schedule';
 $string['privacy:metadata:schedule:usermodified'] = 'The ID of the user who last modified the schedule';
 $string['privacy:metadata:schedule:userviewas'] = 'The ID of the user who the schedule will be viewed as';
+$string['privacy:metadata:user_filter'] = 'Report user filter definitions';
+$string['privacy:metadata:user_filter:filterdata'] = 'Configuration data for the report filters';
+$string['privacy:metadata:user_filter:timecreated'] = 'The time when the user filter was created';
+$string['privacy:metadata:user_filter:timemodified'] = 'The time when the user filter was last modified';
 $string['recurrence'] = 'Recurrence';
 $string['recurrenceannually'] = 'Annually';
 $string['recurrencedaily'] = 'Daily';
@@ -233,6 +240,7 @@ $string['renameaudience'] = 'Rename audience \'{$a}\'';
 $string['renamecolumn'] = 'Rename column \'{$a}\'';
 $string['renamefilter'] = 'Rename filter \'{$a}\'';
 $string['reportbuilder'] = 'Report builder';
+$string['reportbuildercustomfields'] = 'Custom report fields';
 $string['reportcreated'] = 'Report created';
 $string['reportdeleted'] = 'Report deleted';
 $string['reports'] = 'Reports';
@@ -273,6 +281,7 @@ $string['timeadded'] = 'Time added';
 $string['timecreated'] = 'Time created';
 $string['timelastsent'] = 'Time last sent';
 $string['timemodified'] = 'Time modified';
+$string['timenextsend'] = 'Time next send';
 $string['uniquerows'] = 'Remove any duplicate rows';
 $string['uniquerows_help'] = 'If the report source contains duplicate rows, should these be removed from this report? This setting has no effect if report columns are aggregated.';
 $string['userany'] = 'Any user';
@@ -281,9 +290,13 @@ $string['userfullnamewithlink'] = 'Full name with link';
 $string['userfullnamewithpicture'] = 'Full name with picture';
 $string['userfullnamewithpicturelink'] = 'Full name with picture and link';
 $string['usermodified'] = 'Modified by';
-$string['userpicture'] = 'User picture';
 $string['userselect'] = 'Select user';
 $string['viewreport'] = 'View report';
 
-// Deprecated since Moodle 4.4.
-$string['filterdurationunit'] = '{$a} unit';
+// Deprecated since Moodle 4.5.
+$string['filterdatefrom'] = 'Date from';
+$string['filterdateto'] = 'Date to';
+
+// Deprecated since Moodle 5.0.
+$string['privacy:metadata:preference:reportfilter'] = 'Stored report filter values';
+$string['userpicture'] = 'User picture';

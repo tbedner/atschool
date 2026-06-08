@@ -39,13 +39,27 @@ class editsection_form extends moodleform {
         $mform->setDefault('name', $sectioninfo->name);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        /// Prepare course and the editor
+        // Prepare course and the editor.
+
+        if ($sectioninfo->is_delegated()) {
+            // Show a warning that subsection descriptions will be discontinued.
+            $warning = $OUTPUT->notification(
+                message: get_string('subsectiondescriptionwarning', 'course'),
+                type: \core\output\notification::NOTIFY_WARNING,
+                closebutton: false,
+                titleicon: 'i/circleinfo',
+            );
+            $mform->addElement('static', 'subsectionwarning', '', $warning);
+        }
 
         $mform->addElement('editor', 'summary_editor', get_string('description'), null, $this->_customdata['editoroptions']);
         $mform->setType('summary_editor', PARAM_RAW);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+
+        $mform->addElement('hidden', 'course', 0);
+        $mform->setType('course', PARAM_INT);
 
         // additional fields that course format has defined
         $courseformat = course_get_format($course);

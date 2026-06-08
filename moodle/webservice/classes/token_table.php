@@ -36,7 +36,16 @@ require_once($CFG->dirroot . '/user/lib.php');
  * @package    core_webservice
  * @copyright  2017 John Okely <john@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @deprecated since 4.5 MDL-79496. Table replaced with a report builder system report.
+ * @todo MDL-79909 This will be deleted in Moodle 6.0.
  */
+#[\core\attribute\deprecated(
+    replacement: null,
+    since: '4.5',
+    reason: 'Table replaced with a report builder system report',
+    mdl: 'MDL-79496',
+)]
 class token_table extends \table_sql {
 
     /**
@@ -193,27 +202,6 @@ class token_table extends \table_sql {
         }
 
         return $content;
-    }
-
-    /**
-     * Generate the token column.
-     *
-     * @param \stdClass $data Data for the current row
-     * @return string Content for the column
-     *
-     * @deprecated since Moodle 4.3 MDL-76656. Please do not use this function anymore.
-     * @todo MDL-78605 Final deprecation in Moodle 4.7.
-     */
-    public function col_token($data) {
-        debugging('The function ' . __FUNCTION__ . '() is deprecated - please do not use it any more. ', DEBUG_DEVELOPER);
-
-        global $USER;
-        // Hide the token if it wasn't created by the current user.
-        if ($data->creatorid != $USER->id) {
-            return \html_writer::tag('small', get_string('onlyseecreatedtokens', 'core_webservice'), ['class' => 'text-muted']);
-        }
-
-        return $data->token;
     }
 
     /**

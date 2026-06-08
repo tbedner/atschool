@@ -316,6 +316,11 @@ class behat_core_generator extends behat_generator_base {
                 'required' => ['subject', 'userfrom', 'userto'],
                 'switchids' => ['userfrom' => 'userfromid', 'userto' => 'usertoid'],
             ],
+            'stored progress bars' => [
+                'singular' => 'stored progress bar',
+                'datagenerator' => 'stored_progress_bar',
+                'required' => ['idnumber'],
+            ],
         ];
 
         return $entities;
@@ -1191,15 +1196,15 @@ class behat_core_generator extends behat_generator_base {
         global $DB;
 
         if (!isset($data['userid'])) {
-            throw new Exception('\'last acces times\' requires the field \'user\' to be specified');
+            throw new Exception('\'last access times\' requires the field \'user\' to be specified');
         }
 
         if (!isset($data['courseid'])) {
-            throw new Exception('\'last acces times\' requires the field \'course\' to be specified');
+            throw new Exception('\'last access times\' requires the field \'course\' to be specified');
         }
 
         if (!isset($data['lastaccess'])) {
-            throw new Exception('\'last acces times\' requires the field \'lastaccess\' to be specified');
+            throw new Exception('\'last access times\' requires the field \'lastaccess\' to be specified');
         }
 
         $userdata = [];

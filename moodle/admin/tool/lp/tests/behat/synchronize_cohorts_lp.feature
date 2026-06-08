@@ -55,6 +55,6 @@ Feature: Cohorts can be synchronized with learning plans
     And I click on ".template-userplans" "css_element" in the "LPT1" "table_row"
     # Confirm that learning plans were created for all cohort members.
     And the following should exist in the "generaltable" table:
-      | Name | First name | Email address     |
-      | LPT1 | User One   | user1@example.com |
-      | LPT1 | User Two   | user2@example.com |
+      | Name | First name / Last name | Email address     |
+      | LPT1 | User One               | user1@example.com |
+      | LPT1 | User Two               | user2@example.com |

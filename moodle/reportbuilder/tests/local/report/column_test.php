@@ -113,37 +113,11 @@ final class column_test extends advanced_testcase {
     }
 
     /**
-     * Test adding single join
-     */
-    public function test_add_join(): void {
-        $column = $this->create_column('test');
-        $this->assertEquals([], $column->get_joins());
-
-        $column->add_join('JOIN {user} u ON u.id = table.userid');
-        $this->assertEquals(['JOIN {user} u ON u.id = table.userid'], $column->get_joins());
-    }
-
-    /**
-     * Test adding multiple joins
-     */
-    public function test_add_joins(): void {
-        $tablejoins = [
-            "JOIN {course} c2 ON c2.id = c1.id",
-            "JOIN {course} c3 ON c3.id = c1.id",
-        ];
-
-        $column = $this->create_column('test')
-            ->add_joins($tablejoins);
-
-        $this->assertEquals($tablejoins, $column->get_joins());
-    }
-
-    /**
      * Data provider for {@see test_add_field}
      *
      * @return array
      */
-    public function add_field_provider(): array {
+    public static function add_field_provider(): array {
         return [
             ['foo', '', ['foo AS c1_foo']],
             ['foo', 'bar', ['foo AS c1_bar']],
@@ -231,7 +205,7 @@ final class column_test extends advanced_testcase {
      *
      * @return array
      */
-    public function add_fields_provider(): array {
+    public static function add_fields_provider(): array {
         return [
             ['t.foo', ['t.foo AS c1_foo']],
             ['t.foo bar', ['t.foo AS c1_bar']],
@@ -327,7 +301,7 @@ final class column_test extends advanced_testcase {
      *
      * @return array[]
      */
-    public function column_type_provider(): array {
+    public static function column_type_provider(): array {
         return [
             [column::TYPE_INTEGER, 42],
             [column::TYPE_TEXT, 'Hello'],
@@ -501,7 +475,7 @@ final class column_test extends advanced_testcase {
     /**
      * Test retrieving sort fields
      */
-    public function test_get_sortfields(): void {
+    public function test_get_sort_fields(): void {
         $column = $this->create_column('test')
             ->set_index(1)
             ->add_fields('t.foo, t.bar, t.baz')
@@ -513,7 +487,7 @@ final class column_test extends advanced_testcase {
     /**
      * Test retrieving sort fields when an aliased field is set as sortable
      */
-    public function test_get_sortfields_with_field_alias(): void {
+    public function test_get_sort_fields_with_field_alias(): void {
         $column = $this->create_column('test')
             ->set_index(1)
             ->add_field('t.foo')
@@ -524,9 +498,21 @@ final class column_test extends advanced_testcase {
     }
 
     /**
+     * Test retrieving sort fields that contain references to fields within complex snippet
+     */
+    public function test_get_sort_fields_complex(): void {
+        $column = $this->create_column('test')
+            ->set_index(1)
+            ->add_fields('t.foo, t.bar')
+            ->set_is_sortable(true, ['CASE WHEN 1=1 THEN t.foo ELSE t.bar END']);
+
+        $this->assertEquals(['CASE WHEN 1=1 THEN c1_foo ELSE c1_bar END'], $column->get_sort_fields());
+    }
+
+    /**
      * Test retrieving sort fields when an unknown field is set as sortable
      */
-    public function test_get_sortfields_unknown_field(): void {
+    public function test_get_sort_fields_unknown_field(): void {
         $column = $this->create_column('test')
             ->set_index(1)
             ->add_fields('t.foo')

@@ -405,7 +405,7 @@ function file_get_unused_draft_itemid() {
  * @param string $text some html content that needs to have embedded links rewritten to point to the draft area.
  * @return string|null returns string if $text was passed in, the rewritten $text is returned. Otherwise NULL.
  */
-function file_prepare_draft_area(&$draftitemid, $contextid, $component, $filearea, $itemid, array $options=null, $text=null) {
+function file_prepare_draft_area(&$draftitemid, $contextid, $component, $filearea, $itemid, ?array $options=null, $text=null) {
     global $CFG, $USER;
 
     $options = (array)$options;
@@ -489,7 +489,7 @@ function file_prepare_draft_area(&$draftitemid, $contextid, $component, $fileare
  *          mixed   $options.includetoken Use a token for authentication. True for current user, int value for other user id.
  *          string  The processed text.
  */
-function file_rewrite_pluginfile_urls($text, $file, $contextid, $component, $filearea, $itemid, array $options=null) {
+function file_rewrite_pluginfile_urls($text, $file, $contextid, $component, $filearea, $itemid, ?array $options=null) {
     global $CFG, $USER;
 
     $options = (array)$options;
@@ -1104,7 +1104,7 @@ function file_copy_file_to_file_area($file, $filename, $itemid) {
  * @param bool $forcehttps force https urls.
  * @return string|null if $text was passed in, the rewritten $text is returned. Otherwise NULL.
  */
-function file_save_draft_area_files($draftitemid, $contextid, $component, $filearea, $itemid, array $options=null, $text=null, $forcehttps=false) {
+function file_save_draft_area_files($draftitemid, $contextid, $component, $filearea, $itemid, ?array $options=null, $text=null, $forcehttps=false) {
     global $USER;
 
     // Do not merge files, leave it as it was.
@@ -2230,10 +2230,11 @@ function readfile_accel($file, $mimetype, $accelerate) {
         header('Content-Type: '.$mimetype);
     }
 
-    $lastmodified = is_object($file) ? $file->get_timemodified() : filemtime($file);
+    $isfileobj = is_object($file);
+    $lastmodified = $isfileobj ? $file->get_timemodified() : filemtime($file);
     header('Last-Modified: '. gmdate('D, d M Y H:i:s', $lastmodified) .' GMT');
 
-    if (is_object($file)) {
+    if ($isfileobj) {
         header('Etag: "' . $file->get_contenthash() . '"');
         if (isset($_SERVER['HTTP_IF_NONE_MATCH']) and trim($_SERVER['HTTP_IF_NONE_MATCH'], '"') === $file->get_contenthash()) {
             header('HTTP/1.1 304 Not Modified');
@@ -2242,7 +2243,7 @@ function readfile_accel($file, $mimetype, $accelerate) {
     }
 
     // if etag present for stored file rely on it exclusively
-    if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) and (empty($_SERVER['HTTP_IF_NONE_MATCH']) or !is_object($file))) {
+    if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && (empty($_SERVER['HTTP_IF_NONE_MATCH']) || !$isfileobj)) {
         // get unixtime of request header; clip extra junk off first
         $since = strtotime(preg_replace('/;.*$/', '', $_SERVER["HTTP_IF_MODIFIED_SINCE"]));
         if ($since && $since >= $lastmodified) {
@@ -2258,7 +2259,7 @@ function readfile_accel($file, $mimetype, $accelerate) {
     }
 
     if ($accelerate) {
-        if (is_object($file)) {
+        if ($isfileobj) {
             $fs = get_file_storage();
             if ($fs->supports_xsendfile()) {
                 if ($fs->xsendfile_file($file)) {
@@ -2275,7 +2276,8 @@ function readfile_accel($file, $mimetype, $accelerate) {
         }
     }
 
-    $filesize = is_object($file) ? $file->get_filesize() : filesize($file);
+    $filesize = $isfileobj ? $file->get_filesize() : filesize($file);
+    $filename = $isfileobj ? $file->get_filename() : $file;
 
     header('Last-Modified: '. gmdate('D, d M Y H:i:s', $lastmodified) .' GMT');
 
@@ -2309,10 +2311,10 @@ function readfile_accel($file, $mimetype, $accelerate) {
                 $ranges = false;
             }
             if ($ranges) {
-                if (is_object($file)) {
+                if ($isfileobj) {
                     $handle = $file->get_content_file_handle();
                     if ($handle === false) {
-                        throw new file_exception('storedfilecannotreadfile', $file->get_filename());
+                        throw new file_exception('storedfilecannotreadfile', $filename);
                     }
                 } else {
                     $handle = fopen($file, 'rb');
@@ -2338,7 +2340,12 @@ function readfile_accel($file, $mimetype, $accelerate) {
             // We do not expect any content in the buffer when we are serving files.
             $buffercontents = ob_get_clean();
             if ($buffercontents !== '') {
-                error_log('Non-empty default output handler buffer detected while serving the file ' . $file);
+                // Include a preview of the first 20 characters of the output buffer to help identify
+                // what's causing it to be non-empty. This is useful for diagnosing unexpected output
+                // without exposing full content.
+                $buffercontentspreview = substr($buffercontents, 0, 20);
+                debugging("Non-empty default output handler buffer detected while serving the file {$filename}. " .
+                    "Buffer contents (first 20 characters): {$buffercontentspreview}", DEBUG_DEVELOPER);
             }
         } else {
             // Some handlers such as zlib output compression may have file signature buffered - flush it.
@@ -2347,7 +2354,7 @@ function readfile_accel($file, $mimetype, $accelerate) {
     }
 
     // send the whole file content
-    if (is_object($file)) {
+    if ($isfileobj) {
         $file->readfile();
     } else {
         if (readfile_allow_large($file, $filesize) === false) {
@@ -2613,8 +2620,8 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
             header('Cache-Control: private, max-age=10, no-transform');
             header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
             header('Pragma: ');
-        } else { //normal http - prevent caching at all cost
-            header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0, no-transform');
+        } else { // Normal http - prevent caching at all cost.
+            header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0, no-transform', 'no-store');
             header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
             header('Pragma: no-cache');
         }
@@ -2633,7 +2640,8 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
         if ($mimetype == 'text/html' || $mimetype == 'application/xhtml+xml' || file_is_svg_image_from_mimetype($mimetype)) {
             $options = new stdClass();
             $options->noclean = true;
-            $options->nocache = true; // temporary workaround for MDL-5136
+            $options->context = context_course::instance($COURSE->id);
+
             if (is_object($path)) {
                 $text = $path->get_content();
             } else if ($pathisstring) {
@@ -2641,15 +2649,16 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
             } else {
                 $text = implode('', file($path));
             }
-            $output = format_text($text, FORMAT_HTML, $options, $COURSE->id);
 
+            $output = format_text($text, FORMAT_HTML, $options);
             readstring_accel($output, $mimetype);
-
         } else if (($mimetype == 'text/plain') and ($filter == 1)) {
             // only filter text if filter all files is selected
             $options = new stdClass();
             $options->newlines = false;
             $options->noclean = true;
+            $options->context = context_course::instance($COURSE->id);
+
             if (is_object($path)) {
                 $text = htmlentities($path->get_content(), ENT_QUOTES, 'UTF-8');
             } else if ($pathisstring) {
@@ -2657,10 +2666,9 @@ function send_file($path, $filename, $lifetime = null , $filter=0, $pathisstring
             } else {
                 $text = htmlentities(implode('', file($path)), ENT_QUOTES, 'UTF-8');
             }
-            $output = '<pre>'. format_text($text, FORMAT_MOODLE, $options, $COURSE->id) .'</pre>';
 
+            $output = '<pre>'. format_text($text, FORMAT_MOODLE, $options) .'</pre>';
             readstring_accel($output, $mimetype);
-
         } else {
             // send the contents
             if ($pathisstring) {
@@ -2988,7 +2996,7 @@ function file_overwrite_existing_draftfile(stored_file $newfile, stored_file $ex
  * @since Moodle 3.2
  */
 function file_merge_files_from_draft_area_into_filearea($draftitemid, $contextid, $component, $filearea, $itemid,
-                                                        array $options = null) {
+                                                        ?array $options = null) {
     // We use 0 here so file_prepare_draft_area creates a new one, finaldraftid will be updated with the new draft id.
     $finaldraftid = 0;
     file_prepare_draft_area($finaldraftid, $contextid, $component, $filearea, $itemid, $options);
@@ -3375,6 +3383,33 @@ class curl {
     }
 
     /**
+     * Remove options previously set with setopt.
+     *
+     * @param array $options List of options to remove.
+     */
+    public function removeopt(
+        array $options = [],
+    ): void {
+        foreach ($options as $name) {
+            if (!is_string($name)) {
+                throw new coding_exception('Curl options should be defined using strings, not constant values.');
+            }
+            if (!str_contains(strtoupper($name), 'CURLOPT_')) {
+                // Only prefix with CURLOPT_ if the option doesn't contain CURLINFO_,
+                // which is a valid prefix for at least one option CURLINFO_HEADER_OUT.
+                if (!str_contains(strtoupper($name), 'CURLINFO_')) {
+                    $name = strtoupper('CURLOPT_' . $name);
+                }
+            } else {
+                $name = strtoupper($name);
+            }
+            if (isset($this->options[$name])) {
+                unset($this->options[$name]);
+            }
+        }
+    }
+
+    /**
      * Reset http method
      */
     public function cleanopt() {
@@ -3676,6 +3711,10 @@ class curl {
                 $options[$n] = $v;
             }
             $handles[$i] = curl_init($requests[$i]['url']);
+
+            // Set the URL as a curl option.
+            $this->setopt(['CURLOPT_URL' => $requests[$i]['url']]);
+
             $this->apply_opt($handles[$i], $options);
             curl_multi_add_handle($main, $handles[$i]);
         }
@@ -3746,6 +3785,15 @@ class curl {
             return null;
         }
 
+        // Check if the URL is blocked in core curl_security_helper or
+        // curl security helper that passed to curl class constructor.
+        // Note, we purposely check the configured helper first,
+        // as this may be being mocked for unit testing.
+        if ($this->securityhelper->url_is_blocked($url)) {
+            $this->error = $this->securityhelper->get_blocked_url_string();
+            return $this->error;
+        }
+
         // Augment all installed plugin's security helpers if there is any.
         // The plugin's function has to be defined as plugintype_pluginname_curl_security_helper in pluginname/lib.php.
         $plugintypes = get_plugins_with_function('curl_security_helper');
@@ -3762,13 +3810,6 @@ class curl {
                     }
                 }
             }
-        }
-
-        // Check if the URL is blocked in core curl_security_helper or
-        // curl security helper that passed to curl class constructor.
-        if ($this->securityhelper->url_is_blocked($url)) {
-            $this->error = $this->securityhelper->get_blocked_url_string();
-            return $this->error;
         }
 
         // Set allowed resolve info if the URL is not blocked.
@@ -4164,7 +4205,7 @@ class curl {
      * @param array $options
      * @return ?string
      */
-    public function put($url, $params = array(), $options = array()) {
+    public function put($url, $params = [], $options = []) {
         $file = '';
         $fp = false;
         if (isset($params['file'])) {
@@ -4178,8 +4219,12 @@ class curl {
             } else {
                 return null;
             }
-            if (!isset($this->options['CURLOPT_USERPWD'])) {
+            if (!isset($options['CURLOPT_USERPWD']) && !isset($this->options['CURLOPT_USERPWD'])) {
                 $this->setopt(array('CURLOPT_USERPWD' => 'anonymous: noreply@moodle.org'));
+            }
+            if (isset($options['CURLOPT_USERPWD']) && $options['CURLOPT_USERPWD'] === false) {
+                $this->removeopt(['CURLOPT_USERPWD']);
+                unset($options['CURLOPT_USERPWD']);
             }
         } else {
             $options['CURLOPT_CUSTOMREQUEST'] = 'PUT';
@@ -4777,8 +4822,7 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
                 $filename = 'f1';
             }
 
-            if ((!empty($CFG->forcelogin) and !isloggedin()) ||
-                    (!empty($CFG->forceloginforprofileimage) && (!isloggedin() || isguestuser()))) {
+            if (!\core\output\user_picture::allow_view($context->instanceid)) {
                 // protect images if login required and not logged in;
                 // also if login is required for profile images and is not logged in or guest
                 // do not use require_login() because it is expensive and not suitable here anyway

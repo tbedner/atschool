@@ -29,9 +29,8 @@ class course_edit_form extends moodleform {
         $category      = $this->_customdata['category'];
         $editoroptions = $this->_customdata['editoroptions'];
         $returnto = $this->_customdata['returnto'];
-        $returnurl = $this->_customdata['returnurl'];
+        $returnurl = new moodle_url($this->_customdata['returnurl']);
 
-        $systemcontext   = context_system::instance();
         $categorycontext = context_coursecat::instance($category->id);
 
         if (!empty($course->id)) {
@@ -56,9 +55,10 @@ class course_edit_form extends moodleform {
 
         $mform->addElement('hidden', 'returnurl', null);
         $mform->setType('returnurl', PARAM_LOCALURL);
-        $mform->setConstant('returnurl', $returnurl);
+        $mform->setConstant('returnurl', $returnurl->out_as_local_url());
 
-        $mform->addElement('text','fullname', get_string('fullnamecourse'),'maxlength="254" size="50"');
+        $mform->addElement('text', 'fullname', get_string('fullnamecourse'),
+            ['maxlength' => \core_course\constants::FULLNAME_MAXIMUM_LENGTH, 'size' => 50]);
         $mform->addHelpButton('fullname', 'fullnamecourse');
         $mform->addRule('fullname', get_string('missingfullname'), 'required', null, 'client');
         $mform->setType('fullname', PARAM_TEXT);
@@ -67,7 +67,8 @@ class course_edit_form extends moodleform {
             $mform->setConstant('fullname', $course->fullname);
         }
 
-        $mform->addElement('text', 'shortname', get_string('shortnamecourse'), 'maxlength="100" size="20"');
+        $mform->addElement('text', 'shortname', get_string('shortnamecourse'),
+            ['maxlength' => \core_course\constants::SHORTNAME_MAXIMUM_LENGTH, 'size' => 20]);
         $mform->addHelpButton('shortname', 'shortnamecourse');
         $mform->addRule('shortname', get_string('missingshortname'), 'required', null, 'client');
         $mform->setType('shortname', PARAM_TEXT);
@@ -215,8 +216,6 @@ class course_edit_form extends moodleform {
         }
 
         if (!empty($course->id) and !has_capability('moodle/course:changesummary', $coursecontext)) {
-            // Remove the description header it does not contain anything any more.
-            $mform->removeElement('descriptionhdr');
             $mform->hardFreeze($summaryfields);
         }
 
@@ -427,7 +426,7 @@ class course_edit_form extends moodleform {
         // When two elements we need a group.
         $buttonarray = array();
         $classarray = array('class' => 'form-submit');
-        if ($returnto !== 0) {
+        if (!empty($returnto)) {
             $buttonarray[] = &$mform->createElement('submit', 'saveandreturn', get_string('savechangesandreturn'), $classarray);
         }
         $buttonarray[] = &$mform->createElement('submit', 'saveanddisplay', get_string('savechangesanddisplay'), $classarray);

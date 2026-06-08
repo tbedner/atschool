@@ -58,6 +58,37 @@ Use a danger button when the primary action is a potentially dangerous action, l
 
 Outline buttons are used for buttons that controll part of the user interface, like filters on a table or the display type on the user dashboard. Outline buttons look more subtle than secondary buttons and do not distract the user from the main user interface too much.
 
+### Subtle buttons
+
+{{< example >}}
+<button type="button" class="btn btn-subtle-secondary">Subtle Secondary</button>
+<button type="button" class="btn btn-subtle-success">Subtle Succcess</button>
+<button type="button" class="btn btn-sm btn-subtle-success">Subtle Succcess Small</button>
+{{< /example >}}
+
+The subtle class is designed to create buttons that offer a balance between the visual prominence of standard buttons and the minimalism of outline buttons. This class aims to provide a softer, more understated appearance compared to regular buttons while still maintaining more visual presence than outline buttons.
+
+### Icon buttons
+
+{{< example >}}
+<button type="button" class="btn btn-icon">
+    <i class="icon fa fa-ellipsis-vertical fa-fw" title="Edit" role="img"></i>
+</button>
+<button type="button" class="btn btn-icon text-bg-danger">
+    <i class="icon fa fa-trash-can fa-fw" title="Delete" role="img"></i>
+</button>
+<button type="button" class="btn btn-icon icon-size-4">
+    <i class="icon fa fa-user fa-fw" title="User" role="img"></i>
+</button>
+<button type="button" class="btn btn-icon icon-size-5">
+    <i class="icon fa fa-user fa-fw" title="User" role="img"></i>
+</button>
+{{< /example >}}
+
+The `.btn-icon` class styles buttons that contain only an icon, providing a visually appealing and compact design for icon-only buttons. This class is ideal for creating minimalistic, icon-based interactions within your UI.
+
+The `.btn-icon` class standardizes icon button styles using the `$btn-icon-border-radius` variable in variables.scss. While this ensures consistency, the `.rounded-circle` Bootstrap class can still be used for legacy support, though it's discouraged for new designs.
+
 ## Adding buttons to a page
 
 ### Using the single_select renderer
@@ -102,8 +133,8 @@ Use primary buttons for the positive action on the page, for example "Save" or "
             <div class="card-body">
                 <strong>Save Changes?</strong>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-secondary mr-1">Cancel</button>
-                    <button type="button" class="btn btn-primary mr-1">Save</button>
+                    <button type="button" class="btn btn-secondary me-1">Cancel</button>
+                    <button type="button" class="btn btn-primary me-1">Save</button>
                 </div>
             </div>
         </div>
@@ -113,7 +144,7 @@ Use primary buttons for the positive action on the page, for example "Save" or "
             <div class="card-body">
                 <strong>Delete profile</strong>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-primary mr-1">Cancel</button>
+                    <button type="button" class="btn btn-primary me-1">Cancel</button>
                     <button type="button" class="btn btn-secondary">Delete</button>
                 </div>
             </div>
@@ -143,7 +174,7 @@ The meaning of buttons must be very clear.
                 <strong>Save Changes?</strong>
                 <p>Would you like to not save your changes before exiting?</p>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-primary mr-1">Yes</button>
+                    <button type="button" class="btn btn-primary me-1">Yes</button>
                     <button type="button" class="btn btn-secondary">No</button>
                 </div>
             </div>
@@ -156,7 +187,7 @@ The meaning of buttons must be very clear.
                 <strong>Save Changes</strong>
                 <p>Would you like to save your changes before exiting?</p>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-primary mr-1">Save</button>
+                    <button type="button" class="btn btn-primary me-1">Save</button>
                     <button type="button" class="btn btn-secondary">Discard</button>
                 </div>
             </div>

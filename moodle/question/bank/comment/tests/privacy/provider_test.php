@@ -54,6 +54,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
      */
     protected function setUp(): void {
         global $DB;
+        parent::setUp();
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -141,7 +142,7 @@ final class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertCount(2, $contextlist);
 
         $contextids = $contextlist->get_contextids();
-        $this->assertEqualsCanonicalizing([$coursecontext1->id, $coursecontext2->id], $contextids);
+        $this->assertEqualsCanonicalizing([$coursecontext1->id, $coursecontext2->id], array_values($contextids));
     }
 
     /**

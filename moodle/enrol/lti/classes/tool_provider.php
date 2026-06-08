@@ -270,7 +270,7 @@ class tool_provider extends ToolProvider {
                     ]
                 ]);
                 $event->trigger();
-                throw new moodle_exception('invalidlogin', 'core');
+                throw new \core\exception\moodle_exception('invalidlogin', 'core');
             }
 
             if (helper::user_match($user, $dbuser)) {

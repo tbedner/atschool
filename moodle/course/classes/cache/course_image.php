@@ -16,8 +16,8 @@
 
 namespace core_course\cache;
 
-use cache_data_source;
-use cache_definition;
+use core_cache\data_source_interface;
+use core_cache\definition;
 use moodle_url;
 use core_course_list_element;
 
@@ -30,7 +30,7 @@ use core_course_list_element;
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_image implements cache_data_source {
+class course_image implements data_source_interface {
 
     /** @var course_image */
     protected static $instance = null;
@@ -39,10 +39,10 @@ class course_image implements cache_data_source {
      * Returns an instance of the data source class that the cache can use for loading data using the other methods
      * specified by this interface.
      *
-     * @param cache_definition $definition
+     * @param definition $definition
      * @return \core_course\cache\course_image
      */
-    public static function get_instance_for_cache(cache_definition $definition): course_image {
+    public static function get_instance_for_cache(definition $definition): course_image {
         if (is_null(self::$instance)) {
             self::$instance = new course_image();
         }
@@ -53,21 +53,24 @@ class course_image implements cache_data_source {
      * Loads the data for the key provided ready formatted for caching.
      *
      * @param string|int $key The key to load.
-     * @return string|bool Returns course image url as a string or false if the image is not exist
+     * @return string|null The course image URL path, or false if the image does not exist.
      */
     public function load_for_cache($key) {
         // We should use get_course() instead of get_fast_modinfo() for better performance.
         $course = get_course($key);
-        return $this->get_image_url_from_overview_files($course);
+        $url = $this->get_image_url_from_overview_files($course);
+
+        // Return only the path.
+        return $url?->out_as_local_url();
     }
 
     /**
      * Returns image URL from course overview files.
      *
      * @param \stdClass $course Course object.
-     * @return null|string Image URL or null if it's not exists.
+     * @return null|moodle_url Image URL or null if the image does not exist.
      */
-    protected function get_image_url_from_overview_files(\stdClass $course): ?string {
+    protected function get_image_url_from_overview_files(\stdClass $course): moodle_url|null {
         $courseinlist = new core_course_list_element($course);
         foreach ($courseinlist->get_course_overviewfiles() as $file) {
             if ($file->is_valid_image()) {
@@ -78,7 +81,7 @@ class course_image implements cache_data_source {
                     null,
                     $file->get_filepath(),
                     $file->get_filename()
-                )->out();
+                );
             }
         }
 

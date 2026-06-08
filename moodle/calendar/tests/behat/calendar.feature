@@ -15,11 +15,11 @@ Feature: Perform basic calendar functionality
       | name     | category | idnumber |
       | CatA     | 0        | cata     |
     And the following "courses" exist:
-      | fullname | shortname | format | category |
-      | Course 1 | C1        | topics | cata     |
-      | Course 2 | C2        | topics | cata     |
-      | Course 3 | C3        | topics | cata     |
-      | Course 4 | C4        | topics | cata     |
+      | fullname | shortname | format | category | startdate |
+      | Course 1 | C1        | topics | cata     | ##first day of last month## |
+      | Course 2 | C2        | topics | cata     | ##first day of last month## |
+      | Course 3 | C3        | topics | cata     | ##first day of last month## |
+      | Course 4 | C4        | topics | cata     | ##first day of last month## |
     And the following "course enrolments" exist:
       | user | course | role |
       | student1 | C1 | student |
@@ -58,26 +58,30 @@ Feature: Perform basic calendar functionality
   Scenario: Create a course event
     Given I log in as "teacher1"
     And I create a calendar event with form data:
-      | Type of event | course |
-      | Course        | Course 1 |
-      | Event title | Really awesome event! |
-      | Description | Come join this awesome event, sucka! |
+      | Type of event  | course                            |
+      | Course         | Course 1                          |
+      | timestart[day] | 1                                 |
+      | Event title    | Really awesome event!  & < > " ' |
+      | Description    | Come join this awesome event, sucka! |
     And I log out
     When I am on the "Course 1" course page logged in as student1
     And I follow "Course calendar"
-    And I click on "Really awesome event!" "link"
-    And "Course 1" "link" should exist in the "Really awesome event!" "dialogue"
-    And I click on "Close" "button" in the "Really awesome event!" "dialogue"
+    And I hover over day "1" of this month in the full calendar page
+    And I should see "Really awesome event!  & < > \" '"
+    And I click on "Really awesome event!  & < > \" '" "link"
+    And I should see "Really awesome event!  & < > \" '" in the ".modal-title" "css_element"
+    And I should see "Course 1" in the ".modal-body" "css_element"
+    And I click on "Close" "button" in the ".modal-content" "css_element"
     And I log out
     And I log in as "student2"
     And I follow "Full calendar"
-    Then I should not see "Really awesome event!"
+    Then I should not see "Really awesome event!  & < > \" '"
 
   @javascript
   Scenario: Create a group event
     Given I log in as "teacher1"
     And I follow "Full calendar"
-    And I set the field "course" to "C1"
+    And I set the field "course" to "Course 1"
     And I create a calendar event:
       | Type of event | group |
       | Group         | Group 1 |
@@ -217,7 +221,7 @@ Feature: Perform basic calendar functionality
     And I click on "New event" "button"
     Then the field "Type of event" matches value "User"
     And I click on "Close" "button" in the "New event" "dialogue"
-    And I set the field "course" to "C1"
+    And I set the field "course" to "Course 1"
     When I click on "New event" "button"
     Then the field "Type of event" matches value "Course"
 
@@ -454,3 +458,37 @@ Feature: Perform basic calendar functionality
     And I press "Save"
     And I click on "type change test event" "link"
     And I should see "Category event"
+
+  @javascript
+  Scenario: Group multilang tags are respected on event forms
+    Given the "multilang" filter is "on"
+    And the "multilang" filter applies to "content and headings"
+    And the following "courses" exist:
+      | fullname | shortname | format | category |
+      | Course 5 | C5        | topics | cata     |
+    And the following "groups" exist:
+      | name                                                                                           | course | idnumber |
+      | <span lang="en" class="multilang">Group</span><span lang="es" class="multilang">Grupo</span> 2 | C5     | G2       |
+    And the following "blocks" exist:
+      | blockname      | contextlevel | reference | pagetypepattern | defaultregion |
+      | calendar_month | Course       | C5        | course-view-*   | side-pre      |
+    And I am on the "Course 5" course page logged in as admin
+    And I follow "Course calendar"
+    # New event form.
+    And I press "New event"
+    When I set the following fields to these values:
+      | Event title   | Group 2 event |
+      | Type of event | Group         |
+    Then I should see "Group 2"
+    And I should not see "GroupGrupo 2"
+    And I press "Save"
+    And I am on "Course 5" course homepage
+    And I follow "Course calendar"
+    # Preview event modal.
+    And I click on "Group 2 event" "link"
+    And I should see "Group 2"
+    And I should not see "GroupGrupo 2"
+    # Edit event form.
+    And I press "Edit"
+    And I should see "Group 2"
+    And I should not see "GroupGrupo 2"

@@ -14,10 +14,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Screen reader-only (sr-only) reactive mutations logger class.
+ * Screen reader-only (visually-hidden) reactive mutations logger class.
  *
  * This logger can be used by the StateManager to log mutation feedbacks and actions.
- * The feedback messages logged by this logger will be rendered in a sr-only, ARIA live region.
+ * The feedback messages logged by this logger will be rendered in a visually-hidden, ARIA live region.
  *
  * @module     core/local/reactive/srlogger
  * @class      SRLogger
@@ -25,6 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {add as addToast} from 'core/toast';
 import Logger from 'core/local/reactive/logger';
 
 /**
@@ -35,7 +36,7 @@ import Logger from 'core/local/reactive/logger';
  */
 
 /**
- * Screen reader-only (sr-only) reactive mutations logger class.
+ * Screen reader-only (visually-hidden) reactive mutations logger class.
  *
  * @class SRLogger
  */
@@ -53,23 +54,7 @@ export default class SRLogger extends Logger {
      */
     add(entry) {
         if (entry.feedbackMessage) {
-            // Fetch or create an ARIA live region that will serve as the container for the logger feedback.
-            let loggerFeedback = document.getElementById(SRLogger.liveRegionId);
-            if (!loggerFeedback) {
-                loggerFeedback = document.createElement('div');
-                loggerFeedback.id = SRLogger.liveRegionId;
-                loggerFeedback.classList.add('sr-only');
-                loggerFeedback.setAttribute('aria-live', 'polite');
-                document.body.append(loggerFeedback);
-            }
-            // Set the ARIA live region's contents with the feedback.
-            loggerFeedback.innerHTML = entry.feedbackMessage;
-
-            // Clear the feedback message after 4 seconds to avoid the contents from being read out in case the user navigates
-            // to this region. This is similar to the default timeout of toast messages before disappearing from view.
-            setTimeout(() => {
-                loggerFeedback.innerHTML = '';
-            }, 4000);
+            addToast(entry.feedbackMessage, {visuallyHidden: true});
         }
     }
 }

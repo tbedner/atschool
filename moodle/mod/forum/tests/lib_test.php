@@ -35,6 +35,7 @@ require_once($CFG->dirroot . '/rating/lib.php');
 final class lib_test extends \advanced_testcase {
 
     public function setUp(): void {
+        parent::setUp();
         // We must clear the subscription caches. This has to be done both before each test, and after in case of other
         // tests using these functions.
         \mod_forum\subscriptions::reset_forum_cache();
@@ -44,6 +45,7 @@ final class lib_test extends \advanced_testcase {
         // We must clear the subscription caches. This has to be done both before each test, and after in case of other
         // tests using these functions.
         \mod_forum\subscriptions::reset_forum_cache();
+        parent::tearDown();
     }
 
     public function test_forum_trigger_content_uploaded_event(): void {
@@ -4370,5 +4372,35 @@ final class lib_test extends \advanced_testcase {
         // Make sure there are no discussions.
         $f3discussionscount = forum_count_discussions($forum3, $forum3cm, $course2);
         $this->assertEquals(0, $f3discussionscount);
+    }
+
+    /**
+     * @covers ::forum_reset_userdata
+     */
+    public function test_forum_reset_userdata(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $now = time();
+
+        $course = $this->getDataGenerator()->create_course();
+        $forum = $this->getDataGenerator()->create_module('forum', [
+            'course' => $course->id,
+            'duedate' => $now + HOURSECS,
+            'cutoffdate' => $now + DAYSECS,
+        ]);
+
+        forum_reset_userdata((object) [
+            'courseid' => $course->id,
+            'timeshift' => DAYSECS * 2,
+        ]);
+
+        // Reload the instance data.
+        $instance = $DB->get_record('forum', ['id' => $forum->id]);
+
+        $this->assertEquals($forum->duedate + (DAYSECS * 2), $instance->duedate);
+        $this->assertEquals($forum->cutoffdate + (DAYSECS * 2), $instance->cutoffdate);
     }
 }

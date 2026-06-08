@@ -26,13 +26,12 @@
 namespace core_completion;
 
 use core\context;
+use core\output\local\properties\iconsize;
+use core_course\output\activity_icon;
 use stdClass;
 use context_course;
 use cm_info;
-use tabobject;
-use lang_string;
 use moodle_url;
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * Bulk activity completion manager class
@@ -105,6 +104,7 @@ class manager {
      * @return array
      */
     public function get_activities($cmids, $withcompletiondetails = false) {
+        $output = \core\di::get(\core\output\renderer_helper::class)->get_core_renderer();
         $moduleinfo = get_fast_modinfo($this->courseid);
         $activities = [];
         foreach ($cmids as $cmid) {
@@ -112,11 +112,16 @@ class manager {
             if (!$mod->uservisible) {
                 continue;
             }
+
+            $icon = activity_icon::from_cm_info($mod)
+                ->set_icon_size(iconsize::SIZE5);
+
             $moduleobject = new stdClass();
             $moduleobject->cmid = $cmid;
             $moduleobject->modname = $mod->get_formatted_name();
             $moduleobject->icon = $mod->get_icon_url()->out();
             $moduleobject->url = $mod->url;
+            $moduleobject->activityicon = $icon->export_for_template($output);
             $moduleobject->canmanage = $withcompletiondetails && self::can_edit_bulk_completion($this->courseid, $mod);
 
             // Get activity completion information.
@@ -244,6 +249,9 @@ class manager {
             if (!file_exists($libfile)) {
                 continue;
             }
+            if (!plugin_supports('mod', $module->name, FEATURE_MODEDIT_DEFAULT_COMPLETION, true)) {
+                continue;
+            }
             $module->icon = $OUTPUT->image_url('monologo', $module->name)->out();
             $module->formattedname = format_string(get_string('modulename', 'mod_' . $module->name),
                 true, ['context' => $context]);
@@ -273,6 +281,9 @@ class manager {
      */
     public static function can_edit_bulk_completion($courseorid, $cm = null) {
         if ($cm) {
+            if (!plugin_supports('mod', $cm->modname, FEATURE_COMPLETION, true)) {
+                return false;
+            }
             return $cm->uservisible && has_capability('moodle/course:manageactivities', $cm->context);
         }
         $coursecontext = context_course::instance(is_object($courseorid) ? $courseorid->id : $courseorid);
@@ -286,13 +297,6 @@ class manager {
             }
         }
         return false;
-    }
-
-    /**
-     * @deprecated since Moodle 4.0
-     */
-    public static function get_available_completion_tabs() {
-        throw new \coding_exception(__FUNCTION__ . '() has been removed.');
     }
 
     /**

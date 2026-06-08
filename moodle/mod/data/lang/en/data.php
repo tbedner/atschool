@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'data', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'mod_data', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package   mod_data
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -88,12 +88,10 @@ $string['csvimport_help'] = 'Entries may be imported via a plain text file with 
 $string['csvwithselecteddelimiter'] = '<abbr title="Comma Separated Values">CSV</abbr>';
 $string['data:addinstance'] = 'Add a new database';
 $string['data:approve'] = 'Approve and undo approved entries';
-$string['data:comment'] = 'Write comments';
 $string['data:exportallentries'] = 'Export all database entries';
 $string['data:exportentry'] = 'Export a database entry';
 $string['data:exportownentry'] = 'Export own database entry';
 $string['data:exportuserinfo'] = 'Export user information';
-$string['data:managecomments'] = 'Manage comments';
 $string['data:manageentries'] = 'Manage entries';
 $string['data:managetemplates'] = 'Manage templates';
 $string['data:manageuserpresets'] = 'Manage presets';
@@ -114,13 +112,13 @@ $string['defaultfieldenclosure'] = '(default is none)';
 $string['defaultsortfield'] = 'Default sort field';
 $string['delcheck'] = 'Bulk delete checkbox';
 $string['delete'] = 'Delete';
-$string['deleteallentries'] = 'Delete all entries';
+$string['deleteallentries'] = 'All entries';
 $string['deletecomment'] = 'Are you sure you want to delete this comment?';
 $string['deleteconfirm'] = 'Delete preset {$a}?';
 $string['deleted'] = 'deleted';
 $string['deleteentry'] = 'Delete entry';
 $string['deletefield'] = 'Delete field';
-$string['deletenotenrolled'] = 'Delete entries by users not enrolled';
+$string['deletenotenrolled'] = 'Entries by users not enrolled';
 $string['deletewarning'] = 'Deleting a preset removes it from the list of available presets in all courses.';
 $string['descending'] = 'Descending';
 $string['directorynotapreset'] = '{$a->directory} Not a preset: missing files: {$a->missing_files}';
@@ -382,7 +380,7 @@ $string['recorddeleted'] = 'Entry deleted';
 $string['recorddisapproved'] = 'Entry unapproved';
 $string['recordsnotsaved'] = 'No entry was saved. Please check the format of the uploaded file.';
 $string['recordssaved'] = 'entries saved';
-$string['removealldatatags'] = 'Remove all database tags';
+$string['removealldatatags'] = 'All database tags';
 $string['requireapproval'] = 'Approval required';
 $string['requireapproval_help'] = 'A teacher has to approve entries before they’re visible to everyone.';
 $string['required'] = 'Required';
@@ -439,7 +437,6 @@ $string['subplugintype_datapreset'] = 'Preset';
 $string['subplugintype_datapreset_plural'] = 'Presets';
 $string['tagarea_data_records'] = 'Data records';
 $string['tags'] = 'Tags';
-$string['tagsdeleted'] = 'Database tags have been deleted';
 $string['teachersandstudents'] = '{$a->teachers} and {$a->students}';
 $string['templates'] = 'Templates';
 $string['templatereset'] = 'Template reset';
@@ -474,21 +471,9 @@ $string['viewtodate'] = 'Read only to';
 $string['viewtodatevalidation'] = 'The read only to date cannot be before the read only from date.';
 $string['wrongdataid'] = 'Wrong data ID provided';
 
-// Deprecated since Moodle 4.1.
-$string['buttons'] = 'Actions';
-$string['nolisttemplate'] = 'List view template is not yet defined';
-$string['nosingletemplate'] = 'Single view template is not yet defined';
-$string['pleaseaddsome'] = 'Please create some below or <a href="{$a}">choose a predefined set</a> to get started.';
-$string['blank'] = 'Blank';
-$string['savetemplate'] = 'Save template';
-$string['addedby'] = 'Added by';
-$string['addentries'] = 'Add entries';
-$string['todatabase'] = 'to this database.';
+// Deprecated since Moodle 4.5.
+$string['tagsdeleted'] = 'Database tags have been deleted';
 
-// Deprecated since Moodle 4.2.
-$string['fieldids'] = 'Field ids';
-
-// Deprecated since Moodle 4.3.
-$string['completionentries'] = 'Require entries';
-
-// Deprecated since Moodle 4.4.
+// Deprecated since Moodle 5.0.
+$string['data:comment'] = 'Write comments';
+$string['data:managecomments'] = 'Manage comments';

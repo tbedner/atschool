@@ -28,8 +28,13 @@ if ($eid) {
     $entry->glossaryname = $glossary->name;
     $entry->cmid = $cm->id;
     $entry->courseid = $cm->course;
+    $entry->concept = format_string($entry->concept, true, ["escape" => false]);
     $entries = array($entry);
 
+    $PAGE->set_title(implode(\moodle_page::TITLE_SEPARATOR, [
+        $entry->concept,
+        $entry->glossaryname,
+    ]));
 } else if ($concept) {
     $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
     require_course_login($course);
@@ -72,14 +77,19 @@ if (!empty($courseid)) {
 
     $PAGE->navbar->add($strglossaries);
     $PAGE->navbar->add($strsearch);
-    $PAGE->set_title(strip_tags("$course->shortname: $strglossaries $strsearch"));
+
+    $PAGE->set_title(implode(\moodle_page::TITLE_SEPARATOR, [
+        $strsearch,
+        $strglossaries,
+        $course->shortname,
+    ]));
     $PAGE->set_heading($course->fullname);
     echo $OUTPUT->header();
 } else {
     echo $OUTPUT->header();    // Needs to be something here to allow linking back to the whole glossary
 }
 
-if ($glossary) {
+if (isset($glossary)) {
     $url = new moodle_url('view.php', ['id' => $cm->id]);
     $backlink = html_writer::link($url, get_string('back'), ['class' => 'btn btn-secondary']);
     echo html_writer::tag('div', $backlink, ['class' => 'tertiary-navigation']);

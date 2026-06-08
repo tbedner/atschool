@@ -127,6 +127,7 @@ class behat_partial_named_selector extends \Behat\Mink\Selector\PartialNamedSele
         'table' => 'table',
         'table_row' => 'table_row',
         'text' => 'text',
+        'toast_message' => 'toast_message',
         'xpath_element' => 'xpath_element',
         'form_row' => 'form_row',
         'autocomplete_selection' => 'autocomplete_selection',
@@ -154,7 +155,7 @@ XPATH
     descendant::*[
         contains(concat(' ', normalize-space(@class), ' '), ' dropdown-toggle ')
             and
-        (contains(normalize-space(.), %locator%) or descendant::*[%titleMatch%])
+        (contains(normalize-space(.), %locator%) or descendant::*[%titleMatch%] or %ariaLabelMatch%)
     ]
 ]
 XPATH
@@ -227,7 +228,7 @@ XPATH
         //div[@data-region='empty-message-container' and not(contains(@class, 'hidden')) and contains(., %locator%)]
 XPATH
     , 'group_message_tab' => <<<XPATH
-        .//*[@data-region='message-drawer']//button[@data-toggle='collapse' and contains(string(), %locator%)]
+        .//*[@data-region='message-drawer']//button[@data-bs-toggle='collapse' and contains(string(), %locator%)]
 XPATH
     , 'group_message_list_area' => <<<XPATH
         .//*[@data-region='message-drawer']//*[contains(@data-region, concat('view-overview-', %locator%))]
@@ -265,6 +266,9 @@ XPATH
 .//li[contains(concat(' ', normalize-space(@class), ' '), ' section ')][./descendant::*[self::h3]
     [normalize-space(.) = %locator%][contains(concat(' ', normalize-space(@class), ' '), ' sectionname ') or
     contains(concat(' ', normalize-space(@class), ' '), ' section-title ')]] |
+.//li[contains(concat(' ', normalize-space(@class), ' '), ' section ')][./descendant::*[self::h4]
+    [normalize-space(.) = %locator%][contains(concat(' ', normalize-space(@class), ' '), ' sectionname ') or
+    contains(concat(' ', normalize-space(@class), ' '), ' section-title ')]] |
 .//div[contains(concat(' ', normalize-space(@class), ' '), ' sitetopic ')]
     [./descendant::*[self::h2][normalize-space(.) = %locator%] or %locator% = 'frontpage']
 XPATH
@@ -276,6 +280,9 @@ XPATH
 XPATH
         , 'text' => <<<XPATH
 .//*[contains(., %locator%) and not(.//*[contains(., %locator%)])]
+XPATH
+    , 'toast_message' => <<<XPATH
+        .//*[contains(concat(' ', normalize-space(@class), ' '), ' toast-message ') and %exactTagTextMatch%]
 XPATH
         , 'form_row' => <<<XPATH
 .//*[contains(concat(' ', @class, ' '), ' col-form-label ')]
@@ -335,7 +342,7 @@ XPATH
 XPATH
         ,
             'select_menu' => <<<XPATH
-//*[@role='combobox'][@aria-labelledby = //label[contains(normalize-space(string(.)), %locator%)]/@id]
+//*[@role='combobox'][@aria-labelledby = //span[contains(normalize-space(string(.)), %locator%)]/@id]
 XPATH
         ,
         ],

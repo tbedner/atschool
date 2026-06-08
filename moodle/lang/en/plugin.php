@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines names of plugin types and some strings used at the plugin managment
+ * Strings for component 'core_plugin', language 'en'.
  *
  * @package    core
  * @subpackage plugin
@@ -47,12 +47,15 @@ $string['dependencymissing'] = 'Missing';
 $string['dependencyunavailable'] = 'Unavailable';
 $string['dependencyupload'] = 'Upload';
 $string['dependencyuploadmissing'] = 'Upload ZIP files';
+$string['deprecated_type'] = "Deprecated plugin type";
 $string['displayname'] = 'Plugin name';
 $string['err_response_curl'] = 'Unable to fetch available updates data - unexpected cURL error.';
 $string['err_response_format_version'] = 'Unexpected version of the response format. Please try to re-check for available updates.';
 $string['err_response_http_code'] = 'Unable to fetch available updates data - unexpected HTTP response code.';
 $string['filterall'] = 'Show all';
 $string['filtercontribonly'] = 'Show additional plugins only';
+$string['filtermissingonly'] = 'Show missing from disk only';
+$string['filternewpluginsonly'] = 'Show only plugins to be installed';
 $string['filterupdatesonly'] = 'Show updateable only';
 $string['incompatibleversion'] = 'Incompatible Moodle version: {$a}';
 $string['isenabled'] = 'Enabled?';
@@ -110,6 +113,10 @@ $string['status_uptodate'] = 'Installed';
 $string['supportedmoodleversions'] = 'Supported Moodle versions';
 $string['supportedconversions'] = 'Supported document conversions';
 $string['systemname'] = 'Identifier';
+$string['type_aiplacement'] = 'AI placement plugin';
+$string['type_aiplacement_plural'] = 'AI placement plugins';
+$string['type_aiprovider'] = 'AI provider plugin';
+$string['type_aiprovider_plural'] = 'AI provider plugins';
 $string['type_antivirus'] = 'Antivirus plugin';
 $string['type_antivirus_plural'] = 'Antivirus plugins';
 $string['type_auth'] = 'Authentication method';
@@ -128,8 +135,6 @@ $string['type_communication'] = 'Communication provider';
 $string['type_communication_plural'] = 'Communication providers';
 $string['type_contenttype'] = 'Content bank';
 $string['type_contenttype_plural'] = 'Content bank plugins';
-$string['type_contentbank'] = 'Content bank';
-$string['type_contentbank_plural'] = 'Content bank plugins';
 $string['type_customfield'] = 'Custom field';
 $string['type_customfield_plural'] = 'Custom fields';
 $string['type_coursereport'] = 'Course report';
@@ -151,6 +156,8 @@ $string['type_gradeexport'] = 'Grade export method';
 $string['type_gradeexport_plural'] = 'Grade export methods';
 $string['type_gradeimport'] = 'Grade import method';
 $string['type_gradeimport_plural'] = 'Grade import methods';
+$string['type_gradepenalty'] = 'Grade penalty';
+$string['type_gradepenalty_plural'] = 'Grade penalties';
 $string['type_gradereport'] = 'Gradebook report';
 $string['type_gradereport_plural'] = 'Gradebook reports';
 $string['type_gradingform'] = 'Advanced grading method';
@@ -190,6 +197,8 @@ $string['type_repository'] = 'Repository';
 $string['type_repository_plural'] = 'Repositories';
 $string['type_search'] = 'Search engine';
 $string['type_search_plural'] = 'Search engines';
+$string['type_smsgateway'] = 'SMS gateway';
+$string['type_smsgateway_plural'] = 'SMS gateways';
 $string['type_theme'] = 'Theme';
 $string['type_theme_plural'] = 'Themes';
 $string['type_tool'] = 'Admin tool';
@@ -260,7 +269,3 @@ $string['validationmsglevel_warning'] = 'Warning';
 $string['version'] = 'Version';
 $string['versiondb'] = 'Current version';
 $string['versiondisk'] = 'New version';
-
-// Deprecated since Moodle 4.2.
-$string['type_contentbank'] = 'Content bank';
-$string['type_contentbank_plural'] = 'Content bank plugins';

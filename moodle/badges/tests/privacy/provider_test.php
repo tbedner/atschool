@@ -50,6 +50,7 @@ require_once($CFG->libdir . '/badgeslib.php');
 final class provider_test extends provider_testcase {
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
     }
 
@@ -341,9 +342,6 @@ final class provider_test extends provider_testcase {
         $this->assertEquals($b1->name, $data->name);
         $this->assertEquals($b1->version, $data->version);
         $this->assertEquals($b1->language, $data->language);
-        $this->assertEquals($b1->imageauthorname, $data->imageauthorname);
-        $this->assertEquals($b1->imageauthoremail, $data->imageauthoremail);
-        $this->assertEquals($b1->imageauthorurl, $data->imageauthorurl);
         $this->assertEquals($b1->imagecaption, $data->imagecaption);
         $this->assertNotEmpty($data->issued);
         $this->assertEmpty($data->manual_award);
@@ -639,9 +637,6 @@ final class provider_test extends provider_testcase {
             'status' => BADGE_STATUS_ACTIVE,
             'version' => OPEN_BADGES_V2,
             'language' => 'en',
-            'imageauthorname' => 'Image author',
-            'imageauthoremail' => 'author@example.com',
-            'imageauthorurl' => 'http://image.example.com/',
             'imagecaption' => 'Image caption'
         ], $params);
         $record->id = $DB->insert_record('badge', $record);

@@ -76,7 +76,7 @@ function tool_dbtransfer_export_xml_database($description, $mdb) {
  * @param progress_trace $feedback
  * @return void
  */
-function tool_dbtransfer_transfer_database(moodle_database $sourcedb, moodle_database $targetdb, progress_trace $feedback = null) {
+function tool_dbtransfer_transfer_database(moodle_database $sourcedb, moodle_database $targetdb, ?progress_trace $feedback = null) {
     core_php_time_limit::raise();
 
     \core\session\manager::write_close(); // Release session.
@@ -94,7 +94,7 @@ function tool_dbtransfer_transfer_database(moodle_database $sourcedb, moodle_dat
  * @return void
  * @throws Exception on conversion error
  */
-function tool_dbtransfer_rebuild_target_log_actions(moodle_database $target, progress_trace $feedback = null) {
+function tool_dbtransfer_rebuild_target_log_actions(moodle_database $target, ?progress_trace $feedback = null) {
     global $DB, $CFG;
     require_once("$CFG->libdir/upgradelib.php");
 
@@ -140,11 +140,6 @@ function tool_dbtransfer_get_drivers() {
         }
         $dbtype = $matches[1];
         $dblibrary = $matches[2];
-
-        if ($dbtype === 'sqlite3') {
-            // The sqlite3 driver is not fully working yet and should not be returned.
-            continue;
-        }
 
         $targetdb = moodle_database::get_driver_instance($dbtype, $dblibrary, false);
         if ($targetdb->driver_installed() !== true) {

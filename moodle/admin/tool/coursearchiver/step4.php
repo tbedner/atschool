@@ -28,28 +28,39 @@ require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 header('X-Accel-Buffering: no');
-header('Accept-Encoding: identity');
+header("Content-Encoding: none"); // Force no encoding for streaming output.
+header('Accept-Encoding: none'); // Force no encoding for streaming output.
 
 require_login();
 admin_externalpage_setup('toolcoursearchiver');
 
 global $SESSION;
-$formdata   = isset($SESSION->formdata) ? $SESSION->formdata : optional_param('formdata', false, PARAM_RAW);
-$error      = isset($SESSION->error) ? $SESSION->error : optional_param('error', false, PARAM_RAW);
-$mode       = isset($SESSION->mode) ? $SESSION->mode : optional_param('mode', false, PARAM_INT);
+$formdata   = $SESSION->coursearchiver_formdata ?? optional_param('formdata', false, PARAM_TEXT);
+
+$error      = $SESSION->coursearchiver_error ?? optional_param('coursearchiver_error', false, PARAM_TEXT);
+$error      = htmlspecialchars($error, ENT_COMPAT);
+
+$mode       = $SESSION->coursearchiver_mode ?? optional_param('coursearchiver_mode', false, PARAM_INT);
 $folder     = optional_param('folder', false, PARAM_TEXT);
-$submitted  = optional_param('submit_button', false, PARAM_RAW);
 
-unset($SESSION->formdata);
-unset($SESSION->error);
-unset($SESSION->mode);
+$submitted  = optional_param('submit_button', false, PARAM_TEXT);
+$submitted  = htmlspecialchars($submitted, ENT_COMPAT);
 
-if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMITTED.
+unset($SESSION->coursearchiver_formdata);
+unset($SESSION->coursearchiver_error);
+unset($SESSION->coursearchiver_mode);
 
-    if ($submitted == get_string('back', 'tool_coursearchiver')) { // Button to start over has been pressed.
-        unset($SESSION->formdata);
-        unset($SESSION->mode);
-        unset($SESSION->error);
+// FORM 4 SUBMITTED.
+if (
+    !empty($submitted) &&
+    !empty($formdata) &&
+    !empty($mode)
+) {
+    // Button to start over has been pressed.
+    if ($submitted == htmlspecialchars(get_string('back', 'tool_coursearchiver'), ENT_COMPAT)) {
+        unset($SESSION->coursearchiver_formdata);
+        unset($SESSION->coursearchiver_mode);
+        unset($SESSION->coursearchiver_error);
         $returnurl = new moodle_url('/admin/tool/coursearchiver/index.php');
         redirect($returnurl);
     }
@@ -58,29 +69,31 @@ if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMIT
         echo $OUTPUT->container($error, 'coursearchiver_myformerror');
     }
 
-    if ($submitted == get_string('confirm', 'tool_coursearchiver')) {
-        if (!isset($mode) || !in_array($mode, [tool_coursearchiver_processor::MODE_HIDE,
-                                               tool_coursearchiver_processor::MODE_BACKUP,
-                                               tool_coursearchiver_processor::MODE_ARCHIVE,
-                                               tool_coursearchiver_processor::MODE_DELETE,
-                                               tool_coursearchiver_processor::MODE_HIDEEMAIL,
-                                               tool_coursearchiver_processor::MODE_ARCHIVEEMAIL,
-                                               tool_coursearchiver_processor::MODE_DELETEEMAIL,
-                                               tool_coursearchiver_processor::MODE_OPTOUT,
-                                              ])) {
+    if ($submitted == htmlspecialchars(get_string('confirm', 'tool_coursearchiver'), ENT_COMPAT)) {
+        if (
+            !isset($mode) ||
+            !in_array(
+                $mode,
+                [
+                    tool_coursearchiver_processor::MODE_HIDE,
+                    tool_coursearchiver_processor::MODE_BACKUP,
+                    tool_coursearchiver_processor::MODE_ARCHIVE,
+                    tool_coursearchiver_processor::MODE_DELETE,
+                    tool_coursearchiver_processor::MODE_HIDEEMAIL,
+                    tool_coursearchiver_processor::MODE_ARCHIVEEMAIL,
+                    tool_coursearchiver_processor::MODE_DELETEEMAIL,
+                    tool_coursearchiver_processor::MODE_OPTOUT,
+                ]
+            )
+        ) {
             throw new coding_exception('Unknown process mode');
         }
 
-        switch($mode) {
+        switch ($mode) {
             case tool_coursearchiver_processor::MODE_HIDEEMAIL:
             case tool_coursearchiver_processor::MODE_ARCHIVEEMAIL:
             case tool_coursearchiver_processor::MODE_DELETEEMAIL:
-                echo $OUTPUT->header();
-                echo $OUTPUT->heading_with_help(get_string('coursearchiver', 'tool_coursearchiver'),
-                                                'coursearchiver',
-                                                'tool_coursearchiver');
-
-                $selected = unserialize($formdata);
+                $selected = json_decode($formdata);
                 $owners = [];
                 foreach ($selected as $s) {
                     $t = explode("_", $s);
@@ -98,11 +111,19 @@ if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMIT
                 }
 
                 if (!is_array($owners) || empty($owners)) { // If 0 courses are selected, show message and form again.
-                    $SESSION->formdata = $formdata;
-                    $SESSION->error = get_string('nousersselected', 'tool_coursearchiver');
+                    $SESSION->coursearchiver_formdata = $formdata;
+                    $SESSION->coursearchiver_error = get_string('nousersselected', 'tool_coursearchiver');
                     $returnurl = new moodle_url('/admin/tool/coursearchiver/step3.php');
                     redirect($returnurl);
                 }
+
+                echo $OUTPUT->header();
+                echo $OUTPUT->heading_with_help(
+                    get_string('coursearchiver', 'tool_coursearchiver'),
+                    'coursearchiver',
+                    'tool_coursearchiver'
+                );
+
                 $processor = new tool_coursearchiver_processor(["mode" => $mode, "data" => $owners]);
                 $processor->execute(tool_coursearchiver_tracker::OUTPUT_HTML);
                 echo $OUTPUT->footer();
@@ -112,18 +133,20 @@ if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMIT
             case tool_coursearchiver_processor::MODE_ARCHIVE:
             case tool_coursearchiver_processor::MODE_DELETE:
             case tool_coursearchiver_processor::MODE_OPTOUT:
-                echo $OUTPUT->header();
-                echo $OUTPUT->heading_with_help(get_string('coursearchiver', 'tool_coursearchiver'),
-                                                'coursearchiver',
-                                                'tool_coursearchiver');
-
-                $courses = unserialize($formdata);
+                $courses = json_decode($formdata);
                 if (!is_array($courses) || empty($courses)) { // If 0 courses are selected, show message and form again.
-                    $SESSION->formdata = $formdata;
-                    $SESSION->error = get_string('nocoursesselected', 'tool_coursearchiver');
+                    $SESSION->coursearchiver_formdata = $formdata;
+                    $SESSION->coursearchiver_error = get_string('nocoursesselected', 'tool_coursearchiver');
                     $returnurl = new moodle_url('/admin/tool/coursearchiver/step2.php');
                     redirect($returnurl);
                 }
+
+                echo $OUTPUT->header();
+                echo $OUTPUT->heading_with_help(
+                    get_string('coursearchiver', 'tool_coursearchiver'),
+                    'coursearchiver',
+                    'tool_coursearchiver'
+                );
 
                 $processor = new tool_coursearchiver_processor(["mode" => $mode, "data" => $courses]);
                 if (!empty($folder)) {
@@ -140,12 +163,11 @@ if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMIT
                 echo $OUTPUT->footer();
                 break;
             default:
-                $SESSION->error = get_string('unknownerror', 'tool_coursearchiver');
+                $SESSION->coursearchiver_error = get_string('unknownerror', 'tool_coursearchiver');
                 $returnurl = new moodle_url('/admin/tool/coursearchiver/index.php');
                 redirect($returnurl);
         }
     }
-
 } else if (!empty($formdata) && !empty($mode)) {  // FORM 3 SUBMITTED, SHOW FORM 4.
     echo $OUTPUT->header();
     echo $OUTPUT->heading_with_help(get_string('coursearchiver', 'tool_coursearchiver'), 'coursearchiver', 'tool_coursearchiver');
@@ -160,7 +182,7 @@ if (!empty($submitted) && !empty($formdata) && !empty($mode)) { // FORM 4 SUBMIT
     $mform->display();
     echo $OUTPUT->footer();
 } else { // IN THE EVENT OF A FAILURE, JUST GO BACK TO THE BEGINNING.
-    $SESSION->error = get_string('unknownerror', 'tool_coursearchiver');
+    $SESSION->coursearchiver_error = get_string('unknownerror', 'tool_coursearchiver');
     $returnurl = new moodle_url('/admin/tool/coursearchiver/index.php');
     redirect($returnurl);
 }

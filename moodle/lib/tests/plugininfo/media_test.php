@@ -32,8 +32,6 @@ final class media_test extends advanced_testcase {
 
     /**
      * Test the get_enabled_plugins method.
-     *
-     * @covers ::get_enabled_plugins
      */
     public function test_get_enabled_plugins(): void {
         $this->resetAfterTest();
@@ -85,13 +83,13 @@ final class media_test extends advanced_testcase {
      * @param string $initialorder
      * @param string $pluginname
      * @param int $direction
-     * @param array $neworder
+     * @param array $expected
      */
     public function test_change_plugin_order(
         array $initialorder,
         string $pluginname,
         int $direction,
-        array $neworder,
+        array $expected,
     ): void {
         $this->resetAfterTest(true);
 
@@ -99,7 +97,7 @@ final class media_test extends advanced_testcase {
         media::change_plugin_order($pluginname, $direction);
 
         $this->assertSame(
-            $neworder,
+            $expected,
             array_keys(media::get_sorted_plugins()),
         );
     }

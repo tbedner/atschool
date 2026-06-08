@@ -49,7 +49,7 @@ final class markerallocation_test extends \advanced_testcase {
         $record = new \stdClass();
         $record->course = $this->course;
 
-        $modulesettings = array(
+        $modulesettings = [
             'alwaysshowdescription'             => 1,
             'submissiondrafts'                  => 1,
             'requiresubmissionstatement'        => 0,
@@ -64,15 +64,15 @@ final class markerallocation_test extends \advanced_testcase {
             'requireallteammemberssubmit'       => 0,
             'teamsubmissiongroupingid'          => 0,
             'blindmarking'                      => 0,
-            'attemptreopenmethod'               => 'none',
-            'maxattempts'                       => -1,
+            'attemptreopenmethod'               => 'untilpass',
+            'maxattempts'                       => 1,
             'markingworkflow'                   => 1,
             'markingallocation'                 => 1,
-        );
+        ];
 
         $assignelement = $this->getDataGenerator()->create_module('assign', $record, $modulesettings);
 
-        $coursesectionid = course_add_cm_to_section($this->course->id, $assignelement->id, 1);
+        $coursesectionid = course_add_cm_to_section($this->course->id, $assignelement->id, 1, null, 'assign');
 
         // Adding users to the course.
         $userdata = array();

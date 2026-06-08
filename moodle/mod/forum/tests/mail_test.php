@@ -57,6 +57,7 @@ final class mail_test extends \advanced_testcase {
 
     public function setUp(): void {
         global $CFG;
+        parent::setUp();
 
         // We must clear the subscription caches. This has to be done both before each test, and after in case of other
         // tests using these functions.
@@ -87,6 +88,7 @@ final class mail_test extends \advanced_testcase {
         $this->mailsink->clear();
         $this->mailsink->close();
         unset($this->mailsink);
+        parent::tearDown();
     }
 
     /**
@@ -934,64 +936,6 @@ final class mail_test extends \advanced_testcase {
     }
 
     /**
-     * Test inital email and reply email subjects
-     */
-    public function test_subjects(): void {
-        $this->resetAfterTest(true);
-
-        $course = $this->getDataGenerator()->create_course();
-
-        $options = array('course' => $course->id, 'forcesubscribe' => FORUM_FORCESUBSCRIBE);
-        $forum = $this->getDataGenerator()->create_module('forum', $options);
-
-        list($author) = $this->helper_create_users($course, 1);
-        list($commenter) = $this->helper_create_users($course, 1);
-
-        $strre = get_string('re', 'forum');
-
-        // New posts should not have Re: in the subject.
-        list($discussion, $post) = $this->helper_post_to_forum($forum, $author);
-        $expect = [
-            'author' => (object) [
-                'userid' => $author->id,
-                'messages' => 1,
-            ],
-            'commenter' => (object) [
-                'userid' => $commenter->id,
-                'messages' => 1,
-            ],
-        ];
-        $this->queue_tasks_and_assert($expect);
-
-        $this->send_notifications_and_assert($author, [$post]);
-        $this->send_notifications_and_assert($commenter, [$post]);
-        $messages = $this->messagesink->get_messages();
-        $this->assertStringNotContainsString($strre, $messages[0]->subject);
-        $this->messagesink->clear();
-
-        // Replies should have Re: in the subject.
-        $reply = $this->helper_post_to_discussion($forum, $discussion, $commenter);
-
-        $expect = [
-            'author' => (object) [
-                'userid' => $author->id,
-                'messages' => 1,
-            ],
-            'commenter' => (object) [
-                'userid' => $commenter->id,
-                'messages' => 1,
-            ],
-        ];
-        $this->queue_tasks_and_assert($expect);
-
-        $this->send_notifications_and_assert($commenter, [$reply]);
-        $this->send_notifications_and_assert($author, [$reply]);
-        $messages = $this->messagesink->get_messages();
-        $this->assertStringContainsString($strre, $messages[0]->subject);
-        $this->assertStringContainsString($strre, $messages[1]->subject);
-    }
-
-    /**
      * dataProvider for test_forum_post_email_templates().
      */
     public static function forum_post_email_templates_provider(): array {
@@ -1581,8 +1525,6 @@ final class mail_test extends \advanced_testcase {
 
         list($author) = $this->helper_create_users($course, 1);
         list($commenter) = $this->helper_create_users($course, 1);
-
-        $strre = get_string('re', 'forum');
 
         // New posts should not have Re: in the subject.
         list($discussion, $post) = $this->helper_post_to_forum($forum, $author);

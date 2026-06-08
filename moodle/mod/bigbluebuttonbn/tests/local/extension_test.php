@@ -17,6 +17,7 @@ namespace mod_bigbluebuttonbn\local;
 
 use backup;
 use backup_controller;
+use mod_bigbluebuttonbn\broker;
 use mod_bigbluebuttonbn\completion\custom_completion;
 use mod_bigbluebuttonbn\extension;
 use mod_bigbluebuttonbn\instance;
@@ -46,6 +47,7 @@ final class extension_test extends \advanced_testcase {
      * @return void
      */
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
         $this->setup_fake_plugin('simple');
         $this->resetDebugging(); // We might have debugging messages issued from setup_fake_plugin here that we need to get rid of.
@@ -59,6 +61,7 @@ final class extension_test extends \advanced_testcase {
      */
     public function tearDown(): void {
         $this->uninstall_fake_plugin('simple');
+        parent::tearDown();
     }
 
     /**
@@ -368,6 +371,54 @@ final class extension_test extends \advanced_testcase {
     }
 
     /**
+     * Test broker meeting_events with and without addons.
+     * @return void
+     * @covers \mod_bigbluebuttonbn\local\extension\broker_meeting_events_addons
+     */
+    public function test_broker_meeting_events_addons(): void {
+        $this->resetAfterTest();
+        global $DB;
+        // Enable plugin.
+        $this->enable_plugins(true);
+        $this->initialise_mock_server();
+        [$bbactivitycontext, $bbactivitycm, $bbactivity] = $this->create_instance(
+            $this->get_course());
+        $plugingenerator = $this->getDataGenerator()->get_plugin_generator('mod_bigbluebuttonbn');
+        $user = $this->getDataGenerator()->create_user();
+        $this->setUser($user);
+
+        // Now create a couple of events.
+        $instance = instance::get_from_instanceid($bbactivity->id);
+        set_config('bigbluebuttonbn_meetingevents_enabled', true);
+        $meeting = $plugingenerator->create_meeting([
+            'instanceid' => $instance->get_instance_id(),
+            'groupid' => $instance->get_group_id(),
+            'participants' => json_encode([$user->id]),
+        ]);
+
+        $events = [
+            (object) ['name' => 'talks'],
+            (object) ['name' => 'raisehand'],
+            (object) ['name' => 'raisehand'],
+        ];
+        foreach ($events as $edesc) {
+            $plugingenerator->add_meeting_event($user, $instance, $edesc->name, $edesc->data ?? '');
+        }
+        $result = $plugingenerator->send_all_events($instance);
+        $this->assertNotEmpty($result->data);
+        $data = json_encode($result->data);
+        $reflection = new \ReflectionClass(broker::class);
+        $method = $reflection->getMethod('process_extension_actions');
+        $method->setAccessible(true);
+        $method->invokeArgs(null, [$instance, $data]);
+        $addondata = $DB->get_field('bbbext_simple', 'meetingevents', ['bigbluebuttonbnid' => $bbactivity->id]);
+        $addondata = json_decode($addondata);
+        // Check that the data is received.
+        $this->assertEquals(json_encode($addondata), $data);
+    }
+
+
+    /**
      * Data provider for testing get_class_implementing
      *
      * @return array[]
@@ -377,14 +428,61 @@ final class extension_test extends \advanced_testcase {
             'mod_instance_helper with plugin disabled' => [
                 'bbbenabled' => false,
                 'apiclass' => mod_instance_helper::class,
-                'result' => [],
+                'extensionclasses' => [],
             ],
             'mod_instance_helper with plugin enabled' => [
                 'bbbenabled' => true,
                 'apiclass' => mod_instance_helper::class,
-                'result' => [
+                'extensionclasses' => [
                     'bbbext_simple\\bigbluebuttonbn\\mod_instance_helper',
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * Test the get_sorted_plugins_list
+     * @param array $sortorders
+     * @param array $expected
+     * @return void
+     * @dataProvider sorted_plugins_list_data_provider
+     * @covers \mod_bigbluebuttonbn\extension::get_sorted_plugins_list
+     */
+    public function test_get_sorted_plugins_list(array $sortorders, array $expected): void {
+        $this->resetAfterTest();
+        // Enable plugin.
+        $this->enable_plugins(true);
+        // Create list of plugins we will then sort.
+        $pluginlist = [
+            'simpleone' => '/path/to/simpleone',
+            'simpletwo' => '/path/to/simpletwo',
+        ];
+        // Set sortorder.
+        foreach ($sortorders as $plugin => $sortorder) {
+            set_config('sortorder', $sortorder, 'bbbext_' . $plugin);
+        }
+        $sortedlist = extension::get_sorted_plugins_list($pluginlist);
+        $this->assertSame($expected, $sortedlist);
+    }
+
+    /**
+     * Data provider for testing get_sorted_plugins_list
+     *
+     * @return array[]
+     */
+    public static function sorted_plugins_list_data_provider(): array {
+        return [
+            'no sortorder' => [
+                [],
+                ['simpleone', 'simpletwo'],
+            ],
+            'default sortorder' => [
+                ['simpleone' => 0, 'simpletwo' => 1],
+                ['simpleone', 'simpletwo'],
+            ],
+            'changed sortorder' => [
+                ['simpleone' => 1, 'simpletwo' => 0],
+                ['simpletwo', 'simpleone'],
             ],
         ];
     }

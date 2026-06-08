@@ -107,9 +107,10 @@ function form_init_date_js() {
             'september'         => date_format_string(strtotime("September 1"), '%B', $defaulttimezone),
             'october'           => date_format_string(strtotime("October 1"), '%B', $defaulttimezone),
             'november'          => date_format_string(strtotime("November 1"), '%B', $defaulttimezone),
-            'december'          => date_format_string(strtotime("December 1"), '%B', $defaulttimezone)
+            'december'          => date_format_string(strtotime("December 1"), '%B', $defaulttimezone),
         ));
         $PAGE->requires->yui_module($module, $function, $config);
+        $PAGE->requires->string_for_js('strftimemonthyear', 'langconfig');
     }
 }
 
@@ -1428,7 +1429,7 @@ abstract class moodleform {
      * @param array $strings strings for javascript
      * @deprecated since Moodle 3.3 MDL-57471
      */
-    function init_javascript_enhancement($element, $enhancement, array $options=array(), array $strings=null) {
+    function init_javascript_enhancement($element, $enhancement, array $options=array(), ?array $strings=null) {
         debugging('$mform->init_javascript_enhancement() is deprecated and no longer does anything. '.
             'smartselect uses should be converted to the searchableselector form element.', DEBUG_DEVELOPER);
     }
@@ -1775,8 +1776,18 @@ class MoodleQuickForm extends HTML_QuickForm_DHTMLRulesTableless {
             $this->updateAttributes(array('class'=>'mform'));
         }
         $this->_reqHTML = '<span class="req">' . $OUTPUT->pix_icon('req', get_string('requiredelement', 'form')) . '</span>';
-        $this->_advancedHTML = '<span class="adv">' . $OUTPUT->pix_icon('adv', get_string('advancedelement', 'form')) . '</span>';
-        $this->setRequiredNote(get_string('somefieldsrequired', 'form', $OUTPUT->pix_icon('req', get_string('requiredelement', 'form'))));
+        $this->_advancedHTML = '<span class="adv"></span>';
+        $this->setRequiredNote(
+            get_string(
+                identifier: 'somefieldsrequired',
+                component: 'form',
+                a: $OUTPUT->pix_icon(
+                    pix: 'req',
+                    alt: get_string('requiredelement', 'form'),
+                    attributes: ['aria-hidden' => 'true'],
+                ),
+            ),
+        );
     }
 
     /**
@@ -3194,7 +3205,7 @@ class MoodleQuickForm_Renderer extends HTML_QuickForm_Renderer_Tableless{
 
     /** @var string Required Note template string */
     var $_requiredNoteTemplate =
-        "\n\t\t<div class=\"fdescription required\">{requiredNote}</div>";
+        "\n\t\t<div class=\"fdescription required\" aria-hidden=\"true\">{requiredNote}</div>";
 
     /**
      * Collapsible buttons string template.
@@ -3373,7 +3384,8 @@ class MoodleQuickForm_Renderer extends HTML_QuickForm_Renderer_Tableless{
         $group->updateAttributes($attributes);
         $advanced = isset($this->_advancedElements[$group->getName()]);
 
-        $html = $OUTPUT->mform_element($group, $required, $advanced, $error, false);
+        $isinstickyfooter = $group->getName() && ($this->_stickyfooterelement == $group->getName());
+        $html = $OUTPUT->mform_element($group, $required, $advanced, $error, $isinstickyfooter);
         $fromtemplate = !empty($html);
         if (!$fromtemplate) {
             if (method_exists($group, 'getElementTemplateType')) {
@@ -3408,7 +3420,7 @@ class MoodleQuickForm_Renderer extends HTML_QuickForm_Renderer_Tableless{
         }
         $this->_templates[$group->getName()] = $html;
         // Check if the element should be displayed in the sticky footer.
-        if ($group->getName() && ($this->_stickyfooterelement == $group->getName())) {
+        if ($isinstickyfooter) {
             $stickyfooter = new core\output\sticky_footer($html);
             $html = $OUTPUT->render($stickyfooter);
         }

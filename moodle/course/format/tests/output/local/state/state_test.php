@@ -41,7 +41,9 @@ final class state_test extends \advanced_testcase {
      * Test the behaviour of state::export_for_template().
      *
      * @dataProvider state_provider
-     * @covers \core_courseformat\output\local\state
+     * @covers \core_courseformat\output\local\state\course
+     * @covers \core_courseformat\output\local\state\section
+     * @covers \core_courseformat\output\local\state\cm
      *
      * @param string $format The course format of the course where the method will be executed.
      */
@@ -109,8 +111,8 @@ final class state_test extends \advanced_testcase {
         $sections = $modinfo->get_section_info_all();
 
         foreach ($sections as $key => $section) {
-            $this->assertEquals($section->id, $result->course->sectionlist[$key]);
             if (!$issocialformat || $format == 'theunittest') {
+                $this->assertEquals($section->id, $result->course->sectionlist[$key]);
                 if (!empty($section->uservisible)) {
                     $sectionstate = new $sectionclass($courseformat, $section);
                     $result->section[$key] = $sectionstate->export_for_template($renderer);

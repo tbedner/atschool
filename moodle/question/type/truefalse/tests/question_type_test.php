@@ -40,11 +40,13 @@ final class question_type_test extends \advanced_testcase {
     protected $qtype;
 
     protected function setUp(): void {
+        parent::setUp();
         $this->qtype = new qtype_truefalse();
     }
 
     protected function tearDown(): void {
         $this->qtype = null;
+        parent::tearDown();
     }
 
     public function test_name(): void {
@@ -98,7 +100,7 @@ final class question_type_test extends \advanced_testcase {
         $this->assertEquals($question->createdby, $questiondata->createdby);
         $this->assertEquals($question->createdby, $questiondata->modifiedby);
         $this->assertEquals('', $questiondata->idnumber);
-        $this->assertEquals($syscontext->id, $questiondata->contextid);
+        $this->assertEquals($category->contextid, $questiondata->contextid);
 
         // Options.
         $this->assertEquals($questiondata->id, $questiondata->options->question);

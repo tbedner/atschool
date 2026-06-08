@@ -265,6 +265,7 @@ final class renderable_test extends \advanced_testcase {
      * @throws \coding_exception
      */
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->courses[self::COURSE_SEPARATE_GROUP] = $this->getDataGenerator()->create_course(['groupmode' => SEPARATEGROUPS]);
         $this->courses[self::COURSE_VISIBLE_GROUP] = $this->getDataGenerator()->create_course(['groupmode' => VISIBLEGROUPS]);
@@ -318,7 +319,7 @@ final class renderable_test extends \advanced_testcase {
      * @return void
      */
     public function test_get_user_list(int $courseindex, string $username, array $expectedusers,
-        string $groupname = null): void {
+        ?string $groupname = null): void {
         global $PAGE, $CFG;
         $currentcourse = $this->courses[$courseindex];
         $PAGE->set_url('/report/log/index.php?id=' . $currentcourse->id);
@@ -435,5 +436,42 @@ final class renderable_test extends \advanced_testcase {
         sort($expectedusers);
         sort($usernames);
         $this->assertEquals($expectedusers, $usernames);
+    }
+
+    /**
+     * Test getting logs for deleted courses.
+     *
+     * @covers \report_log_renderable::setup_table
+     * @return void
+     */
+    public function test_get_deleted_course_logs(): void {
+        global $DB, $PAGE;
+        $this->preventResetByRollback(); // Ensure events can be recorded in log store.
+
+        // Configure log store and user.
+        set_config('enabled_stores', 'logstore_standard', 'tool_log');
+        $manager = get_log_manager(true);
+        $stores = $manager->get_readers();
+        $store = $stores['logstore_standard'];
+        $this->setUser(get_admin());
+
+        // Set and delete course.
+        $course = reset($this->courses);
+        $deletedcourseid = $course->id;
+        delete_course($course, false);
+        $this->assertFalse($DB->record_exists('course', ['id' => $deletedcourseid]));
+
+        // Test rendering.
+        $PAGE->set_url('/report/log/index.php?id=' . $deletedcourseid);
+        $renderable = new \report_log_renderable('', (int) $deletedcourseid);
+        $renderable->setup_table();
+        $store->flush();
+        $table = $renderable->tablelog;
+        $table->query_db(100);
+
+        // Confirm we have logs for the course deletion and that the filtering is correct.
+        $this->assertNotEmpty($table->totalrows);
+        $expectedrows = count($DB->get_records('logstore_standard_log', ['courseid' => $deletedcourseid]));
+        $this->assertEquals($expectedrows, $table->totalrows);
     }
 }

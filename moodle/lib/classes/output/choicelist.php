@@ -16,10 +16,6 @@
 
 namespace core\output;
 
-use renderable;
-use renderer_base;
-use core\output\named_templatable;
-
 /**
  * A generic user choice output class.
  *
@@ -30,8 +26,7 @@ use core\output\named_templatable;
  * @copyright  2023 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class choicelist implements renderable, named_templatable {
-
+class choicelist implements named_templatable, renderable {
     /** @var object[] The user choices. */
     protected $options = [];
 
@@ -102,13 +97,13 @@ class choicelist implements renderable, named_templatable {
      * @return \stdClass[]
      */
     public function get_selectable_options(): array {
-        $selectableOptions = [];
+        $selectableoptions = [];
         foreach ($this->options as $option) {
             if ($option['value'] !== $this->selected && !$option['disabled']) {
-                $selectableOptions[] = (object) $option;
+                $selectableoptions[] = (object) $option;
             }
         }
-        return $selectableOptions;
+        return $selectableoptions;
     }
 
     /**
@@ -126,7 +121,7 @@ class choicelist implements renderable, named_templatable {
      * @return string|null The value of the selected option.
      */
     public function get_selected_value(): ?string {
-        if (empty($this->selected) && !$this->allowempty && !empty($this->options)) {
+        if (is_null($this->selected) && !$this->allowempty && !empty($this->options)) {
             return array_key_first($this->options);
         }
         return $this->selected;
@@ -249,7 +244,7 @@ class choicelist implements renderable, named_templatable {
      * @return string
      */
     public function get_selected_content(renderer_base $output): string {
-        if (empty($this->selected)) {
+        if (is_null($this->selected)) {
             return '';
         }
         $option = $this->options[$this->selected];

@@ -94,7 +94,12 @@ if (!empty($role)) {
 
 $returnurl = new moodle_url('recipients.php', array('id' => $badge->id));
 $returnlink = html_writer::link($returnurl, $strrecipients);
-$actionbar = new \core_badges\output\standard_action_bar($PAGE, $badge->type, false, false, $returnurl);
+$actionbar = new \core_badges\output\standard_action_bar(
+    page: $PAGE,
+    type: $badge->type,
+    showaddbadge: false,
+    backurl: $returnurl
+);
 $output = $PAGE->get_renderer('core', 'badges');
 $tertiarynav = $output->render_tertiary_navigation($actionbar);
 
@@ -212,7 +217,7 @@ if ($award && data_submitted() && has_capability('moodle/badges:awardbadge', $co
     $users = $existingselector->get_selected_users();
 
     foreach ($users as $user) {
-        if (!process_manual_revoke($user->id, $USER->id, $issuerrole->roleid, $badgeid)) {
+        if (!process_manual_revoke($user->id, 0, $issuerrole->roleid, $badgeid)) {
             echo $OUTPUT->error_text(get_string('error:cannotrevokebadge', 'badges'));
         }
     }

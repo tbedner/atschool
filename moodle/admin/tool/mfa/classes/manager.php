@@ -74,12 +74,12 @@ class manager {
             get_string('achievedweight', 'tool_mfa'),
             get_string('status'),
         ];
-        $table->attributes['class'] = 'admintable generaltable table table-bordered';
+        $table->attributes['class'] = 'admintable generaltable table table-bordered table-hover';
         $table->colclasses = [
-            'text-right',
+            'text-end',
             '',
             '',
-            'text-right',
+            'text-end',
             'text-center',
         ];
         $factors = factor::get_enabled_factors();
@@ -441,6 +441,21 @@ class manager {
             $url = new \moodle_url($url);
         }
 
+        // Admin not setup.
+        if (!empty($CFG->adminsetuppending)) {
+            return self::NO_REDIRECT;
+        }
+
+        // Honor prevent_redirect.
+        if ($preventredirect) {
+            return self::NO_REDIRECT;
+        }
+
+        // Login as.
+        if (\core\session\manager::is_loggedinas()) {
+            return self::NO_REDIRECT;
+        }
+
         // Check for pluginfile.php urls.
         $pluginfileurl = new \moodle_url('/pluginfile.php');
         if ($url->compare($pluginfileurl)) {
@@ -485,22 +500,6 @@ class manager {
             }
         }
 
-        // Admin not setup.
-        if (!empty($CFG->adminsetuppending)) {
-            return self::NO_REDIRECT;
-        }
-
-        // Initial installation.
-        // We get this for free from get_plugins_with_function.
-
-        // Upgrade check.
-        // We get this for free from get_plugins_with_function.
-
-        // Honor prevent_redirect.
-        if ($preventredirect) {
-            return self::NO_REDIRECT;
-        }
-
         // User not properly setup.
         if (user_not_fully_set_up($USER)) {
             return self::NO_REDIRECT;
@@ -516,11 +515,6 @@ class manager {
             return self::NO_REDIRECT;
         }
 
-        // Login as.
-        if (\core\session\manager::is_loggedinas()) {
-            return self::NO_REDIRECT;
-        }
-
         // Site policy.
         if (isset($USER->policyagreed) && !$USER->policyagreed) {
             $manager = new \core_privacy\local\sitepolicy\manager();
@@ -528,6 +522,13 @@ class manager {
             if (!empty($policyurl) && $url->compare($policyurl, URL_MATCH_BASE)) {
                 return self::NO_REDIRECT;
             }
+        }
+
+        // Site policies from tool_policy.
+        $policyviewurl = new \moodle_url('/admin/tool/policy/view.php');
+        $policyindexurl = new \moodle_url('/admin/tool/policy/index.php');
+        if ($policyviewurl->compare($url, URL_MATCH_BASE) || $policyindexurl->compare($url, URL_MATCH_BASE)) {
+            return self::NO_REDIRECT;
         }
 
         // WS/AJAX check.
@@ -597,6 +598,10 @@ class manager {
         $urls = [
             new \moodle_url('/login/logout.php'),
             new \moodle_url('/admin/tool/mfa/guide.php'),
+            // Allow email self-registration confirmation to complete so that
+            // auth_email can restore wantsurl from the auth_email_wantsurl user
+            // preference before MFA intercepts on the next request.
+            new \moodle_url('/login/confirm.php'),
         ];
         foreach ($factors as $factor) {
             $urls = array_merge($urls, $factor->get_no_redirect_urls());
@@ -604,8 +609,9 @@ class manager {
 
         // Allow forced redirection exclusions.
         if ($exclusions = get_config('tool_mfa', 'redir_exclusions')) {
-            foreach (explode("\n", $exclusions) as $exclusion) {
-                $urls[] = new \moodle_url($exclusion);
+            $exclusions = preg_split('/\n|\r/', $exclusions, -1, PREG_SPLIT_NO_EMPTY);
+            foreach ($exclusions as $exclusion) {
+                $urls[] = new \moodle_url(trim($exclusion));
             }
         }
 

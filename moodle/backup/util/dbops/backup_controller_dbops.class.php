@@ -161,6 +161,28 @@ abstract class backup_controller_dbops extends backup_dbops {
         $dbman->create_temp_table($xmldb_table); // And create it
     }
 
+    /**
+     * Create temporary tables to store a partial copies of question category data from the backup_ids_temp table.
+     *
+     * This is to work around MySQL's restruction on joining the same temporary table multiple times in the same query. It isn't
+     * necessary on PostgreSQL (which can join temporary tables multiple times) or MSSQL (which doesn't really use temporary tables)
+     * but doing it this way keeps things database-agnostic.
+     */
+    public static function create_question_category_temp_tables(): void {
+        global $DB;
+        $dbman = $DB->get_manager();
+
+        foreach (['question_category_complete_temp', 'question_category_partial_temp'] as $tablename) {
+            $xmldbtable = new xmldb_table($tablename);
+            $xmldbtable->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+            $xmldbtable->add_field('backupid', XMLDB_TYPE_CHAR, 32, null, XMLDB_NOTNULL);
+            $xmldbtable->add_field('itemid', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL);
+            $xmldbtable->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+            $dbman->create_temp_table($xmldbtable);
+        }
+    }
+
     public static function drop_backup_ids_temp_table($backupid) {
         global $DB;
         $dbman = $DB->get_manager(); // We are going to use database_manager services
@@ -169,6 +191,21 @@ abstract class backup_controller_dbops extends backup_dbops {
         if ($dbman->table_exists($targettablename)) {
             $table = new xmldb_table($targettablename);
             $dbman->drop_table($table); // And drop it
+        }
+    }
+
+    /**
+     * Dispose of the additional temporary tables.
+     */
+    public static function drop_question_category_temp_tables(): void {
+        global $DB;
+        $dbman = $DB->get_manager();
+
+        foreach (['question_category_complete_temp', 'question_category_partial_temp'] as $tablename) {
+            if ($dbman->table_exists($tablename)) {
+                $xmldbtable = new xmldb_table($tablename);
+                $dbman->drop_table($xmldbtable);
+            }
         }
     }
 
@@ -234,7 +271,9 @@ abstract class backup_controller_dbops extends backup_dbops {
             'sectionid'  => $task->get_sectionid(),
             'modulename' => $task->get_modulename(),
             'title'      => $task->get_name(),
-            'directory'  => 'activities/' . $task->get_modulename() . '_' . $task->get_moduleid());
+            'directory'  => 'activities/' . $task->get_modulename() . '_' . $task->get_moduleid(),
+            'insubsection' => ($task->is_in_subsection()) ? 1 : '',
+        );
 
         // Now get activity settings
         // Calculate prefix to find valid settings
@@ -246,7 +285,7 @@ abstract class backup_controller_dbops extends backup_dbops {
                 continue;
             }
             // Validate level is correct (activity)
-            if ($setting->get_level() != backup_setting::ACTIVITY_LEVEL) {
+            if (!in_array($setting->get_level(), [backup_setting::ACTIVITY_LEVEL, backup_setting::SUBACTIVITY_LEVEL])) {
                 throw new backup_controller_exception('setting_not_activity_level', $setting);
             }
             $settinginfo = array(
@@ -268,7 +307,10 @@ abstract class backup_controller_dbops extends backup_dbops {
         $contentinfo = array(
             'sectionid'  => $task->get_sectionid(),
             'title'      => $task->get_name(),
-            'directory'  => 'sections/' . 'section_' . $task->get_sectionid());
+            'directory'  => 'sections/' . 'section_' . $task->get_sectionid(),
+            'parentcmid' => $task->get_delegated_cm() ?? '',
+            'modname' => $task->get_modname() ?? '',
+        );
 
         // Now get section settings
         // Calculate prefix to find valid settings
@@ -280,7 +322,7 @@ abstract class backup_controller_dbops extends backup_dbops {
                 continue;
             }
             // Validate level is correct (section)
-            if ($setting->get_level() != backup_setting::SECTION_LEVEL) {
+            if (!in_array($setting->get_level(), [backup_setting::SECTION_LEVEL, backup_setting::SUBSECTION_LEVEL])) {
                 throw new backup_controller_exception('setting_not_section_level', $setting);
             }
             $settinginfo = array(
@@ -359,7 +401,7 @@ abstract class backup_controller_dbops extends backup_dbops {
      * @param \core\progress\base $progress Optional progress monitor
      */
     public static function get_moodle_backup_information($backupid,
-            \core\progress\base $progress = null) {
+            ?\core\progress\base $progress = null) {
 
         // Start tracking progress if required (for load_controller).
         if ($progress) {
@@ -564,7 +606,6 @@ abstract class backup_controller_dbops extends backup_dbops {
                         'backup_general_userscompletion'    => 'userscompletion',
                         'backup_general_logs'               => 'logs',
                         'backup_general_histories'          => 'grade_histories',
-                        'backup_general_questionbank'       => 'questionbank',
                         'backup_general_groups'             => 'groups',
                         'backup_general_competencies'       => 'competencies',
                         'backup_general_customfield'        => 'customfield',
@@ -580,9 +621,9 @@ abstract class backup_controller_dbops extends backup_dbops {
                         'backup_import_activities'         => 'activities',
                         'backup_import_blocks'             => 'blocks',
                         'backup_import_filters'            => 'filters',
+                        'backup_import_badges'             => 'badges',
                         'backup_import_calendarevents'     => 'calendarevents',
                         'backup_import_permissions'        => 'permissions',
-                        'backup_import_questionbank'       => 'questionbank',
                         'backup_import_groups'             => 'groups',
                         'backup_import_competencies'       => 'competencies',
                         'backup_import_customfield'        => 'customfield',
@@ -597,9 +638,10 @@ abstract class backup_controller_dbops extends backup_dbops {
                          'activities',
                          'blocks',
                          'filters',
-                         'questionbank'
                     );
                     self::force_enable_settings($controller, $settings);
+                    // Badges are not included by default when duplicating activities.
+                    self::force_settings($controller, ['badges'], false);
                 }
                 break;
             case backup::MODE_AUTOMATED:
@@ -617,7 +659,6 @@ abstract class backup_controller_dbops extends backup_dbops {
                         'backup_auto_userscompletion'    => 'userscompletion',
                         'backup_auto_logs'               => 'logs',
                         'backup_auto_histories'          => 'grade_histories',
-                        'backup_auto_questionbank'       => 'questionbank',
                         'backup_auto_groups'             => 'groups',
                         'backup_auto_competencies'       => 'competencies',
                         'backup_auto_customfield'        => 'customfield',
@@ -640,9 +681,19 @@ abstract class backup_controller_dbops extends backup_dbops {
      * @param array $settings a map from admin config names to setting names (Config name => Setting name)
      */
     private static function force_enable_settings(backup_controller $controller, array $settings) {
+        self::force_settings($controller, $settings, true);
+    }
+
+    /**
+     * Set these settings to the given $value. No defaults from admin settings.
+     *
+     * @param backup_controller $controller The backup controller.
+     * @param array $settings a map from admin config names to setting names (Config name => Setting name).
+     * @param mixed $value the value to set the settings to.
+     */
+    private static function force_settings(backup_controller $controller, array $settings, $value) {
         $plan = $controller->get_plan();
         foreach ($settings as $config => $settingname) {
-            $value = true;
             if ($plan->setting_exists($settingname)) {
                 $setting = $plan->get_setting($settingname);
                 // We do not allow this setting to be locked for a duplicate function.

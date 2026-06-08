@@ -114,5 +114,25 @@ if (!empty($searchquery)) {
     ]);
 }
 
+// Show the report.
 echo $report->output();
+
+// Show the delete selected button if there are records and user can manage cohorts in current context.
+$canmanagecohorts = has_capability('moodle/cohort:manage', $context);
+if ($showall) {
+    $canmanagecohorts = $canmanagecohorts || core_course_category::has_capability_on_any('moodle/cohort:manage');
+}
+
+if ($canmanagecohorts && $DB->record_exists('cohort', [])) {
+    echo $OUTPUT->render(new single_button(
+        new moodle_url('#'),
+        get_string('deleteselected'),
+        'post',
+        single_button::BUTTON_PRIMARY,
+        ['data-action' => 'cohort-delete-selected']
+    ));
+
+    $PAGE->requires->js_call_amd('core_cohort/actions', 'init');
+}
+
 echo $OUTPUT->footer();

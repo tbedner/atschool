@@ -32,7 +32,29 @@ $sectionid = required_param('id', PARAM_INT);
 // This parameter is used by the classic theme to force editing on.
 $edit = optional_param('edit', -1, PARAM_BOOL);
 
-$section = $DB->get_record('course_sections', ['id' => $sectionid], '*', MUST_EXIST);
+if (!$section = $DB->get_record('course_sections', ['id' => $sectionid], '*')) {
+    $url = new moodle_url('/');
+    $PAGE->set_context(\core\context\system::instance());
+    $PAGE->set_url($url);
+    $PAGE->set_pagelayout('course');
+    $PAGE->add_body_classes(['limitedwidth', 'single-section-page']);
+    $PAGE->set_title(get_string('notfound', 'error'));
+    $PAGE->set_heading($SITE->fullname);
+    echo $OUTPUT->header();
+
+    $errortext = new \core\output\notification(
+            get_string('sectioncantbefound', 'error'),
+            \core\output\notification::NOTIFY_ERROR
+    );
+    echo $OUTPUT->render($errortext);
+
+    $button = new single_button($url, get_string('gobacktosite'), 'get', single_button::BUTTON_PRIMARY);
+    $button->class = 'continuebutton';
+    echo $OUTPUT->render($button);
+
+    echo $OUTPUT->footer();
+    die();
+}
 
 // Defined here to avoid notices on errors.
 $PAGE->set_url('/course/section.php', ['id' => $sectionid]);
@@ -126,8 +148,8 @@ $editingtitle = '';
 if ($PAGE->user_is_editing()) {
     $editingtitle = 'editing';
 }
-$sectionname = get_string('sectionname', "format_$course->format");
-$sectiontitle = get_section_name($course, $section);
+$sectionname = $format->get_generic_section_name();
+$sectiontitle = $format->get_section_name($section);
 $PAGE->set_title(
     get_string(
         'coursesectiontitle' . $editingtitle,
@@ -176,15 +198,21 @@ if (core_communication\api::is_available() && has_capability('moodle/course:upda
     $communication->show_communication_room_status_notification();
 }
 
-// Display a warning if asynchronous backups are pending for this course.
+$containerattributes = [];
 if ($PAGE->user_is_editing()) {
     require_once($CFG->dirroot . '/backup/util/helper/async_helper.class.php');
+    // Display a warning if asynchronous backups are pending for this course.
     if (async_helper::is_async_pending($course->id, 'course', 'backup')) {
         echo $OUTPUT->notification(get_string('pendingasyncedit', 'backup'), 'warning');
     }
+
+    // Allow drag and drop in the course index.
+    $containerattributes = [
+        'data-courseindexdndallowed' => 'true',
+    ];
 }
 
-echo $renderer->container_start('course-content');
+echo $renderer->container_start('course-content', attributes: $containerattributes);
 
 // Include course AJAX.
 include_course_ajax($course, $modinfo->get_used_module_names());

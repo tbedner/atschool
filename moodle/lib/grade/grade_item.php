@@ -778,7 +778,7 @@ class grade_item extends grade_object {
      * @param string $groupwheresql Where conditions for $groupsql
      * @return int The number of hidden grades
      */
-    public function has_hidden_grades($groupsql="", array $params=null, $groupwheresql="") {
+    public function has_hidden_grades($groupsql="", ?array $params=null, $groupwheresql="") {
         global $DB;
         $params = (array)$params;
         $params['itemid'] = $this->id;
@@ -1220,6 +1220,17 @@ class grade_item extends grade_object {
      */
     public function is_aggregate_item() {
         return ($this->is_category_item() || $this->is_course_item());
+    }
+
+
+    /**
+     * Returns whether the item is gradable or not. It's considered gradable when there is at least one gradeitem
+     * set as GRADE_TYPE_VALUE or GRADE_TYPE_SCALE.
+     *
+     * @return bool
+     */
+    public function is_gradable(): bool {
+        return $this->gradetype == GRADE_TYPE_VALUE || $this->gradetype == GRADE_TYPE_SCALE;
     }
 
     /**
@@ -1717,7 +1728,7 @@ class grade_item extends grade_object {
             $params = array();
 
             //only items with numeric or scale values can be aggregated
-            if ($this->gradetype != GRADE_TYPE_VALUE and $this->gradetype != GRADE_TYPE_SCALE) {
+            if (!$this->is_gradable()) {
                 $this->dependson_cache = array();
                 return $this->dependson_cache;
             }
@@ -2086,6 +2097,11 @@ class grade_item extends grade_object {
         }
         // end of hack alert
 
+        // Only reset the deducted mark if the grade has changed.
+        if ($grade->timemodified !== $oldgrade->timemodified) {
+            $grade->deductedmark = 0;
+        }
+
         $gradechanged = false;
         if (empty($grade->id)) {
             $result = (bool)$grade->insert($source, $isbulkupdate);
@@ -2144,6 +2160,21 @@ class grade_item extends grade_object {
         }
 
         return $result;
+    }
+
+    /**
+     * Update penalty value for given user
+     *
+     * @param int $userid The graded user
+     * @param float $deductedmark The mark deducted from final grade
+     */
+    public function update_deducted_mark(int $userid, float $deductedmark): void {
+        $grade = new grade_grade([
+                'itemid' => $this->id,
+                'userid' => $userid,
+            ]);
+        $grade->deductedmark = $deductedmark;
+        $grade->update();
     }
 
     /**
@@ -2211,25 +2242,21 @@ class grade_item extends grade_object {
         list($usql, $params) = $DB->get_in_or_equal($gis);
 
         if ($userid) {
-            $usersql = "AND g.userid=?";
+            $usersql = "AND userid=?";
             $params[] = $userid;
         } else {
             $usersql = "";
         }
 
-        $grade_inst = new grade_grade();
-        $fields = 'g.'.implode(',g.', $grade_inst->required_fields);
+        $gradeinst = new grade_grade();
+        $fields = implode(',', $gradeinst->required_fields);
 
         $params[] = $this->courseid;
-        $sql = "SELECT $fields
-                  FROM {grade_grades} g, {grade_items} gi
-                 WHERE gi.id = g.itemid AND gi.id $usql $usersql AND gi.courseid=?
-                 ORDER BY g.userid";
 
         $return = true;
 
         // group the grades by userid and use formula on the group
-        $rs = $DB->get_recordset_sql($sql, $params);
+        $rs = $DB->get_recordset_select('grade_grades', "itemid $usql $usersql", $params, 'userid', $fields);
         if ($rs->valid()) {
             $prevuser = 0;
             $grade_records   = array();
@@ -2606,12 +2633,19 @@ class grade_item extends grade_object {
                 rebuild_course_cache($this->courseid, true);
                 $modinfo = get_fast_modinfo($this->courseid);
             }
-            // Even with a rebuilt cache the module does not exist. This means the
-            // database is in an invalid state - we will log an error and return
-            // the course context but the calling code should be updated.
+
+            // Even with a rebuilt cache the module does not exist. This means we are dealing
+            // with a mod plugin type that is disabled on the site (which are not included in the
+            // modinfo cache) or the database is in an invalid state. In the latter case we will
+            // log an error and return the course context, but the calling code should be updated.
             if (!isset($modinfo->instances[$this->itemmodule][$this->iteminstance])) {
-                mtrace(get_string('moduleinstancedoesnotexist', 'error'));
-                $context = \context_course::instance($this->courseid);
+                if ($cm = get_coursemodule_from_instance($this->itemmodule, $this->iteminstance)) {
+                    // Cache does not contain module plugins that are disabled.
+                    $context = \context_module::instance($cm->id);
+                } else {
+                    debugging(get_string('moduleinstancedoesnotexist', 'error'));
+                    $context = \context_course::instance($this->courseid);
+                }
             } else {
                 $cm = $modinfo->instances[$this->itemmodule][$this->iteminstance];
                 $context = \context_module::instance($cm->id);

@@ -5,7 +5,10 @@
 }
 .block_myoverview .whitebutton .btn-secondary {
     background: white;
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
 }
 
+.page-mycourses .block_myoverview .block-controls {
+    display: none;
+}

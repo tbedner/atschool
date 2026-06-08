@@ -16,9 +16,9 @@
 
 namespace cachestore_redis;
 
-use cache_definition;
-use cache_store;
 use cachestore_redis;
+use core_cache\definition;
+use core_cache\store;
 
 require_once(__DIR__.'/../../../tests/fixtures/stores.php');
 require_once(__DIR__.'/../lib.php');
@@ -67,8 +67,8 @@ final class compressor_test extends \advanced_testcase {
      * @return cachestore_redis
      */
     public function create_store($compressor, $serializer) {
-        /** @var cache_definition $definition */
-        $definition = cache_definition::load_adhoc(cache_store::MODE_APPLICATION, 'cachestore_redis', 'phpunit_test');
+        /** @var definition $definition */
+        $definition = definition::load_adhoc(store::MODE_APPLICATION, 'cachestore_redis', 'phpunit_test');
         $config = cachestore_redis::unit_test_configuration();
         $config['compressor'] = $compressor;
         $config['serializer'] = $serializer;
@@ -178,11 +178,6 @@ final class compressor_test extends \advanced_testcase {
      * @return array
      */
     public static function provider_for_tests_setget(): array {
-        if (!cachestore_redis::are_requirements_met()) {
-            // Even though we skip all tests in this case, this provider can still show warnings about non-existing class.
-            return [];
-        }
-
         $data = [
             ['none, none',
                 \Redis::SERIALIZER_NONE, cachestore_redis::COMPRESSOR_NONE,
@@ -239,6 +234,7 @@ final class compressor_test extends \advanced_testcase {
      * Test we can use get and set with all combinations.
      *
      * @dataProvider provider_for_tests_setget
+     * @requires extension Redis
      * @param string $name
      * @param int $serializer
      * @param int $compressor
@@ -263,6 +259,7 @@ final class compressor_test extends \advanced_testcase {
      * Test we can use get and set many with all combinations.
      *
      * @dataProvider provider_for_tests_setget
+     * @requires extension Redis
      * @param string $name
      * @param int $serializer
      * @param int $compressor

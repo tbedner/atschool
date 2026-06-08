@@ -209,31 +209,50 @@ class audience {
     }
 
     /**
-     * Return appropriate list of where clauses and params for given audiences
+     * Return appropriate select clause and params for given audience
+     *
+     * @param audience_model $audience
+     * @param string $userfieldsql
+     * @return array [$select, $params]
+     */
+    public static function user_audience_single_sql(audience_model $audience, string $userfieldsql): array {
+        $select = '';
+        $params = [];
+
+        if ($instance = base::instance(0, $audience->to_record())) {
+            $innerusertablealias = database::generate_alias();
+            [$join, $where, $params] = $instance->get_sql($innerusertablealias);
+
+            $select = "{$userfieldsql} IN (
+                SELECT {$innerusertablealias}.id
+                  FROM {user} {$innerusertablealias}
+                       {$join}
+                 WHERE {$where}
+            )";
+        }
+
+        return [$select, $params];
+    }
+
+    /**
+     * Return appropriate list of select clauses and params for given audiences
      *
      * @param audience_model[] $audiences
      * @param string $usertablealias
-     * @return array[] [$wheres, $params]
+     * @return array[] [$selects, $params]
      */
     public static function user_audience_sql(array $audiences, string $usertablealias = 'u'): array {
-        $wheres = $params = [];
+        $selects = $params = [];
 
         foreach ($audiences as $audience) {
-            if ($instance = base::instance(0, $audience->to_record())) {
-                $instancetablealias = database::generate_alias();
-                [$instancejoin, $instancewhere, $instanceparams] = $instance->get_sql($instancetablealias);
-
-                $wheres[] = "{$usertablealias}.id IN (
-                    SELECT {$instancetablealias}.id
-                      FROM {user} {$instancetablealias}
-                           {$instancejoin}
-                     WHERE {$instancewhere}
-                     )";
+            [$instanceselect, $instanceparams] = self::user_audience_single_sql($audience, "{$usertablealias}.id");
+            if ($instanceselect !== '') {
+                $selects[] = $instanceselect;
                 $params += $instanceparams;
             }
         }
 
-        return [$wheres, $params];
+        return [$selects, $params];
     }
 
     /**
@@ -280,66 +299,10 @@ class audience {
     }
 
     /**
-     * Returns the list of audiences types in the system.
-     *
-     * @return array
-     */
-    private static function get_audience_types(): array {
-        $sources = [];
-
-        $audiences = core_component::get_component_classes_in_namespace(null, 'reportbuilder\\audience');
-        foreach ($audiences as $class => $path) {
-            $audienceclass = $class::instance();
-            if (is_subclass_of($class, base::class) && $audienceclass->user_can_add()) {
-                $componentname = $audienceclass->get_component_displayname();
-                $sources[$componentname][$class] = $audienceclass->get_name();
-            }
-        }
-
-        return $sources;
-    }
-
-    /**
-     * Get all the audiences types the current user can add to, organised by categories.
-     *
-     * @return array
-     *
      * @deprecated since Moodle 4.1 - please do not use this function any more, {@see custom_report_audience_cards_exporter}
      */
-    public static function get_all_audiences_menu_types(): array {
-        debugging('The function ' . __FUNCTION__ . '() is deprecated, please do not use it any more. ' .
-            'See \'custom_report_audience_cards_exporter\' class for replacement', DEBUG_DEVELOPER);
-
-        $menucardsarray = [];
-        $notavailablestr = get_string('notavailable', 'moodle');
-
-        $audiencetypes = self::get_audience_types();
-        $audiencetypeindex = 0;
-        foreach ($audiencetypes as $categoryname => $audience) {
-            $menucards = [
-                'name' => $categoryname,
-                'key' => 'index' . ++$audiencetypeindex,
-            ];
-
-            foreach ($audience as $classname => $name) {
-                $class = $classname::instance();
-                $title = $class->is_available() ? get_string('addaudience', 'core_reportbuilder', $class->get_name()) :
-                    $notavailablestr;
-                $menucard['title'] = $title;
-                $menucard['name'] = $class->get_name();
-                $menucard['disabled'] = !$class->is_available();
-                $menucard['identifier'] = get_class($class);
-                $menucard['action'] = 'add-audience';
-                $menucards['items'][] = $menucard;
-            }
-
-            // Order audience types on each category alphabetically.
-            core_collator::asort_array_of_arrays_by_key($menucards['items'], 'name');
-            $menucards['items'] = array_values($menucards['items']);
-
-            $menucardsarray[] = $menucards;
-        }
-
-        return $menucardsarray;
+    #[\core\attribute\deprecated('custom_report_audience_cards_exporter', since: '4.1', final: true)]
+    public static function get_all_audiences_menu_types() {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
     }
 }

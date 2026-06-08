@@ -321,7 +321,13 @@ class mod_workshop_renderer extends plugin_renderer_base {
                         } else {
                             $icon = new pix_icon('i/marker', get_string('switchphase'.$phasecode, 'mod_workshop'));
                         }
-                        $actions .= $this->output->action_icon($action->url, $icon, null, null, true);
+                        $actions .= $this->output->action_icon(
+                            $action->url,
+                            $icon,
+                            null,
+                            ['class' => 'action-icon ms-0 ps-0'],
+                            true
+                        );
                     }
                 }
             }
@@ -1022,13 +1028,13 @@ class mod_workshop_renderer extends plugin_renderer_base {
                 $url = new moodle_url($this->page->url);
                 $url->params(array('sortby' => $sortid, 'sorthow' => 'ASC'));
                 $out .= $this->output->action_icon($url, new pix_icon('t/sort_asc', get_string('sortasc', 'workshop')),
-                    null, array('class' => 'iconsort sort asc'));
+                    null, ['class' => 'sort asc']);
             }
             if ($sortby !== $sortid or $sorthow !== 'DESC') {
                 $url = new moodle_url($this->page->url);
                 $url->params(array('sortby' => $sortid, 'sorthow' => 'DESC'));
                 $out .= $this->output->action_icon($url, new pix_icon('t/sort_desc', get_string('sortdesc', 'workshop')),
-                    null, array('class' => 'iconsort sort desc'));
+                    null, ['class' => 'sort desc']);
             }
         }
         return $out;

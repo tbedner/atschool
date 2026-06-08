@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'scorm', language 'en'
+ * Strings for component 'mod_scorm', language 'en'
  *
  * @package   mod_scorm
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -27,7 +27,7 @@ $string['aicchacptimeout'] = 'AICC HACP timeout';
 $string['aicchacptimeout_desc'] = 'Length of time in minutes that an external AICC HACP session can remain open';
 $string['aicchacpkeepsessiondata'] = 'AICC HACP session data';
 $string['aicchacpkeepsessiondata_desc'] = 'Length of time in days to keep the external AICC HACP session data (a high setting will fill up the table with old data but may be useful when debugging)';
-$string['aiccuserid'] = 'AICC pass numeric user id';
+$string['aiccuserid'] = 'AICC pass numeric user ID';
 $string['aiccuserid_desc'] = 'The AICC standard for usernames is very restrictive compared with Moodle, and allows for alphanumeric characters, dash and underscore only. Periods, spaces and the @ symbol are not permitted. If enabled, user ID numbers are passed to the AICC package instead of usernames.';
 $string['activation'] = 'Activation';
 $string['activityloading'] = 'You will be automatically redirected to the activity in';
@@ -36,10 +36,11 @@ $string['activitypleasewait'] = 'Activity loading, please wait ...';
 $string['adminsettings'] = 'Admin settings';
 $string['advanced'] = 'Parameters';
 $string['aliasonly'] = 'When selecting an imsmanifest.xml file from a repository you must use an alias/shortcut for this file.';
+$string['allattempts'] = 'All SCORM attempts';
 $string['allowapidebug'] = 'Activate API debug and tracing (set the capture mask with apidebugmask)';
 $string['allowtypeexternal'] = 'Enable external package type';
 $string['allowtypeexternalaicc'] = 'Enable direct AICC URL';
-$string['allowtypeexternalaicc_desc'] = 'If enabled this allows a direct url to a simple AICC package';
+$string['allowtypeexternalaicc_desc'] = 'If enabled this allows a direct URL to an AICC package.';
 $string['allowtypelocalsync'] = 'Enable downloaded package type';
 $string['allowtypeaicchacp'] = 'Enable external AICC HACP';
 $string['allowtypeaicchacp_desc'] = 'If enabled this allows AICC HACP external communication without requiring user login for post requests from the external AICC package';
@@ -58,7 +59,7 @@ $string['attemptsmanagement'] = 'Attempts management';
 $string['attempt1'] = '1 attempt';
 $string['attr_error'] = 'Bad value for attribute ({$a->attr}) in tag {$a->tag}.';
 $string['autocommit'] = 'Auto-commit';
-$string['autocommit_help'] = 'If enabled, SCORM data is automaticaly saved to the database. Useful for SCORM objects which do not save their data regularly.';
+$string['autocommit_help'] = 'If enabled, SCORM data is automatically saved to the database. This is useful for SCORM objects which do not save their data regularly.';
 $string['autocommitdesc'] = 'Automatically save SCORM data if the SCORM package does not save it.';
 $string['autocontinue'] = 'Auto-continue';
 $string['autocontinue_help'] = 'If enabled, subsequent learning objects are launched automatically, otherwise the Continue button must be used.';
@@ -70,6 +71,7 @@ $string['badarchive'] = 'You must provide a valid zip file';
 $string['browse'] = 'Preview';
 $string['browsed'] = 'Browsed';
 $string['browsemode'] = 'Preview mode';
+$string['browsemodewithname'] = 'Preview mode: {$a}';
 $string['browserepository'] = 'Browse repository';
 $string['cachedef_elements'] = 'Element cache';
 $string['calculatedweight'] = 'Calculated weight';
@@ -326,7 +328,7 @@ $string['othersettings'] = 'Additional settings';
 $string['page-mod-scorm-x'] = 'Any SCORM module page';
 $string['pagesize'] = 'Page size';
 $string['package'] = 'Package file';
-$string['package_help'] = 'The package file is a zip (or pif) file containing SCORM/AICC course definition files.';
+$string['package_help'] = 'The package file is a ZIP file containing SCORM or AICC course definition files.';
 $string['packagedir'] = 'Filesystem error: Can\'t create package directory';
 $string['packagefile'] = 'No package file specified';
 $string['packagehdr'] = 'Package';
@@ -389,12 +391,10 @@ $string['scorm:deleteownresponses'] = 'Delete own attempts';
 $string['scorm:savetrack'] = 'Save tracks';
 $string['scorm:skipview'] = 'Skip overview';
 $string['scormtype'] = 'Type';
-$string['scormtype_help'] = 'This setting determines how the package is included in the course. There are up to 4 options:
-
-* Uploaded package - Enables a SCORM package to be chosen via the file picker
-* External SCORM manifest - Enables an imsmanifest.xml URL to be specified. Note: If the URL has a different domain name than your site, then "Downloaded package" is a better option, since otherwise grades are not saved.
-* Downloaded package - Enables a package URL to be specified. The package will be unzipped and saved locally, and updated when the external SCORM package is updated.
-* External AICC URL - this URL is the launch URL for a single AICC Activity.  A psuedo package will be constructed around this.';
+$string['scormtype_help'] = '* Uploaded package - Upload a SCORM file directly from your computer.
+* External SCORM manifest - Link to a remote imsmanifest.xml. (Use \'Downloaded package\' for cross-domain URLs to prevent grade-saving issues.)
+* Downloaded package - Link to a remote ZIP file. The system stores a local copy and updates it automatically when the source file changes.
+* External AICC URL - Link to the launch URL for a single AICC activity.';
 $string['scorm:viewreport'] = 'View reports';
 $string['scorm:viewscores'] = 'View scores';
 $string['scrollbars'] = 'Allow the window to be scrolled';
@@ -420,6 +420,7 @@ $string['syntax'] = 'Syntax error';
 $string['tag_error'] = 'Unknown tag ({$a->tag}) with this content: {$a->value}';
 $string['time'] = 'Time';
 $string['title'] = 'Title';
+$string['toggletableofcontents'] = 'Toggle table of contents';
 $string['toolbar'] = 'Show the toolbar';
 $string['too_many_attributes'] = 'Tag {$a->tag} has too many attributes';
 $string['too_many_children'] = 'Tag {$a->tag} has too many children';
@@ -455,6 +456,3 @@ $string['whatgradedesc'] = 'Whether the highest, average (mean), first or last c
 $string['width'] = 'Width';
 $string['window'] = 'Window';
 $string['youmustselectastatus'] = 'You must select a status to require';
-
-// Deprecated since Moodle 4.3.
-$string['completionscorerequired_help'] = 'Enabling this setting will require a user to have at least the minimum score entered to be marked complete in this SCORM activity, as well as any other Activity Completion requirements.';

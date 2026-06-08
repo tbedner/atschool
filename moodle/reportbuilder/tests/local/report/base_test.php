@@ -43,6 +43,7 @@ final class base_test extends advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
         require_once("{$CFG->dirroot}/reportbuilder/tests/fixtures/system_report_available.php");
+        parent::setUpBeforeClass();
     }
 
     /**
@@ -55,7 +56,7 @@ final class base_test extends advanced_testcase {
         $systemreport->add_base_condition_simple('username', 'admin');
         [$where, $params] = $systemreport->get_base_condition();
         $this->assertStringMatchesFormat('username = :%a', $where);
-        $this->assertEqualsCanonicalizing(['admin'], $params);
+        $this->assertEqualsCanonicalizing(['admin'], array_values($params));
     }
 
     /**

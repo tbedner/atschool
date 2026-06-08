@@ -15,13 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'role', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'core_role', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @package   core_role
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['ai:acceptpolicy'] = 'Accept AI policy';
+$string['ai:fetchanyuserpolicystatus'] = 'Get a users AI policy acceptance';
+$string['ai:fetchpolicy'] = 'Get a users AI policy acceptance';
+$string['ai:viewaipolicyacceptancereport'] = 'View AI policy acceptance report';
+$string['ai:viewaiusagereport'] = 'View AI usage report';
 $string['addinganewrole'] = 'Adding a new role';
 $string['addrole'] = 'Add a new role';
 $string['advancedoverride'] = 'Advanced role override';
@@ -152,6 +157,8 @@ $string['confirmunassigntitle'] = 'Confirm role change';
 $string['confirmunassignyes'] = 'Remove';
 $string['confirmunassignno'] = 'Cancel';
 $string['contentbank:access'] = 'Access the content bank';
+$string['contentbank:changelockedcustomfields'] = 'Change locked content bank custom fields';
+$string['contentbank:configurecustomfields'] = 'Configure content bank custom fields';
 $string['contentbank:copyanycontent'] = 'Copy any content in the content bank';
 $string['contentbank:copycontent'] = 'Copy content in the content bank';
 $string['contentbank:deleteanycontent'] = 'Delete any content from the content bank';
@@ -174,12 +181,13 @@ $string['course:viewsuspendedusers'] = 'View suspended users';
 $string['course:changecategory'] = 'Change course category';
 $string['course:changefullname'] = 'Change course full name';
 $string['course:changeidnumber'] = 'Change course ID number';
-$string['course:changelockedcustomfields'] = 'Change locked custom fields';
+$string['course:changelockedcustomfields'] = 'Change locked course custom fields';
 $string['course:changeshortname'] = 'Change course short name';
 $string['course:changesummary'] = 'Change course summary';
 $string['course:configurecustomfields'] = 'Configure course custom fields';
 $string['course:configuredownloadcontent'] = 'Configure download course content';
 $string['course:downloadcoursecontent'] = 'Download course content';
+$string['course:editcoursewelcomemessage'] = 'Edit course welcome message';
 $string['course:enrolconfig'] = 'Configure enrol instances in courses';
 $string['course:enrolreview'] = 'Review course enrolments';
 $string['course:setforcedlanguage'] = 'Force course or activity language';
@@ -211,6 +219,7 @@ $string['course:viewhiddencourses'] = 'View hidden courses';
 $string['course:viewhiddengroups'] = 'View hidden groups';
 $string['course:viewhiddensections'] = 'View hidden sections';
 $string['course:viewhiddenuserfields'] = 'View hidden user fields';
+$string['course:viewoverview'] = 'View activities overview';
 $string['course:viewparticipants'] = 'View participants';
 $string['course:viewscales'] = 'View scales';
 $string['course:visibility'] = 'Hide/show courses';
@@ -226,8 +235,8 @@ $string['defaultrole'] = 'Default role';
 $string['defaultx'] = 'Default: {$a}';
 $string['defineroles'] = 'Define roles';
 $string['definitionofrolex'] = 'Definition of role \'{$a}\'';
-$string['deletecourseoverrides'] = 'Delete all overrides in course';
-$string['deletelocalroles'] = 'Delete all local role assignments';
+$string['deletecourseoverrides'] = 'All overrides in course';
+$string['deletelocalroles'] = 'All local role assignments';
 $string['deleterolesure'] = '<p>Are you sure that you want to delete role "{$a->name} ({$a->shortname})"?</p><p>Currently this role is assigned to {$a->count} users.</p>';
 $string['deletexrole'] = 'Delete {$a} role';
 $string['duplicaterole'] = 'Duplicate role';
@@ -383,6 +392,7 @@ $string['rating:rate'] = 'Add ratings to items';
 $string['rating:view'] = 'View the total rating you received';
 $string['rating:viewany'] = 'View total ratings that anyone received';
 $string['rating:viewall'] = 'View all raw ratings given by individuals';
+$string['reportbuilder:configurecustomfields'] = 'Configure custom report fields';
 $string['reportbuilder:edit'] = 'Edit your own custom reports';
 $string['reportbuilder:editall'] = 'Edit all custom reports';
 $string['reportbuilder:scheduleviewas'] = 'Schedule reports to be viewed as other users';
@@ -482,7 +492,7 @@ $string['user:editownmessageprofile'] = 'Edit own user messaging profile';
 $string['user:editownprofile'] = 'Edit own user profile';
 $string['user:editprofile'] = 'Edit user profile';
 $string['user:ignoreuserquota'] = 'Ignore user quota limit';
-$string['user:loginas'] = 'Login as other users';
+$string['user:loginas'] = 'Log in as other users';
 $string['user:manageblocks'] = 'Manage blocks on user profile of other users';
 $string['user:manageownblocks'] = 'Manage blocks on own public user profile';
 $string['user:manageownfiles'] = 'Manage files on own private file areas';
@@ -494,6 +504,7 @@ $string['user:viewalldetails'] = 'View user full information';
 $string['user:viewdetails'] = 'View user profiles';
 $string['user:viewhiddendetails'] = 'View hidden details of users';
 $string['user:viewlastip'] = 'View user last ip address';
+$string['user:viewprofilepictures'] = 'View user pictures (if force log in enabled)';
 $string['user:viewuseractivitiesreport'] = 'See user activity reports';
 $string['user:viewusergrades'] = 'View user grades';
 $string['roleresetdefaults'] = 'Defaults';
@@ -533,7 +544,3 @@ $string['privacy:metadata:role_capabilities:tableexplanation'] = 'The capabiliti
 $string['privacy:metadata:role_capabilities:timemodified'] = 'The date when the capability was created or modified.';
 $string['privacy:metadata:role_cohortroles'] = 'Roles to cohort';
 $string['course:togglecompletion'] = 'Manually mark activities as complete';
-
-// Deprecated since Moodle 4.2.
-$string['confirmaddadmin'] = 'Do you really want to add user <strong>{$a}</strong> as new site administrator?';
-$string['confirmdeladmin'] = 'Do you really want to remove user <strong>{$a}</strong> from the list of site administrators?';

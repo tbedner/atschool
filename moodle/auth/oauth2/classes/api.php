@@ -55,7 +55,7 @@ class api {
      * Requires auth/oauth2:managelinkedlogins capability at the user context.
      *
      * @param int $userid (defaults to $USER->id)
-     * @return boolean
+     * @return linked_login[]
      */
     public static function get_linked_logins($userid = false) {
         global $USER;
@@ -79,7 +79,7 @@ class api {
      *
      * @param string $username as returned from an oauth client.
      * @param \core\oauth2\issuer $issuer
-     * @return stdClass User record if found.
+     * @return linked_login|false record if found and user exists, false otherwise.
      */
     public static function match_username_to_user($username, $issuer) {
         $params = [
@@ -106,7 +106,7 @@ class api {
      * @param \core\oauth2\issuer $issuer
      * @param int $userid (defaults to $USER->id)
      * @param bool $skippermissions During signup we need to set this before the user is setup for capability checks.
-     * @return bool
+     * @return linked_login
      */
     public static function link_login($userinfo, $issuer, $userid = false, $skippermissions = false) {
         global $USER;
@@ -176,7 +176,10 @@ class api {
         $user = get_complete_user_data('id', $userid);
 
         $data = new stdClass();
-        $data->fullname = fullname($user);
+        $placeholders = \core_user::get_name_placeholders($user);
+        foreach ($placeholders as $field => $value) {
+            $data->{$field} = $value;
+        }
         $data->sitename  = format_string($site->fullname);
         $data->admin     = generate_email_signoff();
         $data->issuername = format_string($issuer->get('name'));
@@ -194,9 +197,7 @@ class api {
 
         $data->link = $confirmationurl->out(false);
         $message = get_string('confirmlinkedloginemail', 'auth_oauth2', $data);
-
-        $data->link = $confirmationurl->out();
-        $messagehtml = text_to_html(get_string('confirmlinkedloginemail', 'auth_oauth2', $data), false, false, true);
+        $messagehtml = text_to_html(get_string('confirmlinkedloginemail', 'auth_oauth2', $data), false, false);
 
         $user->mailformat = 1;  // Always send HTML version as well.
 
@@ -231,7 +232,7 @@ class api {
         $expires = $login->get('confirmtokenexpires');
         if (time() > $expires) {
             $login->delete();
-            return;
+            return false;
         }
         $login->set('confirmtokenexpires', 0);
         $login->set('confirmtoken', '');
@@ -244,7 +245,7 @@ class api {
      *
      * @param array $userinfo as returned from an oauth client.
      * @param \core\oauth2\issuer $issuer
-     * @return bool
+     * @return stdClass
      */
     public static function create_new_confirmed_account($userinfo, $issuer) {
         global $CFG, $DB;
@@ -281,7 +282,7 @@ class api {
      * @param array $userinfo as returned from an oauth client.
      * @param \core\oauth2\issuer $issuer
      * @param int $userid (defaults to $USER->id)
-     * @return bool
+     * @return stdClass
      */
     public static function send_confirm_account_email($userinfo, $issuer) {
         global $CFG, $DB;
@@ -319,7 +320,10 @@ class api {
         $user = get_complete_user_data('id', $user->id);
 
         $data = new stdClass();
-        $data->fullname = fullname($user);
+        $placeholders = \core_user::get_name_placeholders($user);
+        foreach ($placeholders as $field => $value) {
+            $data->{$field} = $value;
+        }
         $data->sitename  = format_string($site->fullname);
         $data->admin     = generate_email_signoff();
 
@@ -333,9 +337,7 @@ class api {
 
         $data->link = $confirmationurl->out(false);
         $message = get_string('confirmaccountemail', 'auth_oauth2', $data);
-
-        $data->link = $confirmationurl->out();
-        $messagehtml = text_to_html(get_string('confirmaccountemail', 'auth_oauth2', $data), false, false, true);
+        $messagehtml = text_to_html(get_string('confirmaccountemail', 'auth_oauth2', $data), false, false);
 
         $user->mailformat = 1;  // Always send HTML version as well.
 
@@ -350,7 +352,6 @@ class api {
      * Requires auth/oauth2:managelinkedlogins capability at the user context.
      *
      * @param int $linkedloginid
-     * @return boolean
      */
     public static function delete_linked_login($linkedloginid) {
         global $USER;
@@ -399,7 +400,7 @@ class api {
      *
      * @param array $userinfo
      * @param object $user
-     * @return object
+     * @return stdClass
      */
     private static function save_user(array $userinfo, object $user): object {
         // Map supplied issuer user info to Moodle user fields.

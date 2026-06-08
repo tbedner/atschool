@@ -250,7 +250,8 @@ Feature: We can use calculated grade totals
       | Aggregation                     | Natural |
       | Include outcomes in aggregation | 1       |
       | Exclude empty grades            | 0       |
-    And I change window size to "large"
+    # Change window size to ultra-wide to avoid 'element-click-intercepted' failures.
+    And I change window size to "5120x2160"
     And I navigate to "View > Grader report" in the course gradebook
     And I give the grade "Excellent" to the user "Student 1" for the grade item "Test outcome item one"
     And I press "Save changes"
@@ -305,7 +306,8 @@ Feature: We can use calculated grade totals
     And I set the following settings for grade item "Test outcome item one" of type "gradeitem" on "setup" page:
       | Weight adjusted  | 1   |
       | aggregationcoef2 | 100 |
-    And I change window size to "large"
+    # Change window size to ultra-wide to avoid 'element-click-intercepted' failures.
+    And I change window size to "5120x2160"
     And I navigate to "View > Grader report" in the course gradebook
     And I give the grade "Excellent" to the user "Student 1" for the grade item "Test outcome item one"
     And I press "Save changes"
@@ -345,7 +347,7 @@ Feature: We can use calculated grade totals
     And I set the field "Show weightings" to "Show"
     And I press "Save changes"
     And I navigate to "View > User report" in the course gradebook
-    And I click on "Student 1" in the "user" search widget
+    And I click on "Student 1" in the "Search users" search combo box
     And I set the field "View report as" to "Myself"
     And the following should exist in the "user-grade" table:
       | Grade item | Calculated weight | Grade | Range | Contribution to course total |
@@ -542,7 +544,7 @@ Feature: We can use calculated grade totals
     And I navigate to "View > Grader report" in the course gradebook
     Then I should see "75.00 (16.85 %)" in the ".course" "css_element"
     And I navigate to "View > User report" in the course gradebook
-    And I click on "Student 1" in the "user" search widget
+    And I click on "Student 1" in the "Search users" search combo box
     And I set the field "View report as" to "Myself"
     And the following should exist in the "user-grade" table:
       | Grade item            | Calculated weight | Grade           | Contribution to course total |

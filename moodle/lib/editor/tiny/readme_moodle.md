@@ -1,23 +1,20 @@
-# This is a description for the TinyMCE 6 library integration with Moodle.
+# This is a description for the TinyMCE 7 library integration with Moodle.
 
 Please note that we have a clone of the official TinyMCE repository which contains the working build and branch for each release. This ensures build repeatability and gives us the ability to patch stable versions of Moodle for security fixes where relevant.
 
 Each Moodle branch has a similar branch in the https://github.com/moodlehq/tinymce.
-The Moodle `master` branch is named as the upcoming STABLE branch name, for example during the development of Moodle 4.2.0, the upcoming STABLE branch name will be MOODLE_402_STABLE.
+The Moodle `main` branch is named as the upcoming STABLE branch name, for example during the development of Moodle 4.5.0, the upcoming STABLE branch name will be MOODLE_405_STABLE.
 
 ## Patches included in this release
 
-- MDL-78714: Add support for disabling XSS Sanitisation (TINY-9600)
-
-Please note: TinyMCE issue numbers are related to bugs in their private issue
-tracker. See git history of their repository for relevant information.
+N/A
 
 ## Upgrade procedure for TinyMCE Editor
 
 1. Store an environment variable to the Tiny directory in the Moodle repository (the current directory).
 
  ```
-MOODLEDIR=`pwd`/../../
+MOODLEDIR=/your_moodle_dir/lib/editor/tiny
  ```
 
 2. Check out a clean copy of TinyMCE of the target version.
@@ -27,7 +24,7 @@ tinymce=`mktemp -d`
 cd "${tinymce}"
 git clone https://github.com/tinymce/tinymce.git
 cd tinymce
-git checkout -b MOODLE_404_STABLE
+git checkout -b MOODLE_405_STABLE
 git reset --hard [desired version]
  ```
 
@@ -51,6 +48,9 @@ yarn
 yarn build
  ```
 
+Note: If you encounter a problem during the build, please check your node version.
+The latest node version that worked for this build was v21.
+
 7. Remove the old TinyMCE configuration and replace it with the newly built version.
 
  ```
@@ -62,16 +62,16 @@ cp -r modules/tinymce/js "${MOODLEDIR}/js"
 
  ```
 # Tag the next Moodle version.
-git tag v4.2.0
+git tag v4.5.0
 git remote add moodlehq --tags
-git push moodlehq MOODLE_402_STABLE
+git push moodlehq MOODLE_405_STABLE
  ```
 
-9. Check the (Release notes)[https://www.tiny.cloud/docs/tinymce/6/release-notes/] for any new plugins, premium plugins, menu items, or buttons and add them to classes/manager.php
+9. Check the (Release notes)[https://www.tiny.cloud/docs/tinymce/7/release-notes/] for any new plugins, premium plugins, menu items, or buttons and add them to classes/manager.php
 
 ## Update procedure for included TinyMCE translations
 
-1. Visit https://www.tiny.cloud/get-tiny/language-packages/ and download the "TinyMCE 6 All languages" zip file.
+1. Visit https://www.tiny.cloud/get-tiny/language-packages/ and download the "TinyMCE 7 All languages" zip file.
 2. Check the list of languages and confirm that the German translation is still at 100%. If not, then make a note of a language which is.
 3. Unzip the translation into a new directory:
 
@@ -102,14 +102,18 @@ sed -i "/string\['tiny:/d" "${MOODLEDIR}/lang/en/editor_tiny.php"
 cat strings.php >> "${MOODLEDIR}/lang/en/editor_tiny.php"
  ```
 
-7. Commit changes. Note: You may need to review individual language changes which do not meet Moodle's guidelines.
-8. If required, the remaining language strings can be fed into AMOS.
+7. Review the changes to the language strings file carefully. You may need to:
+
+    * Edit new strings so they meet [Moodle's guidelines for language strings](https://moodledev.io/general/development/policies/codingstyle#language-strings).
+    * Revert changes to any Moodle-updated language strings that were fixed for spelling, grammar, and consistency in past releases to meet Moodle's guidelines. For example, from the [`en_fix` issues](https://tracker.moodle.org/issues/?jql=summary%20~%20%22en_fix%22%20order%20by%20createdDate%20desc). Review the `git` history of the language strings file to verify.
+
+8. Commit the changes.
+
+9. If required, the remaining language strings can be fed into AMOS.
 
 ---
 
 **Note:** A set of language files are also generated for all supported translations and may be submitted to AMOS if desired.
-
-**Note:** You will need to manually check for any Moodle-updated language strings as part of this change (for example any from the en_fixes).
 
 ---
 
@@ -118,7 +122,7 @@ cat strings.php >> "${MOODLEDIR}/lang/en/editor_tiny.php"
 1. Store an environment variable to the Tiny directory in the Moodle repository (the current directory).
 
  ```
-MOODLEDIR=`pwd`../../
+MOODLEDIR=/your_moodle_dir/lib/editor/tiny
  ```
 
 2. Check out a clean copy of TinyMCE of the target version.
@@ -130,7 +134,7 @@ git clone https://github.com/tinymce/tinymce.git
 cd tinymce
 git remote add moodlehq https://github.com/moodlehq/tinymce
 git fetch moodlehq
-git checkout -b MOODLE_402_STABLE moodlehq/MOODLE_402_STABLE
+git checkout -b MOODLE_405_STABLE moodlehq/MOODLE_405_STABLE
  ```
 
 3. Apply any necessary security patches.
@@ -140,6 +144,9 @@ git checkout -b MOODLE_402_STABLE moodlehq/MOODLE_402_STABLE
 yarn
 yarn build
  ```
+
+Note: If you encounter a problem during the build, please check your node version.
+The latest node version that worked for this build was v21.
 
 5. Remove the old TinyMCE configuration and replace it with the newly built version.
 

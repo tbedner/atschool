@@ -50,7 +50,7 @@ class editquestion_helper {
      * @param bool $enablejs
      * @return bool|string
      */
-    public static function print_choose_qtype_to_add_form(array $hiddenparams, array $allowedqtypes = null, $enablejs = true) {
+    public static function print_choose_qtype_to_add_form(array $hiddenparams, ?array $allowedqtypes = null, $enablejs = true) {
         global $PAGE;
 
         $chooser = \qbank_editquestion\qbank_chooser::get($PAGE->course, $hiddenparams, $allowedqtypes);
@@ -92,12 +92,16 @@ class editquestion_helper {
     /**
      * Get the array of status of the questions.
      *
+     * @param bool $includehidden Include QUESTION_STATUS_HIDDEN in the returned list?
      * @return array
      */
-    public static function get_question_status_list(): array {
+    public static function get_question_status_list(bool $includehidden = false): array {
         $statuslist = [];
         $statuslist[question_version_status::QUESTION_STATUS_READY] = get_string('questionstatusready', 'qbank_editquestion');
         $statuslist[question_version_status::QUESTION_STATUS_DRAFT] = get_string('questionstatusdraft', 'qbank_editquestion');
+        if ($includehidden) {
+            $statuslist[question_version_status::QUESTION_STATUS_HIDDEN] = get_string('questionstatushidden', 'qbank_editquestion');
+        }
         return $statuslist;
     }
 

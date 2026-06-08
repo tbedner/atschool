@@ -106,6 +106,25 @@ M.form.dateselector = {
             showPrevMonth: true,
             showNextMonth: true,
             firstdayofweek: parseInt(config.firstdayofweek, 10),
+            headerRenderer: function(date) {
+                // We fetch the current language's preferred time format from the language pack.
+                var calendar = this;
+                require(['core/user_date', 'core/notification'], function(UserDate, Notification) {
+                    UserDate.get([{
+                        timestamp: Math.floor(date.getTime() / 1000),
+                        format: M.util.get_string('strftimemonthyear', 'langconfig'),
+                    }]).then(function(dateStrs) {
+                        var headerNode = calendar.get('contentBox')
+                            .one('#' + calendar._calendarId + '_header');
+                        if (headerNode) {
+                            headerNode.setContent(dateStrs[0]);
+                        }
+                        return dateStrs[0];
+                    }).catch(Notification.exception);
+                });
+                return '';
+            },
+
             WEEKDAYS_MEDIUM: [
                 config.sun,
                 config.mon,
@@ -113,7 +132,8 @@ M.form.dateselector = {
                 config.wed,
                 config.thu,
                 config.fri,
-                config.sat]
+                config.sat,
+            ],
         });
     },
     findZIndex: function(node) {
@@ -240,7 +260,7 @@ CALENDAR.prototype = {
         }, this);
 
         // Loop through the input fields.
-        var inputs = this.get('node').all('input, a');
+        var inputs = this.get('node').all('input, button');
         inputs.each(function(node) {
             // Check if the current node is a calendar image field.
             if (node.get('name').match(/\[calendar\]/)) {
@@ -380,11 +400,11 @@ CALENDAR.prototype = {
     },
     toggle_calendar_image: function() {
         // If the enable checkbox is not checked, disable the calendar image and prevent focus.
-        if (!this.enablecheckbox.get('checked')) {
-            this.calendarimage.addClass('disabled');
+        if (!this.enablecheckbox.get('checked') || this.enablecheckbox.get('disabled')) {
+            this.calendarimage.setAttribute('disabled');
             this.release_calendar();
         } else {
-            this.calendarimage.removeClass('disabled');
+            this.calendarimage.removeAttribute('disabled');
         }
     }
 };

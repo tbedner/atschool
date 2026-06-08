@@ -63,6 +63,7 @@ final class engine_test extends \advanced_testcase {
     protected $engine = null;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         set_config('enableglobalsearch', true);
         set_config('searchengine', 'solr');
@@ -137,6 +138,7 @@ final class engine_test extends \advanced_testcase {
             $this->generator->teardown();
             $this->generator = null;
         }
+        parent::tearDown();
     }
 
     /**
@@ -1467,6 +1469,19 @@ final class engine_test extends \advanced_testcase {
         $querydata->q = '42';
         $results = $this->search->search($querydata);
         $this->assertCount(1, $results);
+    }
+
+    /**
+     * Tests that the get_status function works OK on the real server (there are more detailed
+     * tests for this function in {@see mock_engine_test}).
+     *
+     * @covers \search_solr\check\connection
+     */
+    public function test_get_status(): void {
+        $status = $this->engine->get_status(5);
+        $this->assertTrue($status['connected']);
+        $this->assertTrue($status['foundcore']);
+        $this->assertGreaterThan(0, $status['indexsize']);
     }
 
     /**

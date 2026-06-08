@@ -1,4 +1,4 @@
-@core_reportbuilder @javascript
+@core @core_reportbuilder @javascript
 Feature: Configure access to reports based on intended audience
   As an admin
   I want to restrict which users have access to a report
@@ -27,12 +27,12 @@ Feature: Configure access to reports based on intended audience
     And I click on the "Audience" dynamic tab
     And I should see "There are no audiences for this report"
     And I click on "Add audience 'Manually added users'" "link"
-    And I should see "Added audience 'Manually added users'"
+    And "Added audience 'Manually added users'" "toast_message" should be visible
     And I should see "Audience not saved" in the "Manually added users" "core_reportbuilder > Audience"
     And I set the following fields in the "Manually added users" "core_reportbuilder > Audience" to these values:
       | Add users manually | User 1,User 3 |
     And I press "Save changes"
-    And I should see "Audience saved"
+    And "Audience saved" "toast_message" should be visible
     And I should not see "Audience not saved" in the "Manually added users" "core_reportbuilder > Audience"
     And I should see "User 1, User 3" in the "Manually added users" "core_reportbuilder > Audience"
     And I should not see "There are no audiences for this report"
@@ -52,7 +52,7 @@ Feature: Configure access to reports based on intended audience
     And I click on the "Audience" dynamic tab
     When I click on "Add audience 'Site administrators'" "link"
     And I press "Save changes"
-    Then I should see "Audience saved"
+    Then "Audience saved" "toast_message" should be visible
     And I click on the "Access" dynamic tab
     And I should see "Admin User" in the "reportbuilder-table" "table"
     And I should not see "User 1" in the "reportbuilder-table" "table"
@@ -66,11 +66,11 @@ Feature: Configure access to reports based on intended audience
     And I am on the "My report" "reportbuilder > Editor" page logged in as "admin"
     And I click on the "Audience" dynamic tab
     When I click on "Add audience 'Assigned system role'" "link"
-    And I should see "Added audience 'Assigned system role'"
+    And "Added audience 'Assigned system role'" "toast_message" should be visible
     And I set the following fields in the "Assigned system role" "core_reportbuilder > Audience" to these values:
       | Select a role | Manager |
     And I press "Save changes"
-    Then I should see "Audience saved"
+    Then "Audience saved" "toast_message" should be visible
     And I should see "Manager" in the "Assigned system role" "core_reportbuilder > Audience"
     And I click on the "Access" dynamic tab
     And I should not see "User 1" in the "reportbuilder-table" "table"
@@ -90,11 +90,11 @@ Feature: Configure access to reports based on intended audience
     And I am on the "My report" "reportbuilder > Editor" page logged in as "admin"
     And I click on the "Audience" dynamic tab
     When I click on "Add audience 'Member of cohort'" "link"
-    And I should see "Added audience 'Member of cohort'"
+    And "Added audience 'Member of cohort'" "toast_message" should be visible
     And I set the following fields in the "Member of cohort" "core_reportbuilder > Audience" to these values:
       | Select members from cohort | Cohort1 |
     And I press "Save changes"
-    Then I should see "Audience saved"
+    Then "Audience saved" "toast_message" should be visible
     And I should see "Cohort1" in the "Member of cohort" "core_reportbuilder > Audience"
     And I click on the "Access" dynamic tab
     And I should not see "User 1" in the "reportbuilder-table" "table"
@@ -111,6 +111,32 @@ Feature: Configure access to reports based on intended audience
     # This audience type should be disabled because there are no cohorts available.
     And "Add audience 'Member of cohort'" "link" should not exist
     And the "title" attribute of "//div[@data-region='sidebar-menu']/descendant::div[normalize-space(.)='Member of cohort']" "xpath_element" should contain "Not available"
+
+  Scenario: Configure and filter report audience with multiple types
+    Given the following "core_reportbuilder > Audiences" exist:
+      | report    | classname                                           | configdata |
+      | My report | \core_reportbuilder\reportbuilder\audience\admins   |            |
+      | My report | \core_reportbuilder\reportbuilder\audience\allusers |            |
+    When I am on the "My report" "reportbuilder > Editor" page logged in as "admin"
+    And I click on the "Access" dynamic tab
+    Then the following should exist in the "Report access list" table:
+      | -1-        |
+      | Admin User |
+      | User 1     |
+      | User 2     |
+      | User 3     |
+    # Now let's filter them.
+    And I click on "Filters" "button"
+    And I set the field "Audience value" in the "Audience" "core_reportbuilder > Filter" to "Site administrators"
+    And I click on "Apply" "button" in the "[data-region='report-filters']" "css_element"
+    And the following should exist in the "Report access list" table:
+      | -1-        |
+      | Admin User |
+    And the following should not exist in the "Report access list" table:
+      | -1-        |
+      | User 1     |
+      | User 2     |
+      | User 3     |
 
   Scenario: Configure report audience as user who cannot use specific audience
     Given the following "users" exist:
@@ -134,9 +160,9 @@ Feature: Configure access to reports based on intended audience
     Then I should see "All users" in the "[data-region=sidebar-menu]" "css_element"
     And I should not see "Member of cohort" in the "[data-region=sidebar-menu]" "css_element"
     And I click on "Add audience 'All users'" "link"
-    And I should see "Added audience 'All users'"
+    And "Added audience 'All users'" "toast_message" should be visible
     And I press "Save changes"
-    And I should see "Audience saved"
+    And "Audience saved" "toast_message" should be visible
 
   Scenario: Rename report audience
     Given I am on the "My report" "reportbuilder > Editor" page logged in as "admin"
@@ -167,7 +193,7 @@ Feature: Configure access to reports based on intended audience
     When I click on "Delete audience 'All users'" "button"
     And I should see "Are you sure you want to delete the audience 'All users'?" in the "Delete audience 'All users'" "dialogue"
     And I click on "Delete" "button" in the "Delete audience 'All users'" "dialogue"
-    Then I should see "Deleted audience 'All users'"
+    Then "Deleted audience 'All users'" "toast_message" should be visible
     And "All users" "core_reportbuilder > Audience" should not exist
     And I should see "There are no audiences for this report"
 
@@ -190,7 +216,7 @@ Feature: Configure access to reports based on intended audience
     And I click on "Delete audience 'All users'" "button"
     And I should see "This audience is used in a schedule for this report" in the "Delete audience 'All users'" "dialogue"
     And I click on "Delete" "button" in the "Delete audience 'All users'" "dialogue"
-    And I should see "Deleted audience 'All users'"
+    And "Deleted audience 'All users'" "toast_message" should be visible
     And "All users" "core_reportbuilder > Audience" should not exist
     And I should see "There are no audiences for this report"
 
@@ -209,7 +235,7 @@ Feature: Configure access to reports based on intended audience
     And I set the following fields in the "Manually added users" "core_reportbuilder > Audience" to these values:
       | Add users manually | User 2 |
     And I press "Save changes"
-    Then I should see "Audience saved"
+    Then "Audience saved" "toast_message" should be visible
     And I should see "User 2" in the "Manually added users" "core_reportbuilder > Audience"
     And I click on the "Access" dynamic tab
     And I should not see "User 1" in the "reportbuilder-table" "table"

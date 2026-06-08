@@ -102,8 +102,6 @@ class group extends base {
      * @return column[]
      */
     protected function get_all_columns(): array {
-        global $DB;
-
         $contextalias = $this->get_table_alias('context');
         $groupsalias = $this->get_table_alias('groups');
 
@@ -141,10 +139,6 @@ class group extends base {
             ->set_is_sortable(true);
 
         // Description column.
-        $descriptionfieldsql = "{$groupsalias}.description";
-        if ($DB->get_dbfamily() === 'oracle') {
-            $descriptionfieldsql = $DB->sql_order_by_text($descriptionfieldsql, 1024);
-        }
         $columns[] = (new column(
             'description',
             new lang_string('description'),
@@ -152,10 +146,9 @@ class group extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_LONGTEXT)
-            ->add_field($descriptionfieldsql, 'description')
-            ->add_fields("{$groupsalias}.descriptionformat, {$groupsalias}.id, {$groupsalias}.courseid")
+            ->add_fields("{$groupsalias}.description, {$groupsalias}.descriptionformat, {$groupsalias}.id, {$groupsalias}.courseid")
             ->add_fields(context_helper::get_preload_record_columns_sql($contextalias))
-            ->set_is_sortable(false)
+            ->set_is_sortable(true)
             ->set_callback(static function(?string $description, stdClass $group): string {
                 global $CFG;
 
@@ -192,12 +185,9 @@ class group extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
             ->add_fields("{$groupsalias}.visibility")
             ->set_is_sortable(true)
-            // It doesn't make sense to offer integer aggregation methods for this column.
-            ->set_disabled_aggregation(['avg', 'max', 'min', 'sum'])
-            ->set_callback(static function(?int $visibility): string {
+            ->set_callback(static function(?string $visibility): string {
                 if ($visibility === null) {
                     return '';
                 }
@@ -209,7 +199,7 @@ class group extends base {
                     GROUPS_VISIBILITY_NONE => new lang_string('visibilitynone', 'core_group'),
                 ];
 
-                return (string) ($options[$visibility] ?? $visibility);
+                return (string) ($options[(int) $visibility] ?? $visibility);
             });
 
         // Participation column.
@@ -231,12 +221,9 @@ class group extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
             ->add_fields("{$groupsalias}.picture, {$groupsalias}.id, {$contextalias}.id AS contextid")
             ->set_is_sortable(false)
-            // It doesn't make sense to offer integer aggregation methods for this column.
-            ->set_disabled_aggregation(['avg', 'max', 'min', 'sum'])
-            ->set_callback(static function ($picture, stdClass $group): string {
+            ->set_callback(static function($value, stdClass $group): string {
                 if (empty($group->picture)) {
                     return '';
                 }

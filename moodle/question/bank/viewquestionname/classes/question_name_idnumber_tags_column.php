@@ -51,16 +51,23 @@ class question_name_idnumber_tags_column extends viewquestionname_column_helper 
         if ($question->idnumber !== null && $question->idnumber !== '') {
             echo ' ' . \html_writer::span(
                             \html_writer::span(get_string('idnumber', 'question') . '&nbsp;', 'accesshide')
-                            . \html_writer::span(s($question->idnumber), 'badge bg-primary text-white'), 'ml-1');
+                            . \html_writer::span(s($question->idnumber), 'badge bg-primary text-white'), 'ms-1');
         }
 
         // Question tags.
         if (!empty($question->tags)) {
             $tags = \core_tag_tag::get_item_tags('core_question', 'question', $question->id);
-            echo $OUTPUT->tag_list($tags, null, 'd-inline flex-shrink-1 text-truncate ml-1', 0, null, true);
+            echo $OUTPUT->tag_list($tags, null, 'd-inline flex-shrink-1 text-truncate ms-1', 0, null, true);
         }
 
         echo \html_writer::end_tag('div');
+
+        // If the question is invalid, show a warning badge.
+        if (!\question_bank::is_qtype_usable($question->qtype)) {
+            echo \html_writer::span(get_string('invalidquestiontype', 'question', $question->qtype),
+                'badge bg-danger text-white');
+        }
+
     }
 
     public function get_required_fields(): array {
@@ -82,7 +89,7 @@ class question_name_idnumber_tags_column extends viewquestionname_column_helper 
     }
 
     public function get_extra_classes(): array {
-        return ['pr-3'];
+        return ['pe-3'];
     }
 
 }

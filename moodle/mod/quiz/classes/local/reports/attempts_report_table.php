@@ -229,7 +229,7 @@ abstract class attempts_report_table extends \table_sql {
      * @return string HTML content to go inside the td.
      */
     public function col_timestart($attempt) {
-        if ($attempt->attempt) {
+        if ($attempt->attempt && $attempt->timestart) {
             return userdate($attempt->timestart, $this->strtimeformat);
         } else {
             return  '-';
@@ -452,7 +452,7 @@ abstract class attempts_report_table extends \table_sql {
      *      in the query. See {@see qubaid_condition}.
      * @return array of records. See the SQL in this function to see the fields available.
      */
-    protected function load_question_latest_steps(qubaid_condition $qubaids = null) {
+    protected function load_question_latest_steps(?qubaid_condition $qubaids = null) {
         if ($qubaids === null) {
             $qubaids = $this->get_qubaids_condition();
         }
@@ -797,7 +797,7 @@ abstract class attempts_report_table extends \table_sql {
         if (has_capability('mod/quiz:deleteattempts', $this->context)) {
             $deletebuttonparams = [
                 'type'  => 'submit',
-                'class' => 'btn btn-secondary mr-1',
+                'class' => 'btn btn-secondary me-1',
                 'id'    => 'deleteattemptsbutton',
                 'name'  => 'delete',
                 'value' => get_string('deleteselected', 'quiz_overview'),

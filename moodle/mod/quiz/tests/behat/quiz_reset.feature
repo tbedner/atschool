@@ -20,15 +20,15 @@ Feature: Quiz reset
       | name    | course | idnumber |
       | Group 1 | C1     | G1       |
       | Group 2 | C1     | G2       |
-    And the following "question categories" exist:
-      | contextlevel | reference | name           |
-      | Course       | C1        | Test questions |
-    And the following "questions" exist:
-      | questioncategory | qtype     | name | questiontext   |
-      | Test questions   | truefalse | TF1  | First question |
     And the following "activities" exist:
       | activity | name           | intro                 | course | idnumber |
       | quiz     | Test quiz name | Test quiz description | C1     | quiz1    |
+    And the following "question categories" exist:
+      | contextlevel    | reference | name           |
+      | Activity module | quiz1     | Test questions |
+    And the following "questions" exist:
+      | questioncategory | qtype     | name | questiontext   |
+      | Test questions   | truefalse | TF1  | First question |
     And quiz "Test quiz name" contains the following questions:
       | question | page |
       | TF1      | 1    |
@@ -40,7 +40,7 @@ Feature: Quiz reset
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
     And I set the following fields to these values:
-        | Delete all quiz attempts | 1 |
+        | All quiz attempts | 1 |
     And I press "Reset course"
     And I press "Continue"
     And I am on the "Test quiz name" "mod_quiz > Grades report" page
@@ -52,7 +52,7 @@ Feature: Quiz reset
       | Test quiz name | student1 | 2        |
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
-    And I set the field "Delete all user overrides" to "1"
+    And I set the field "All user overrides" to "1"
     And I press "Reset course"
     And I press "Continue"
     And I am on the "Test quiz name" "mod_quiz > User overrides" page
@@ -65,7 +65,7 @@ Feature: Quiz reset
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
     And I set the following fields to these values:
-        | Delete all group overrides | 1 |
+        | All group overrides | 1 |
     And I press "Reset course"
     And I press "Continue"
     And I am on the "Test quiz name" "mod_quiz > Group overrides" page

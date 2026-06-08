@@ -681,7 +681,7 @@ class core_tag_tag {
         list($idsql, $params) = $DB->get_in_or_equal($itemids, SQL_PARAMS_NAMED);
         // Note: if the fields in this query are changed, you need to do the same changes in core_tag_tag::get_correlated_tags().
         $sql = "SELECT ti.id AS taginstanceid, tg.id, tg.isstandard, tg.name, tg.rawname, tg.flag,
-                    tg.tagcollid, ti.ordering, ti.contextid AS taginstancecontextid, ti.itemid
+                    tg.tagcollid, ti.ordering, ti.contextid AS taginstancecontextid, ti.itemid, ti.tiuserid
                   FROM {tag_instance} ti
                   JOIN {tag} tg ON tg.id = ti.tagid
                   WHERE ti.itemtype = :itemtype AND ti.itemid $idsql ".
@@ -1252,7 +1252,7 @@ class core_tag_tag {
 
         // This is (and has to) return the same fields as the query in core_tag_tag::get_item_tags().
         $sql = "SELECT ti.id AS taginstanceid, tg.id, tg.isstandard, tg.name, tg.rawname, tg.flag,
-                tg.tagcollid, ti.ordering, ti.contextid AS taginstancecontextid, ti.itemid
+                tg.tagcollid, ti.ordering, ti.contextid AS taginstancecontextid, ti.itemid, ti.tiuserid
               FROM {tag} tg
         INNER JOIN {tag_instance} ti ON tg.id = ti.tagid
              WHERE tg.id $query AND tg.id <> ? AND tg.tagcollid = ?
@@ -1763,16 +1763,15 @@ class core_tag_tag {
         list($contextsql, $contextsqlparams) = $DB->get_in_or_equal($contextids);
         $params = array_merge($params, $contextsqlparams);
 
-        $subsql = "SELECT DISTINCT t.id
-                    FROM {tag} t
-                    JOIN {tag_instance} ti ON t.id = ti.tagid
-                   WHERE component = ?
-                   AND itemtype = ?
-                   AND contextid {$contextsql}";
+        $subsql = "SELECT DISTINCT ti.tagid
+                     FROM {tag_instance} ti
+                    WHERE ti.component = ?
+                            AND ti.itemtype = ?
+                            AND ti.contextid {$contextsql}";
 
         $sql = "SELECT tt.*
-                FROM ($subsql) tv
-                JOIN {tag} tt ON tt.id = tv.id";
+                  FROM ($subsql) tv
+                  JOIN {tag} tt ON tt.id = tv.tagid";
 
         return array_map(function($record) {
             return new core_tag_tag($record);

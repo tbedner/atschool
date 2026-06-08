@@ -44,12 +44,12 @@ function tool_task_status_checks(): array {
  * @param string $message Message to output
  * @param string $eol End of line character
  */
-function tool_task_mtrace_wrapper(string $message, string $eol): void {
+function tool_task_mtrace_wrapper(string $message, string $eol = ''): void {
     $message = s($message);
 
     // We autolink urls and emails here but can't use format_text as it does
     // more than we need and has side effects which are not useful in this context.
-    $urlpattern = '/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
+    $urlpattern = '~\b(?:https?|ftps?)://[a-z0-9-]+(?:\.[a-z0-9-]+)*(?::\d+)?(?:/[^\s<]*)?~i';
     $message = preg_replace_callback($urlpattern, function($matches) {
         $url = $matches[0];
         return html_writer::link($url, $url, ['target' => '_blank']);

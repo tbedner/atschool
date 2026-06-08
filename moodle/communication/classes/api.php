@@ -200,7 +200,7 @@ class api {
      * @param string|null $selecteddefaulprovider
      * @return array
      */
-    public static function get_enabled_providers_and_default(string $selecteddefaulprovider = null): array {
+    public static function get_enabled_providers_and_default(?string $selecteddefaulprovider = null): array {
         $communicationproviders = self::get_communication_plugin_list_for_form();
         $defaulprovider = processor::PROVIDER_NONE;
         if (!empty($selecteddefaulprovider) && array_key_exists($selecteddefaulprovider, $communicationproviders)) {
@@ -698,8 +698,8 @@ class api {
             return;
         }
 
-        // No userids? don't bother doing anything.
-        if (empty($userids)) {
+        // No user IDs or this provider does not manage users? No action required.
+        if (empty($userids) || !$this->communication->supports_user_features()) {
             return;
         }
 

@@ -42,6 +42,7 @@ final class course_bin_test extends \advanced_testcase {
      * Setup for each test.
      */
     protected function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
         $this->setAdminUser();
 
@@ -65,9 +66,6 @@ final class course_bin_test extends \advanced_testcase {
 
         // Delete the course module.
         course_delete_module($this->quiz->cmid);
-
-        // Now, run the course module deletion adhoc task.
-        \phpunit_util::run_all_adhoc_tasks();
 
         // Check the course module is now in the recycle bin.
         $this->assertEquals(1, $DB->count_records('tool_recyclebin_course'));
@@ -110,9 +108,6 @@ final class course_bin_test extends \advanced_testcase {
         // Delete the course module.
         course_delete_module($this->quiz->cmid);
 
-        // Now, run the course module deletion adhoc task.
-        \phpunit_util::run_all_adhoc_tasks();
-
         // Try purging.
         $recyclebin = new \tool_recyclebin\course_bin($this->course->id);
         foreach ($recyclebin->get_items() as $item) {
@@ -135,9 +130,6 @@ final class course_bin_test extends \advanced_testcase {
         // Delete the quiz.
         course_delete_module($this->quiz->cmid);
 
-        // Now, run the course module deletion adhoc task.
-        \phpunit_util::run_all_adhoc_tasks();
-
         // Set deleted date to the distant past.
         $recyclebin = new \tool_recyclebin\course_bin($this->course->id);
         foreach ($recyclebin->get_items() as $item) {
@@ -150,9 +142,6 @@ final class course_bin_test extends \advanced_testcase {
             'course' => $this->course->id));
 
         course_delete_module($book->cmid);
-
-        // Now, run the course module deletion adhoc task.
-        \phpunit_util::run_all_adhoc_tasks();
 
         // Should have 2 items now.
         $this->assertEquals(2, count($recyclebin->get_items()));
@@ -223,7 +212,6 @@ final class course_bin_test extends \advanced_testcase {
         // Delete quiz.
         $cm = get_coursemodule_from_instance('quiz', $this->quiz->id);
         course_delete_module($cm->id);
-        \phpunit_util::run_all_adhoc_tasks();
         $quizzes = get_coursemodules_in_course('quiz', $this->course->id);
         $this->assertEquals(0, count($quizzes));
 
@@ -260,9 +248,6 @@ final class course_bin_test extends \advanced_testcase {
         // Delete the course module.
         course_delete_module($this->quiz->cmid);
 
-        // Now, run the course module deletion adhoc task.
-        \phpunit_util::run_all_adhoc_tasks();
-
         // Check there is no items in the recycle bin.
         $recyclebin = new \tool_recyclebin\course_bin($this->course->id);
         $this->assertEquals(0, count($recyclebin->get_items()));
@@ -293,7 +278,6 @@ final class course_bin_test extends \advanced_testcase {
         // Delete quiz.
         $cm = get_coursemodule_from_instance('quiz', $this->quiz->id);
         course_delete_module($cm->id);
-        \phpunit_util::run_all_adhoc_tasks();
         $quizzes = get_coursemodules_in_course('quiz', $this->course->id);
         $this->assertEquals(0, count($quizzes));
 
@@ -337,6 +321,7 @@ final class course_bin_test extends \advanced_testcase {
         $tosubmit = array(1 => array('answer' => '0'));
         $attemptobj->process_submitted_actions($timenow, false, $tosubmit);
         $attemptobj = quiz_attempt::create($attempt->id);
-        $attemptobj->process_finish($timenow, false);
+        $attemptobj->process_submit($timenow, false);
+        $attemptobj->process_grade_submission($timenow);
     }
 }

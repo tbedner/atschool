@@ -54,7 +54,7 @@ class sectionactions extends baseactions {
             'sequence' => '',
             'name' => $fields->name ?? null,
             'visible' => $fields->visible ?? 1,
-            'availability' => null,
+            'availability' => $fields->availability ?? null,
             'component' => $fields->component ?? null,
             'itemid' => $fields->itemid ?? null,
             'timemodified' => time(),
@@ -318,10 +318,11 @@ class sectionactions extends baseactions {
         );
 
         // Move all modules to section 0.
-        $sectionzero = $DB->get_record('course_sections', ['course' => $this->course->id, 'section' => '0']);
-        $modules = $DB->get_records('course_modules', ['section' => $sectioninfo->id], '');
-        foreach ($modules as $mod) {
-            moveto_module($mod, $sectionzero);
+        $modinfo = get_fast_modinfo($this->course->id);
+        foreach ($modinfo->get_cms() as $cm) {
+            if ($cm->sectionnum == $sectioninfo->section) {
+                moveto_module($cm, $modinfo->get_section_info(0));
+            }
         }
 
         $removaltask = new \core_course\task\course_delete_modules();
@@ -367,6 +368,8 @@ class sectionactions extends baseactions {
         $fields['timemodified'] = time();
         $DB->update_record('course_sections', $fields);
 
+        $sectioninfo->get_component_instance()?->section_updated((object) $fields);
+
         // We need to update the section cache before the format options are updated.
         \course_modinfo::purge_course_section_cache_by_id($courseid, $sectioninfo->id);
         rebuild_course_cache($courseid, false, true);
@@ -404,6 +407,18 @@ class sectionactions extends baseactions {
 
         $modules = explode(',', $sectioninfo->sequence);
         $cmids = [];
+
+        // In case the section is delegated by a module, we change also the visibility for the source module.
+        $delegateinstance = $sectioninfo->get_component_instance();
+        if ($delegateinstance) {
+            // We only return sections delegated by course modules. Sections delegated to other
+            // types of components must implement their own methods to get the section.
+            if ($delegateinstance && ($delegateinstance instanceof \core_courseformat\sectiondelegatemodule)) {
+                $delegator = $delegateinstance->get_cm();
+                $modules[] = $delegator->id;
+            }
+        }
+
         foreach ($modules as $moduleid) {
             $cm = get_coursemodule_from_id(null, $moduleid, $this->course->id);
             if (!$cm) {
@@ -424,12 +439,15 @@ class sectionactions extends baseactions {
 
             if ($modupdated) {
                 $cmids[] = $cm->id;
-                course_module_updated::create_from_cm($cm)->trigger();
             }
         }
 
         \course_modinfo::purge_course_modules_cache($this->course->id, $cmids);
         rebuild_course_cache($this->course->id, false, true);
+        foreach ($cmids as $cmid) {
+            $cm = get_coursemodule_from_id(null, $cmid, $this->course->id);
+            course_module_updated::create_from_cm($cm)->trigger();
+        }
     }
 
     /**

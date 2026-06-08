@@ -22,7 +22,7 @@ use core\context\system;
 use core_reportbuilder_generator;
 use core_external\external_api;
 use externallib_advanced_testcase;
-use core_reportbuilder\report_access_exception;
+use core_reportbuilder\exception\report_access_exception;
 use core_reportbuilder\local\systemreports\reports_list;
 use core_user\reportbuilder\datasource\users;
 
@@ -75,7 +75,7 @@ final class retrieve_test extends externallib_advanced_testcase {
 
         $this->assertStringContainsString('My second report', $name);
         $this->assertEquals(users::get_name(), $source);
-        $this->assertEquals('cat, dog', $tags);
+        $this->assertMatchesRegularExpression('/cat.*dog/', $tags);
         $this->assertNotEmpty($timecreated);
         $this->assertNotEmpty($timemodified);
         $this->assertEquals('Admin User', $modifiedby);

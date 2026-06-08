@@ -39,8 +39,6 @@ $string['address'] = 'Address';
 $string['age'] = 'Typical age';
 $string['ageDescription'] = 'The target audience of this content. Possible input formats separated by commas: "1,34-45,-50,59-".';
 $string['altText'] = 'Alt text';
-$string['atto_h5p'] = 'Insert H5P button';
-$string['atto_h5p_description'] = 'The Insert H5P button in the Atto editor enables users to insert H5P content by either entering a URL or embed code, or by uploading an H5P file.';
 $string['author'] = 'Author';
 $string['authorcomments'] = 'Author comments';
 $string['authorcommentsdescription'] = 'Comments for the editor of the content. (This text will not be published as a part of the copyright info.)';
@@ -266,7 +264,7 @@ $string['screenshotsDescription'] = 'Add up to five screenshots of your content'
 $string['share'] = 'Share';
 $string['shared'] = 'Shared';
 $string['shareFailed'] = 'Share failed.';
-$string['shareTryAgain'] = 'Something went wrong, please try to share again.';
+$string['shareTryAgain'] = 'Couldn\'t communicate with the H5P Hub. Please try again later.';
 $string['sharingNote'] = 'All content details can be edited after sharing';
 $string['shortDescription'] = 'Short description';
 $string['shortDescriptionPlaceholder'] = 'Short description of your content';
@@ -302,3 +300,7 @@ $string['years'] = 'Year(s)';
 $string['yearsfrom'] = 'Years (from)';
 $string['yearsto'] = 'Years (to)';
 $string['zip'] = 'Zip';
+
+// Deprecated since Moodle 5.0.
+$string['atto_h5p'] = 'Insert H5P button';
+$string['atto_h5p_description'] = 'The Insert H5P button in the Atto editor enables users to insert H5P content by either entering a URL or embed code, or by uploading an H5P file.';

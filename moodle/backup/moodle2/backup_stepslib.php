@@ -27,6 +27,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use core_question\local\bank\random_question_loader;
+use core_question\question_reference_manager;
+
 /**
  * Create the temp dir where backup/restore will happen and create temp ids table.
  */
@@ -118,6 +121,20 @@ abstract class backup_activity_structure_step extends backup_structure_step {
 
         // Return the root element (activity)
         return $activity;
+    }
+
+    /**
+     * Set a delegate section itemid mapping.
+     *
+     * @param string $pluginname the name of the plugin that is delegating the section.
+     * @param int $itemid the itemid of the section being delegated.
+     */
+    protected function set_delegated_section_mapping(string $pluginname, int $itemid) {
+        backup_structure_dbops::insert_backup_ids_record(
+            $this->get_backupid(),
+            "course_section::$pluginname::$itemid",
+            $this->task->get_moduleid()
+        );
     }
 }
 
@@ -224,6 +241,8 @@ trait backup_question_reference_data_trait {
             'questionarea' => backup_helper::is_sqlparam($questionarea),
             'itemid' => backup::VAR_PARENTID
         ]);
+
+        $reference->annotate_ids('question_bank_entry', 'questionbankentryid');
     }
 }
 
@@ -256,6 +275,60 @@ trait backup_question_set_reference_trait {
             'questionarea' => backup_helper::is_sqlparam($questionarea),
             'itemid' => backup::VAR_PARENTID
         ]);
+    }
+
+    /**
+     * Find all questions that match set reference conditions used by the activity, and record the question bank entry IDs.
+     *
+     * @param int $contextid The context ID of the activity being backed up
+     * @param string $component The component of the activity
+     * @param string $questionarea The question area for finding set references
+     * @param string $backupid The backup ID to annotate question bank entries against
+     */
+    protected function annotate_set_reference_bank_entries(
+        int $contextid,
+        string $component,
+        string $questionarea,
+        string $backupid,
+    ): void {
+        global $DB;
+        $setreferenceconditions = $DB->get_fieldset(
+            'question_set_references',
+            'filtercondition',
+            [
+                'usingcontextid' => $contextid,
+                'component' => $component,
+                'questionarea' => $questionarea,
+            ],
+        );
+        if (empty($setreferenceconditions)) {
+            return;
+        }
+        $setreferencequestionids = [];
+        $randomloader = new random_question_loader(new qubaid_list([]), []);
+
+        foreach ($setreferenceconditions as $setreferencecondition) {
+            $conditions = json_decode($setreferencecondition, true);
+            $conditions = question_reference_manager::convert_legacy_set_reference_filter_condition($conditions);
+            $setreferencequestionids = array_merge(
+                $setreferencequestionids,
+                array_keys($randomloader->get_filtered_questions($conditions['filter'], 0)),
+            );
+        }
+        if (empty($setreferencequestionids)) {
+            return;
+        }
+        [$insql, $inparams] = $DB->get_in_or_equal($setreferencequestionids);
+        $qbeids = $DB->get_fieldset_select(
+            'question_versions',
+            'questionbankentryid',
+            "questionid {$insql}",
+            $inparams,
+        );
+
+        foreach ($qbeids as $qbeid) {
+            backup_structure_dbops::insert_backup_ids_record($backupid, 'question_bank_entry', $qbeid);
+        }
     }
 }
 
@@ -903,14 +976,6 @@ class backup_comments_structure_step extends backup_structure_step {
  */
 class backup_badges_structure_step extends backup_structure_step {
 
-    protected function execute_condition() {
-        // Check that all activities have been included.
-        if ($this->task->is_excluding_activities()) {
-            return false;
-        }
-        return true;
-    }
-
     protected function define_structure() {
         global $CFG;
 
@@ -922,8 +987,7 @@ class backup_badges_structure_step extends backup_structure_step {
                 'timecreated', 'timemodified', 'usercreated', 'usermodified', 'issuername',
                 'issuerurl', 'issuercontact', 'expiredate', 'expireperiod', 'type', 'courseid',
                 'message', 'messagesubject', 'attachment', 'notification', 'status', 'nextcron',
-                'version', 'language', 'imageauthorname', 'imageauthoremail', 'imageauthorurl',
-                'imagecaption'));
+                'version', 'language', 'imagecaption'));
 
         $criteria = new backup_nested_element('criteria');
         $criterion = new backup_nested_element('criterion', array('id'), array('badgeid',
@@ -954,10 +1018,16 @@ class backup_badges_structure_step extends backup_structure_step {
         // Build the tree.
 
         $badges->add_child($badge);
-        $badge->add_child($criteria);
-        $criteria->add_child($criterion);
-        $criterion->add_child($parameters);
-        $parameters->add_child($parameter);
+
+        // Have the activities been included? Only if that's the case, the criteria will be included too.
+        $activitiesincluded = !$this->task->is_excluding_activities();
+        if ($activitiesincluded) {
+            $badge->add_child($criteria);
+            $criteria->add_child($criterion);
+            $criterion->add_child($parameters);
+            $parameters->add_child($parameter);
+        }
+
         $badge->add_child($endorsement);
         $badge->add_child($alignments);
         $alignments->add_child($alignment);
@@ -979,18 +1049,19 @@ class backup_badges_structure_step extends backup_structure_step {
             'courseid' => backup::VAR_COURSEID
         ];
         $badge->set_source_sql($parametersql, $parameterparams);
-        $criterion->set_source_table('badge_criteria', array('badgeid' => backup::VAR_PARENTID));
+        if ($activitiesincluded) {
+            $criterion->set_source_table('badge_criteria', ['badgeid' => backup::VAR_PARENTID]);
+            $parametersql = 'SELECT cp.*, c.criteriatype
+                               FROM {badge_criteria_param} cp JOIN {badge_criteria} c
+                                 ON cp.critid = c.id
+                              WHERE critid = :critid';
+            $parameterparams = ['critid' => backup::VAR_PARENTID];
+            $parameter->set_source_sql($parametersql, $parameterparams);
+        }
         $endorsement->set_source_table('badge_endorsement', array('badgeid' => backup::VAR_PARENTID));
 
         $alignment->set_source_table('badge_alignment', array('badgeid' => backup::VAR_PARENTID));
         $relatedbadge->set_source_table('badge_related', array('badgeid' => backup::VAR_PARENTID));
-
-        $parametersql = 'SELECT cp.*, c.criteriatype
-                             FROM {badge_criteria_param} cp JOIN {badge_criteria} c
-                                 ON cp.critid = c.id
-                             WHERE critid = :critid';
-        $parameterparams = array('critid' => backup::VAR_PARENTID);
-        $parameter->set_source_sql($parametersql, $parameterparams);
 
         $manual_award->set_source_table('badge_manual_award', array('badgeid' => backup::VAR_PARENTID));
 
@@ -1004,8 +1075,10 @@ class backup_badges_structure_step extends backup_structure_step {
 
         $badge->annotate_ids('user', 'usercreated');
         $badge->annotate_ids('user', 'usermodified');
-        $criterion->annotate_ids('badge', 'badgeid');
-        $parameter->annotate_ids('criterion', 'critid');
+        if ($activitiesincluded) {
+            $criterion->annotate_ids('badge', 'badgeid');
+            $parameter->annotate_ids('criterion', 'critid');
+        }
         $endorsement->annotate_ids('badge', 'badgeid');
         $alignment->annotate_ids('badge', 'badgeid');
         $relatedbadge->annotate_ids('badge', 'badgeid');
@@ -2145,14 +2218,19 @@ class backup_main_structure_step extends backup_structure_step {
 
         $activities = new backup_nested_element('activities');
 
-        $activity = new backup_nested_element('activity', null, array(
-            'moduleid', 'sectionid', 'modulename', 'title',
-            'directory'));
+        $activity = new backup_nested_element(
+            'activity',
+            null,
+            ['moduleid', 'sectionid', 'modulename', 'title', 'directory', 'insubsection']
+        );
 
         $sections = new backup_nested_element('sections');
 
-        $section = new backup_nested_element('section', null, array(
-            'sectionid', 'title', 'directory'));
+        $section = new backup_nested_element(
+            'section',
+            null,
+            ['sectionid', 'title', 'directory', 'parentcmid', 'modname']
+        );
 
         $course = new backup_nested_element('course', null, array(
             'courseid', 'title', 'directory'));
@@ -2524,6 +2602,23 @@ class backup_annotate_all_question_files extends backup_execution_step {
  */
 class backup_questions_structure_step extends backup_structure_step {
 
+    #[\Override]
+    public function execute() {
+        global $DB;
+        backup_controller_dbops::create_question_category_temp_tables();
+        $DB->execute("INSERT INTO {question_category_complete_temp} (backupid, itemid)
+            SELECT backupid, itemid
+             FROM {backup_ids_temp}
+            WHERE itemname = 'question_category_complete'");
+        $DB->execute("INSERT INTO {question_category_partial_temp} (backupid, itemid)
+            SELECT backupid, itemid
+             FROM {backup_ids_temp}
+            WHERE itemname = 'question_category_partial'");
+        $results = parent::execute();
+        backup_controller_dbops::drop_question_category_temp_tables();
+        return $results;
+    }
+
     protected function define_structure() {
 
         // Define each element separately.
@@ -2550,6 +2645,7 @@ class backup_questions_structure_step extends backup_structure_step {
                 'questioncategoryid',
                 'idnumber',
                 'ownerid',
+                'nextversion',
             ]);
 
         $questionversions = new backup_nested_element('question_version');
@@ -2626,7 +2722,36 @@ class backup_questions_structure_step extends backup_structure_step {
              WHERE bi.backupid = ?
                AND bi.itemname = 'question_categoryfinal'", [backup::VAR_BACKUPID]);
 
-        $questionbankentry->set_source_table('question_bank_entries', ['questioncategoryid' => backup::VAR_PARENTID]);
+        // Add all question bank entries from "complete" categories, plus annotated question bank entires and their children
+        // from "partial" categories.
+        $questionbankentry->set_source_sql(
+            "
+                SELECT qbe.*
+                 FROM {question_bank_entries} qbe
+                 JOIN {question_category_complete_temp} qcc ON qcc.itemid = qbe.questioncategoryid
+                WHERE qcc.itemid = ?
+                      AND qcc.backupid = ?
+                UNION
+                SELECT qbe.*
+                 FROM {question_bank_entries} qbe
+                 JOIN {question_versions} qv ON qv.questionbankentryid = qbe.id
+                 JOIN {question} q ON q.id = qv.questionid
+                 LEFT JOIN {question_versions} parentqv ON parentqv.questionid = q.parent
+                 JOIN {question_category_partial_temp} qcp ON qcp.itemid = qbe.questioncategoryid
+                 JOIN {backup_ids_temp} biq ON biq.itemid = qbe.id OR biq.itemid = parentqv.questionbankentryid
+                WHERE qcp.itemid = ?
+                      AND qcp.backupid = ?
+                      AND biq.backupid = ?
+                      AND biq.itemname = 'question_bank_entry'
+            ",
+            [
+                backup::VAR_PARENTID,
+                backup::VAR_BACKUPID,
+                backup::VAR_PARENTID,
+                backup::VAR_BACKUPID,
+                backup::VAR_BACKUPID,
+            ],
+        );
 
         $questionverion->set_source_table('question_versions', ['questionbankentryid' => backup::VAR_PARENTID]);
 

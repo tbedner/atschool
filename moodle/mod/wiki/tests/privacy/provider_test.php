@@ -74,6 +74,7 @@ final class provider_test extends provider_testcase {
      */
     public function setUp(): void {
         global $DB;
+        parent::setUp();
         $this->resetAfterTest();
 
         $dg = $this->getDataGenerator();
@@ -251,7 +252,7 @@ final class provider_test extends provider_testcase {
         $this->assertEqualsCanonicalizing([
             $this->contexts[1]->id,
             $this->contexts[2]->id,
-        ], $contextids);
+        ], array_values($contextids));
 
         // Get contexts for the second user.
         $contextids = provider::get_contexts_for_userid($this->users[2]->id)->get_contextids();
@@ -259,7 +260,7 @@ final class provider_test extends provider_testcase {
             $this->contexts[1]->id,
             $this->contexts[2]->id,
             $this->contexts[3]->id,
-        ], $contextids);
+        ], array_values($contextids));
 
         // Get contexts for the third user.
         $contextids = provider::get_contexts_for_userid($this->users[3]->id)->get_contextids();
@@ -267,7 +268,7 @@ final class provider_test extends provider_testcase {
             $this->contexts[1]->id,
             $this->contexts[2]->id,
             $this->contexts[3]->id,
-        ], $contextids);
+        ], array_values($contextids));
     }
 
     /**
