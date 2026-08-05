@@ -1,0 +1,28 @@
+<?php
+
+$env = parse_ini_file('.env');
+
+// Keep your Stripe API key protected by including it as an environment variable
+// or in a private script that does not publicly expose the source code.
+
+// This is your test secret API key.
+// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+$stripeSecretKey = $env['STRIPESECRETKEY'];
+
+// Base URL where this integration is hosted (no trailing slash).
+$siteBaseUrl = 'https://www.at-school-portal.com';
+
+// Moodle REST configuration.
+$moodleDomainName = 'https://www.at-school-portal.com/moodle';
+$moodleWebserviceToken = $env['TOKEN'];
+$moodleRestFormat = 'json';
+
+// Enrollment target.
+$moodleCourseId = 24;
+$moodleStudentRoleId = 5;
+
+// Checkout amount configuration.
+$courseDisplayName = 'Course Enrollment';
+$courseAmountCents = 500;
+$courseCurrency = 'jpy';
+$endpointSecret = $env['ENDPOINTSECRET'];

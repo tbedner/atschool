@@ -19,7 +19,12 @@ include('menu.php');
 							<div class="image main">
 								<img src="images/blog-fullscreen-1-1920x700.jpg" class="img-fluid" alt="" />
 							</div>
-
+                            <div id="paypal-container-MWPS8G4Q4ZA5Y"></div>
+                            <script>
+                              paypal.HostedButtons({
+                                hostedButtonId: "MWPS8G4Q4ZA5Y",
+                              }).render("#paypal-container-MWPS8G4Q4ZA5Y")
+                            </script>
 							<p><?php echo $translations['join_p1']; ?></p>
 
 							<p><?php echo $translations['join_p2']; ?></p>

@@ -4386,3 +4386,619 @@ Stack trace:
 [09-Jun-2026 19:50:41 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
 [09-Jun-2026 19:50:41 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
 [09-Jun-2026 19:50:41 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:25 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 09:12:26 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 10:52:04 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 10:52:04 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 10:52:04 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 10:52:04 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 10:52:04 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[14-Jun-2026 10:57:12 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[14-Jun-2026 10:57:12 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[14-Jun-2026 10:57:12 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[14-Jun-2026 10:57:12 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[14-Jun-2026 10:57:12 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[15-Jun-2026 05:54:14 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[15-Jun-2026 05:54:14 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[15-Jun-2026 05:54:14 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[15-Jun-2026 05:54:14 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[15-Jun-2026 05:54:14 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[15-Jun-2026 06:03:03 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[15-Jun-2026 06:03:03 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[15-Jun-2026 06:03:03 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[15-Jun-2026 06:03:03 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[15-Jun-2026 06:03:03 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[17-Jun-2026 15:55:52 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[17-Jun-2026 15:55:52 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[17-Jun-2026 15:55:52 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[17-Jun-2026 15:55:52 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[17-Jun-2026 15:55:52 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[22-Jun-2026 11:31:07 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[22-Jun-2026 11:31:07 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[22-Jun-2026 11:31:07 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[22-Jun-2026 11:31:07 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[22-Jun-2026 11:31:07 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[22-Jun-2026 23:40:10 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[22-Jun-2026 23:40:10 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[22-Jun-2026 23:40:10 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[22-Jun-2026 23:40:10 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[22-Jun-2026 23:40:10 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:15 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:16 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:16 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:16 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:16 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:16 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:17 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:17 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:17 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:17 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:17 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:18 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:19 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:20 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:21 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:21 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:21 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:21 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:21 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[23-Jun-2026 12:52:22 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[23-Jun-2026 12:52:22 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[23-Jun-2026 12:52:22 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[23-Jun-2026 12:52:22 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[23-Jun-2026 12:52:22 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:46 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:46 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:46 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:46 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:46 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 02:08:48 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:56 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:56 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:56 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:56 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:56 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:57 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:58 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:58 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:58 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:58 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:58 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:42:59 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:00 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:01 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:02 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:02 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:02 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:02 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:02 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:03 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:04 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:04 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:04 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:04 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:04 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Jun-2026 10:43:05 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[30-Jun-2026 10:43:05 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[30-Jun-2026 10:43:05 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[30-Jun-2026 10:43:05 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[30-Jun-2026 10:43:05 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 8
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 8
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 9
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 9
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 10
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 10
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 11
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 11
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 12
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 12
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 13
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 13
+[01-Jul-2026 22:28:40 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/menu.php on line 13
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/header.php on line 7
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/header.php on line 7
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 13
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 14
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 15
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 16
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 17
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 18
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 19
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 20
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 21
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 22
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 23
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 24
+[02-Jul-2026 20:00:10 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 25
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 8
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 8
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 9
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 9
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 10
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 10
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 11
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 11
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 12
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 12
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 13
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 13
+[03-Jul-2026 04:46:47 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/menu.php on line 13
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/header.php on line 7
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/header.php on line 7
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 13
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 14
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 15
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 16
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 17
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 18
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 19
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 20
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 21
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 22
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 23
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 24
+[04-Jul-2026 14:06:00 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 25
+[04-Jul-2026 20:15:58 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:15:58 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:15:58 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:15:58 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:15:58 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:23:36 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:33:51 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:33:51 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:33:51 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:33:51 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:33:51 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Jul-2026 20:44:56 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/header.php on line 7
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/header.php on line 7
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 13
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 14
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 15
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 16
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 17
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 18
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 19
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 20
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 21
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 22
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 23
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 24
+[05-Jul-2026 11:48:56 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 25
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/header.php on line 7
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/header.php on line 7
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 13
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 14
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 15
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 16
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 17
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 18
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 19
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 20
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 21
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 22
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 23
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 24
+[06-Jul-2026 02:44:38 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 25
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:36 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:37 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[06-Jul-2026 05:06:39 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[10-Jul-2026 17:46:38 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/header.php on line 7
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/header.php on line 7
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 13
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 14
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 15
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 16
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 17
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 18
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 19
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 20
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 21
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 22
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 23
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 24
+[19-Jul-2026 03:43:41 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/header.php on line 25
+[25-Jul-2026 00:52:43 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[25-Jul-2026 00:52:43 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[25-Jul-2026 00:52:43 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[25-Jul-2026 00:52:43 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[25-Jul-2026 00:52:43 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[25-Jul-2026 00:52:54 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[25-Jul-2026 00:52:54 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[25-Jul-2026 00:52:54 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[25-Jul-2026 00:52:54 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[25-Jul-2026 00:52:54 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 8
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 8
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 9
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 9
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 10
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 10
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 11
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 11
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 12
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 12
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 13
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 13
+[25-Jul-2026 21:12:29 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/menu.php on line 13
+[28-Jul-2026 07:54:47 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[28-Jul-2026 07:54:47 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[28-Jul-2026 07:54:47 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[28-Jul-2026 07:54:47 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[28-Jul-2026 07:54:47 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[28-Jul-2026 11:22:42 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[28-Jul-2026 11:22:42 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[28-Jul-2026 11:22:42 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[28-Jul-2026 11:22:42 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[28-Jul-2026 11:22:42 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[29-Jul-2026 04:01:04 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 55
+[29-Jul-2026 04:01:04 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:55
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(55): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/index.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 55
+[29-Jul-2026 05:45:33 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 55
+[29-Jul-2026 05:45:33 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:55
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(55): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/index.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 55
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 8
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 8
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 9
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 9
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 10
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 10
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 11
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 11
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 12
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 12
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $translations in /home/tdbedner/public_html/menu.php on line 13
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Trying to access array offset on null in /home/tdbedner/public_html/menu.php on line 13
+[02-Aug-2026 19:58:18 Asia/Tokyo] PHP Warning:  Undefined variable $lang in /home/tdbedner/public_html/menu.php on line 13
+[04-Aug-2026 01:25:23 Asia/Tokyo] PHP Warning:  Undefined array key "TOKEN" in /home/tdbedner/public_html/faq_old.php on line 19
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:40 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 05:16:41 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 06:28:32 Asia/Tokyo] PHP Warning:  require_once(../secrets.php): Failed to open stream: No such file or directory in /home/tdbedner/public_html/webhook.php on line 4
+[04-Aug-2026 06:28:32 Asia/Tokyo] PHP Fatal error:  Uncaught Error: Failed opening required '../secrets.php' (include_path='.:/opt/remi/php83/root/usr/share/pear:/opt/remi/php83/root/usr/share/php:/usr/share/pear:/usr/share/php') in /home/tdbedner/public_html/webhook.php:4
+Stack trace:
+#0 {main}
+  thrown in /home/tdbedner/public_html/webhook.php on line 4
+[04-Aug-2026 06:29:53 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: array_keys(): Argument #1 ($array) must be of type array, null given in /home/tdbedner/public_html/stripe/lib/StripeObject.php:315
+Stack trace:
+#0 /home/tdbedner/public_html/stripe/lib/StripeObject.php(315): array_keys()
+#1 /home/tdbedner/public_html/stripe/lib/StripeObject.php(276): Stripe\StripeObject->refreshFrom()
+#2 /home/tdbedner/public_html/webhook.php(23): Stripe\StripeObject::constructFrom()
+#3 {main}
+  thrown in /home/tdbedner/public_html/stripe/lib/StripeObject.php on line 315
+[04-Aug-2026 09:56:15 Asia/Tokyo] Stripe checkout creation failed: Invalid line_items[0]: the product tax code is missing. Set the product's tax_code field to an eligible product tax code (more details: https://docs.stripe.com/payments/managed-payments/eligibility#product-tax-code-requirements). Product tax code is required for Managed Payments, which is enabled by default on your account. If you want to disable Managed Payments on this session, you can pass managed_payments[enabled]=false. | request_id=req_yneiam05CRsvD7
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[04-Aug-2026 18:32:58 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[05-Aug-2026 06:28:32 Asia/Tokyo] PHP Warning:  Undefined variable $name in /home/tdbedner/public_html/cu.php on line 249
+[05-Aug-2026 06:28:32 Asia/Tokyo] PHP Warning:  Undefined variable $email in /home/tdbedner/public_html/cu.php on line 249
+[05-Aug-2026 06:55:04 Asia/Tokyo] PHP Warning:  Undefined variable $name in /home/tdbedner/public_html/cu.php on line 250
+[05-Aug-2026 06:55:04 Asia/Tokyo] PHP Warning:  Undefined variable $email in /home/tdbedner/public_html/cu.php on line 250
