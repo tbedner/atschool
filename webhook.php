@@ -8,6 +8,65 @@ require_once __DIR__ . '/secrets.php';
 
 $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
+function moodle_rest_request(string $domainName, array $params): array {
+    $ch = curl_init($domainName . '/webservice/rest/server.php');
+
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => http_build_query($params),
+        CURLOPT_RETURNTRANSFER => true,
+    ]);
+
+    $response = curl_exec($ch);
+    $curlError = $response === false ? curl_error($ch) : '';
+    curl_close($ch);
+
+    return [
+        'raw' => $response,
+        'decoded' => $response === false ? null : json_decode($response, true),
+        'curl_error' => $curlError,
+    ];
+}
+
+function generate_moodle_password(int $length = 12): string {
+    if ($length < 8) {
+        $length = 8;
+    }
+
+    $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $digits = '0123456789';
+    $specials = '*-#@!$%^&+=?';
+
+    $password = [
+        $lowercase[random_int(0, strlen($lowercase) - 1)],
+        $uppercase[random_int(0, strlen($uppercase) - 1)],
+        $digits[random_int(0, strlen($digits) - 1)],
+        $specials[random_int(0, strlen($specials) - 1)],
+    ];
+
+    $allCharacters = $lowercase . $uppercase . $digits . $specials;
+    for ($i = count($password); $i < $length; $i++) {
+        $password[] = $allCharacters[random_int(0, strlen($allCharacters) - 1)];
+    }
+
+    $keys = array_keys($password);
+    for ($i = count($keys) - 1; $i > 0; $i--) {
+        $j = random_int(0, $i);
+        $temp = $password[$keys[$i]];
+        $password[$keys[$i]] = $password[$keys[$j]];
+        $password[$keys[$j]] = $temp;
+    }
+
+    return implode('', $password);
+}
+
+function get_moodle_username_from_email(string $email): string {
+    $username = strstr($email, '@', true) ?: $email;
+    $username = mb_strtolower($username, 'UTF-8');
+    return preg_replace('/[^a-z0-9]/', '', $username);
+}
+
 function split_name_parts(string $fullName): array {
     $trimmed = trim($fullName);
     if ($trimmed === '') {
@@ -18,6 +77,71 @@ function split_name_parts(string $fullName): array {
     $first = $parts[0] ?? 'Student';
     $last = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
     return [$first, $last];
+}
+
+function provision_moodle_user_from_session(array $sessionData): array {
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleStudentRoleId;
+
+    $email = trim((string) ($sessionData['email'] ?? ''));
+    if ($email === '') {
+        return ['success' => false, 'reason' => 'missing-email'];
+    }
+
+    $fullName = (string) ($sessionData['full_name'] ?? '');
+    [$firstName, $lastName] = split_name_parts($fullName);
+    $newUsername = get_moodle_username_from_email($email);
+    $newPassword = generate_moodle_password(12);
+
+    $userPayload = [
+        'username' => $newUsername,
+        'password' => $newPassword,
+        'firstname' => $firstName,
+        'lastname' => $lastName,
+        'email' => $email,
+        'auth' => 'manual',
+        'country' => 'JP',
+        'timezone' => 'Asia/Tokyo',
+        'lang' => 'ja',
+    ];
+
+    $createUserResult = moodle_rest_request($moodleDomainName, [
+        'wstoken' => $moodleWebserviceToken,
+        'wsfunction' => 'core_user_create_users',
+        'moodlewsrestformat' => $moodleRestFormat,
+    ] + ['users' => [$userPayload]]);
+
+    if (!empty($createUserResult['curl_error'])) {
+        return ['success' => false, 'reason' => 'curl-error', 'detail' => $createUserResult['curl_error']];
+    }
+
+    if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
+        return ['success' => false, 'reason' => 'moodle-exception', 'detail' => $createUserResult['decoded']];
+    }
+
+    $userId = $createUserResult['decoded'][0]['id'] ?? null;
+    if ($userId === null) {
+        return ['success' => false, 'reason' => 'missing-user-id'];
+    }
+
+    $enrolResult = moodle_rest_request($moodleDomainName, [
+        'wstoken' => $moodleWebserviceToken,
+        'wsfunction' => 'enrol_manual_enrol_users',
+        'moodlewsrestformat' => $moodleRestFormat,
+        'enrolments[0][roleid]' => $moodleStudentRoleId,
+        'enrolments[0][userid]' => $userId,
+        'enrolments[0][courseid]' => $moodleCourseId,
+    ]);
+
+    if (!empty($enrolResult['curl_error'])) {
+        return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
+    }
+
+    return [
+        'success' => true,
+        'user_id' => $userId,
+        'username' => $newUsername,
+        'password' => $newPassword,
+    ];
 }
 
 // To run this example, set an environment variable STRIPE_WEBHOOK_SECRET to
@@ -122,7 +246,6 @@ switch ($event->type) {
 
     [$firstName, $lastName] = split_name_parts((string) ($fullName ?? ''));
 
-    // Replace this with your DB insert or Moodle provisioning call.
     $capture = [
         'event_id' => (string) $event->id,
         'session_id' => (string) $session->id,
@@ -132,14 +255,39 @@ switch ($event->type) {
         'last_name' => $lastName,
         'amount_total' => (int) ($session->amount_total ?? 0),
         'currency' => (string) ($session->currency ?? ''),
+        'mode' => (string) ($session->mode ?? ''),
+        'subscription_id' => (string) ($session->subscription ?? ''),
         'created_at' => gmdate('c'),
     ];
+
+    $provisioningResult = provision_moodle_user_from_session([
+        'email' => trim((string) $email),
+        'full_name' => (string) ($fullName ?? ''),
+    ]);
+
+    if ($provisioningResult['success'] ?? false) {
+        $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
+        $capture['moodle_username'] = $provisioningResult['username'] ?? null;
+    } else {
+        $capture['provisioning_error'] = $provisioningResult['reason'] ?? 'unknown';
+        $capture['provisioning_detail'] = $provisioningResult['detail'] ?? null;
+    }
 
     @file_put_contents(
         __DIR__ . '/webhook-captures.log',
         json_encode($capture, JSON_UNESCAPED_SLASHES) . PHP_EOL,
         FILE_APPEND | LOCK_EX
     );
+    break;
+  case 'customer.subscription.created':
+  case 'customer.subscription.updated':
+  case 'customer.subscription.deleted':
+    $subscription = $event->data->object;
+    error_log('Stripe subscription event ' . (string) $event->type . ': status=' . (string) ($subscription->status ?? 'unknown') . ', customer=' . (string) ($subscription->customer ?? ''));
+    break;
+  case 'invoice.paid':
+    $invoice = $event->data->object;
+    error_log('Stripe invoice paid: invoice=' . (string) ($invoice->id ?? '') . ', subscription=' . (string) ($invoice->subscription ?? ''));
     break;
   default:
     error_log('Received event type: ' . (string) $event->type);

@@ -106,7 +106,9 @@ if ($currency === 'jpy') {
 		<div class="price"><?php echo $amountDisplay; ?></div>
 
 		<form method="post" action="create-checkout-session.php">
-			<button type="submit">Pay and Enroll</button>
+			<input type="hidden" name="mode" value="payment">
+			<input type="hidden" name="price" value="<?php echo (int) $courseAmountCents; ?>">
+			<button type="submit">Buy and Enroll</button>
 		</form>
 	</section>
 </main>

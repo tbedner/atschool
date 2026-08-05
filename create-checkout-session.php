@@ -20,28 +20,49 @@ if (!is_string($stripeSecretKey) || trim($stripeSecretKey) === '') {
 	exit;
 }
 
+$checkoutMode = strtolower(trim((string) ($_POST['mode'] ?? 'payment')));
+if (!in_array($checkoutMode, ['payment', 'subscription'], true)) {
+	$checkoutMode = 'payment';
+}
+
+$requestedPrice = trim((string) ($_POST['price'] ?? ''));
+if (is_numeric($requestedPrice) && (int) $requestedPrice >= 0) {
+	$unitAmountCents = (int) $requestedPrice;
+} else {
+	$unitAmountCents = (int) $courseAmountCents;
+}
+
 $successUrl = rtrim($siteBaseUrl, '/') . '/cu.php?session_id={CHECKOUT_SESSION_ID}';
 $cancelUrl = rtrim($siteBaseUrl, '/') . '/index.php?canceled=1';
 
 try {
+	$lineItem = [
+		'price_data' => [
+			'currency' => strtolower((string) $courseCurrency),
+			'product_data' => [
+				'name' => $courseDisplayName,
+			],
+			'unit_amount' => $unitAmountCents,
+		],
+		'quantity' => 1,
+	];
+
+	if ($checkoutMode === 'subscription') {
+		$lineItem['price_data']['recurring'] = [
+			'interval' => 'month',
+			'interval_count' => 1,
+		];
+	}
+
 	$session = Session::create([
-		'mode' => 'payment',
+		'mode' => $checkoutMode,
 		'managed_payments' => [
 			'enabled' => false,
 		],
 		'success_url' => $successUrl,
 		'cancel_url' => $cancelUrl,
 		'customer_creation' => 'always',
-		'line_items' => [[
-			'price_data' => [
-				'currency' => strtolower((string) $courseCurrency),
-				'product_data' => [
-					'name' => $courseDisplayName,
-				],
-				'unit_amount' => (int) $courseAmountCents,
-			],
-			'quantity' => 1,
-		]],
+		'line_items' => [$lineItem],
 		'metadata' => [
 			'moodle_course_id' => (string) $moodleCourseId,
 		],
