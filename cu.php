@@ -131,6 +131,21 @@ try {
 $newEmail = $checkoutSession->customer_details->email
     ?? $checkoutSession->customer_email
     ?? null;
+$fullName = (string) ($checkoutSession->customer_details->name ?? '');
+
+if ((!is_string($newEmail) || trim($newEmail) === '') && !empty($checkoutSession->customer)) {
+    try {
+        $customer = \Stripe\Customer::retrieve((string) $checkoutSession->customer, []);
+        if (!is_string($newEmail) || trim($newEmail) === '') {
+            $newEmail = $customer->email ?? null;
+        }
+        if ($fullName === '') {
+            $fullName = (string) ($customer->name ?? '');
+        }
+    } catch (\Throwable $e) {
+        error_log('Stripe customer lookup failed for session ' . (string) $checkoutSession->id . ': ' . $e->getMessage());
+    }
+}
 
 if (!is_string($newEmail) || trim($newEmail) === '') {
     echo 'Error4: Stripe checkout did not provide an email.';
@@ -138,7 +153,6 @@ if (!is_string($newEmail) || trim($newEmail) === '') {
 }
 
 $newEmail = trim($newEmail);
-$fullName = (string) ($checkoutSession->customer_details->name ?? '');
 [$newFirstname, $newLastname] = splitName($fullName);
 
 $newUsername = getMoodleUsernameFromEmail($newEmail);
