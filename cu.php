@@ -349,7 +349,13 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
                 'X-Mailer: PHP/' . phpversion();
 
     mail($to, $subject, $message, $headers);
-    header('Location: ' . $loginResult['decoded']['loginurl']);
+
+    $loginUrl = $loginResult['decoded']['loginurl'];
+    if (strpos($loginUrl, 'login/index.php') !== false) {
+        $loginUrl = str_replace('login/index.php', 'my/', $loginUrl);
+    }
+
+    header('Location: ' . $loginUrl);
     exit;
 }
 
