@@ -274,7 +274,7 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
     ]);
 
     if (!empty($lookupResult['curl_error'])) {
-        fail_with_request_error($createUserResult, 'Error6:', 'User creation');
+        fail_with_request_error($lookupResult, 'Error6:', 'User lookup');
         exit;
     }
 
@@ -282,15 +282,14 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
     if ($userId !== null) {
         $userLookupUsed = true;
     } else {
-        fail_with_request_error($createUserResult, 'Error6:', 'User creation');
-        exit;
+        $userId = null;
     }
 } else {
     $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 }
 
 if ($userId === null) {
-    echo 'Error7: Could not create Moodle user.';
+    echo 'Error7: Could not determine Moodle user id.';
     if (is_array($createUserResult['decoded'])) {
         echo ' Response: ' . htmlspecialchars(json_encode($createUserResult['decoded']));
     }
