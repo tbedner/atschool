@@ -28,7 +28,33 @@ function moodle_rest_request(string $domainName, array $params): array {
     ];
 }
 
-function fail_with_request_error(array $result, string $prefix): void {
+function format_moodle_error(array $decoded, string $context): string {
+    if (!is_array($decoded)) {
+        return $context . ' failed.';
+    }
+
+    $parts = [];
+    if (!empty($decoded['exception'])) {
+        $parts[] = 'exception=' . $decoded['exception'];
+    }
+    if (!empty($decoded['errorcode'])) {
+        $parts[] = 'errorcode=' . $decoded['errorcode'];
+    }
+    if (!empty($decoded['message'])) {
+        $parts[] = 'message=' . $decoded['message'];
+    }
+    if (!empty($decoded['debuginfo'])) {
+        $parts[] = 'debuginfo=' . $decoded['debuginfo'];
+    }
+
+    if (!empty($parts)) {
+        return $context . ' failed: ' . implode(' | ', $parts);
+    }
+
+    return $context . ' failed.';
+}
+
+function fail_with_request_error(array $result, string $prefix, string $context = 'Moodle request'): void {
     echo $prefix;
 
     if (!empty($result['curl_error'])) {
@@ -36,9 +62,17 @@ function fail_with_request_error(array $result, string $prefix): void {
         return;
     }
 
-    if (is_array($result['decoded']) && isset($result['decoded']['message'])) {
-        echo ' Error2: ' . htmlspecialchars($result['decoded']['message']);
+    if (is_array($result['decoded']) && (isset($result['decoded']['message']) || isset($result['decoded']['exception']) || isset($result['decoded']['errorcode']))) {
+        echo ' Error2: ' . htmlspecialchars(format_moodle_error($result['decoded'], $context));
+        return;
     }
+
+    if (is_string($result['raw']) && trim($result['raw']) !== '') {
+        echo ' Error2: ' . htmlspecialchars(trim($result['raw']));
+        return;
+    }
+
+    echo ' Error2: Unknown Moodle response.';
 }
 
 function generateMoodlePassword($length = 12) {
@@ -203,12 +237,12 @@ $createUserResult = moodle_rest_request($domainName, [
 ] + $createUserParams);
 
 if (!empty($createUserResult['curl_error'])) {
-    fail_with_request_error($createUserResult, 'Error5:');
+    fail_with_request_error($createUserResult, 'Error5:', 'User creation');
     exit;
 }
 
 if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
-    fail_with_request_error($createUserResult, 'Error:');
+    fail_with_request_error($createUserResult, 'Error6:', 'User creation');
     exit;
 }
 
@@ -231,12 +265,12 @@ $enrolResult = moodle_rest_request($domainName, [
 ]);
 
 if (!empty($enrolResult['curl_error'])) {
-    fail_with_request_error($enrolResult, 'Error8:');
+    fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
     exit;
 }
 
 if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-    fail_with_request_error($enrolResult, 'Error9:');
+    fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
     exit;
 }
 
@@ -266,7 +300,7 @@ $loginResult = moodle_rest_request($domainName, [
 ]);
 
 if (!empty($loginResult['curl_error'])) {
-    fail_with_request_error($loginResult, 'Failed to generate auto-login URL.');
+    fail_with_request_error($loginResult, 'Failed to generate auto-login URL.', 'Auto-login URL');
     exit;
 }
 
@@ -293,5 +327,5 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
     exit;
 }
 
-fail_with_request_error($loginResult, 'Failed to generate auto-login URL.');
+fail_with_request_error($loginResult, 'Failed to generate auto-login URL.', 'Auto-login URL');
 
