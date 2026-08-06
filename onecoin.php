@@ -37,7 +37,7 @@ require_once __DIR__ . '/secrets.php';
 
 $currency = strtolower((string) $courseCurrency);
 if ($currency === 'jpy') {
-	$amountDisplay = 'JPY ' . number_format((int) $courseAmountOne);
+	$amountDisplay = '¥' . number_format((int) $courseAmountOne);
 } else {
 	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountOne) / 100, 2);
 }

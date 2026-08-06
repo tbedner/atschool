@@ -37,7 +37,7 @@ require_once __DIR__ . '/secrets.php';
 
 $currency = strtolower((string) $courseCurrency);
 if ($currency === 'jpy') {
-	$amountDisplay = 'JPY ' . number_format((int) $courseAmountTwo);
+	$amountDisplay = '¥' . number_format((int) $courseAmountTwo);
 } else {
 	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountTwo) / 100, 2);
 }
@@ -108,7 +108,7 @@ if ($currency === 'jpy') {
 		<form method="post" action="create-checkout-session.php">
 			<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
 			<input type="hidden" name="price" value="<?php echo (int) $courseAmountTwo; ?>">
-			<button type="submit">Buy and Enroll</button>
+			<button type="submit">Subscribe and Enroll</button>
 		</form>
 	</section>
 </main>
