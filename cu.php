@@ -40,18 +40,15 @@ function fail_with_request_error(array $result, string $prefix): void {
 }
 
 function generateMoodlePassword($length = 12) {
-    // Ensure length is at least 8 to meet default Moodle requirements
     if ($length < 8) {
         $length = 8;
     }
 
-    // Define character sets matching Moodle's policy categories
     $lowercase = 'abcdefghijklmnopqrstuvwxyz';
     $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $digits    = '0123456789';
-    $specials  = '*-#@!$%^&+=?';
+    $digits = '0123456789';
+    $specials = '*-#@!$%^&+=?';
 
-    // Guaranteed characters (1 of each required category)
     $password = [
         $lowercase[random_int(0, strlen($lowercase) - 1)],
         $uppercase[random_int(0, strlen($uppercase) - 1)],
@@ -59,15 +56,11 @@ function generateMoodlePassword($length = 12) {
         $specials[random_int(0, strlen($specials) - 1)],
     ];
 
-    // Pool for remaining random characters
     $allCharacters = $lowercase . $uppercase . $digits . $specials;
-
-    // Fill remaining length
     for ($i = count($password); $i < $length; $i++) {
         $password[] = $allCharacters[random_int(0, strlen($allCharacters) - 1)];
     }
 
-    // Cryptographically secure shuffle of the character array
     $keys = array_keys($password);
     for ($i = count($keys) - 1; $i > 0; $i--) {
         $j = random_int(0, $i);
@@ -182,8 +175,7 @@ $createUserResult = moodle_rest_request($domainName, [
     'wsfunction' => 'core_user_create_users',
     'moodlewsrestformat' => $restFormat,
 ] + $createUserParams);
-print_r($user1)."<br>";
-print_r($createUserParams)."<br>";
+
 if (!empty($createUserResult['curl_error'])) {
     fail_with_request_error($createUserResult, 'Error5:');
     exit;
