@@ -30,12 +30,12 @@ function fail_with_request_error(array $result, string $prefix): void {
     echo $prefix;
 
     if (!empty($result['curl_error'])) {
-        echo ' Error: ' . htmlspecialchars($result['curl_error']);
+        echo ' Error1: ' . htmlspecialchars($result['curl_error']);
         return;
     }
 
     if (is_array($result['decoded']) && isset($result['decoded']['message'])) {
-        echo ' Error: ' . htmlspecialchars($result['decoded']['message']);
+        echo ' Error2: ' . htmlspecialchars($result['decoded']['message']);
     }
 }
 
@@ -124,7 +124,7 @@ Stripe::setApiKey($stripeSecretKey);
 try {
     $checkoutSession = Session::retrieve($sessionId);
 } catch (\Throwable $e) {
-    echo 'Error: Unable to load Stripe Checkout session.';
+    echo 'Error3: Unable to load Stripe Checkout session.';
     exit;
 }
 
@@ -133,7 +133,7 @@ $newEmail = $checkoutSession->customer_details->email
     ?? null;
 
 if (!is_string($newEmail) || trim($newEmail) === '') {
-    echo 'Error: Stripe checkout did not provide an email.';
+    echo 'Error4: Stripe checkout did not provide an email.';
     exit;
 }
 
@@ -171,7 +171,7 @@ $createUserResult = moodle_rest_request($domainName, [
 print_r($user1)."<br>";
 print_r($createUserParams)."<br>";
 if (!empty($createUserResult['curl_error'])) {
-    fail_with_request_error($createUserResult, 'Error:');
+    fail_with_request_error($createUserResult, 'Error5:');
     exit;
 }
 
@@ -182,7 +182,7 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
 
 $userId = $createUserResult['decoded'][0]['id'] ?? null;
 if ($userId === null) {
-    echo 'Error: Could not create Moodle user.';
+    echo 'Error7: Could not create Moodle user.';
     exit;
 }
 
@@ -196,12 +196,12 @@ $enrolResult = moodle_rest_request($domainName, [
 ]);
 
 if (!empty($enrolResult['curl_error'])) {
-    fail_with_request_error($enrolResult, 'Error:');
+    fail_with_request_error($enrolResult, 'Error8:');
     exit;
 }
 
 if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-    fail_with_request_error($enrolResult, 'Error:');
+    fail_with_request_error($enrolResult, 'Error9:');
     exit;
 }
 
