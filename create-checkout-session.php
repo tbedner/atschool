@@ -54,19 +54,24 @@ try {
 		];
 	}
 
-	$session = Session::create([
+	$sessionParams = [
 		'mode' => $checkoutMode,
 		'managed_payments' => [
 			'enabled' => false,
 		],
 		'success_url' => $successUrl,
 		'cancel_url' => $cancelUrl,
-		'customer_creation' => 'always',
 		'line_items' => [$lineItem],
 		'metadata' => [
 			'moodle_course_id' => (string) $moodleCourseId,
 		],
-	]);
+	];
+
+	if ($checkoutMode === 'payment') {
+		$sessionParams['customer_creation'] = 'always';
+	}
+
+	$session = Session::create($sessionParams);
 } catch (ApiErrorException $e) {
 	$requestId = method_exists($e, 'getRequestId') ? (string) $e->getRequestId() : '';
 	error_log('Stripe checkout creation failed: ' . $e->getMessage() . ($requestId !== '' ? ' | request_id=' . $requestId : ''));
