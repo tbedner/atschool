@@ -257,7 +257,6 @@ $createUserResult = moodle_rest_request($domainName, [
 ] + $createUserParams);
 
 $userId = null;
-$userLookupUsed = false;
 
 if (!empty($createUserResult['curl_error'])) {
     fail_with_request_error($createUserResult, 'Error5:', 'User creation');
@@ -273,46 +272,32 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
         'values[0]' => $newEmail,
     ]);
 
-    if (!empty($lookupResult['curl_error'])) {
-        fail_with_request_error($lookupResult, 'Error6:', 'User lookup');
-        exit;
-    }
-
-    $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
-    if ($userId !== null) {
-        $userLookupUsed = true;
-    } else {
-        $userId = null;
+    if (empty($lookupResult['curl_error'])) {
+        $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
     }
 } else {
     $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 }
 
-if ($userId === null) {
-    echo 'Error7: Could not determine Moodle user id.';
-    if (is_array($createUserResult['decoded'])) {
-        echo ' Response: ' . htmlspecialchars(json_encode($createUserResult['decoded']));
+if ($userId !== null) {
+    $enrolResult = moodle_rest_request($domainName, [
+        'wstoken' => $token,
+        'wsfunction' => 'enrol_manual_enrol_users',
+        'moodlewsrestformat' => $restFormat,
+        'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
+        'enrolments[0][userid]' => $userId,
+        'enrolments[0][courseid]' => (int) $moodleCourseId,
+    ]);
+
+    if (!empty($enrolResult['curl_error'])) {
+        fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
+        exit;
     }
-    exit;
-}
 
-$enrolResult = moodle_rest_request($domainName, [
-    'wstoken' => $token,
-    'wsfunction' => 'enrol_manual_enrol_users',
-    'moodlewsrestformat' => $restFormat,
-    'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
-    'enrolments[0][userid]' => $userId,
-    'enrolments[0][courseid]' => (int) $moodleCourseId,
-]);
-
-if (!empty($enrolResult['curl_error'])) {
-    fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
-    exit;
-}
-
-if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-    fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
-    exit;
+    if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+        fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
+        exit;
+    }
 }
 
 $requestUser = [];
