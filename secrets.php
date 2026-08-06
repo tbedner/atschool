@@ -21,8 +21,11 @@ $moodleRestFormat = 'json';
 $moodleCourseId = 24;
 $moodleStudentRoleId = 5;
 
-// Checkout amount configuration.
+// Checkout configuration.
 $courseDisplayName = 'Course Enrollment';
-$courseAmountCents = 500;
+$courseAmountOne = 500;
+$courseAmountTwo = 10000;
 $courseCurrency = 'jpy';
+$checkoutModeOne = 'payment';
+$checkoutModeTwo = 'subscription';
 $endpointSecret = $env['ENDPOINTSECRET'];
