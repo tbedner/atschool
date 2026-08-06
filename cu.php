@@ -11,8 +11,10 @@ function moodle_rest_request(string $domainName, array $params): array {
 
     curl_setopt_array($ch, [
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => http_build_query($params),
+        CURLOPT_POSTFIELDS => http_build_query($params, '', '&', PHP_QUERY_RFC3986),
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_CONNECTTIMEOUT => 10,
     ]);
 
     $response = curl_exec($ch);
@@ -96,6 +98,30 @@ function splitName(string $fullName): array {
     $last = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
 
     return [$first, $last];
+}
+
+function extractMoodleUserId(array $decodedResponse): ?int {
+    if (!is_array($decodedResponse)) {
+        return null;
+    }
+
+    if (isset($decodedResponse[0]['id']) && is_numeric($decodedResponse[0]['id'])) {
+        return (int) $decodedResponse[0]['id'];
+    }
+
+    if (isset($decodedResponse['id']) && is_numeric($decodedResponse['id'])) {
+        return (int) $decodedResponse['id'];
+    }
+
+    if (isset($decodedResponse['users']) && is_array($decodedResponse['users'])) {
+        foreach ($decodedResponse['users'] as $user) {
+            if (is_array($user) && isset($user['id']) && is_numeric($user['id'])) {
+                return (int) $user['id'];
+            }
+        }
+    }
+
+    return null;
 }
 
 // Configuration.
@@ -186,9 +212,12 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
     exit;
 }
 
-$userId = $createUserResult['decoded'][0]['id'] ?? null;
+$userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 if ($userId === null) {
     echo 'Error7: Could not create Moodle user.';
+    if (is_array($createUserResult['decoded'])) {
+        echo ' Response: ' . htmlspecialchars(json_encode($createUserResult['decoded']));
+    }
     exit;
 }
 
@@ -196,9 +225,9 @@ $enrolResult = moodle_rest_request($domainName, [
     'wstoken' => $token,
     'wsfunction' => 'enrol_manual_enrol_users',
     'moodlewsrestformat' => $restFormat,
-    'enrolments[0][roleid]' => 5,
+    'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
     'enrolments[0][userid]' => $userId,
-    'enrolments[0][courseid]' => 24,
+    'enrolments[0][courseid]' => (int) $moodleCourseId,
 ]);
 
 if (!empty($enrolResult['curl_error'])) {
