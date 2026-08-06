@@ -158,6 +158,26 @@ function extractMoodleUserId(array $decodedResponse): ?int {
     return null;
 }
 
+function extractMoodleUserIds(array $decodedResponse): array {
+    $ids = [];
+    if (!is_array($decodedResponse)) {
+        return $ids;
+    }
+
+    if (isset($decodedResponse[0]['id']) && is_numeric($decodedResponse[0]['id'])) {
+        $ids[] = (int) $decodedResponse[0]['id'];
+        return $ids;
+    }
+
+    foreach ($decodedResponse as $item) {
+        if (is_array($item) && isset($item['id']) && is_numeric($item['id'])) {
+            $ids[] = (int) $item['id'];
+        }
+    }
+
+    return $ids;
+}
+
 // Configuration.
 // $env = parse_ini_file('.env');
 // $token = $env['TOKEN'];
@@ -236,17 +256,39 @@ $createUserResult = moodle_rest_request($domainName, [
     'moodlewsrestformat' => $restFormat,
 ] + $createUserParams);
 
+$userId = null;
+$userLookupUsed = false;
+
 if (!empty($createUserResult['curl_error'])) {
     fail_with_request_error($createUserResult, 'Error5:', 'User creation');
     exit;
 }
 
 if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
-    fail_with_request_error($createUserResult, 'Error6:', 'User creation');
-    exit;
+    $lookupResult = moodle_rest_request($domainName, [
+        'wstoken' => $token,
+        'wsfunction' => 'core_user_get_users_by_field',
+        'moodlewsrestformat' => $restFormat,
+        'field' => 'email',
+        'values[0]' => $newEmail,
+    ]);
+
+    if (!empty($lookupResult['curl_error'])) {
+        fail_with_request_error($createUserResult, 'Error6:', 'User creation');
+        exit;
+    }
+
+    $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
+    if ($userId !== null) {
+        $userLookupUsed = true;
+    } else {
+        fail_with_request_error($createUserResult, 'Error6:', 'User creation');
+        exit;
+    }
+} else {
+    $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 }
 
-$userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 if ($userId === null) {
     echo 'Error7: Could not create Moodle user.';
     if (is_array($createUserResult['decoded'])) {
