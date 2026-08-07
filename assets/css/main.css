@@ -109,6 +109,151 @@ body {
 	background: #1e293b;
 }
 
+.subscribe-card {
+	max-width: 980px;
+	text-align: left;
+	padding: 36px;
+}
+
+.subscribe-hero {
+	margin-bottom: 24px;
+}
+
+.eyebrow {
+	display: inline-block;
+	margin-bottom: 12px;
+	padding: 6px 10px;
+	border-radius: 999px;
+	background: #e0f2fe;
+	color: #0369a1;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.subscribe-hero h1 {
+	font-size: 34px;
+	line-height: 1.2;
+	margin-bottom: 12px;
+	color: #0f172a;
+}
+
+.subscribe-hero .lead {
+	font-size: 18px;
+	font-weight: 600;
+	color: #334155;
+	margin-bottom: 10px;
+}
+
+.subscribe-hero .intro {
+	font-size: 16px;
+	line-height: 1.7;
+	color: #475569;
+	margin-bottom: 16px;
+}
+
+.subscribe-price {
+	display: inline-block;
+	padding: 10px 14px;
+	border-radius: 999px;
+	background: #111827;
+	color: #fff;
+	font-weight: 700;
+}
+
+.subscribe-grid {
+	display: grid;
+	grid-template-columns: 1.15fr 0.85fr;
+	gap: 20px;
+}
+
+.subscribe-panel {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 24px;
+}
+
+.subscribe-panel h2 {
+	font-size: 22px;
+	margin-bottom: 14px;
+	color: #0f172a;
+}
+
+.subscribe-list,
+.subscribe-steps {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.subscribe-list li,
+.subscribe-steps li {
+	padding-left: 0;
+}
+
+.subscribe-list strong,
+.subscribe-steps strong {
+	display: block;
+	margin-bottom: 6px;
+	color: #111827;
+	font-size: 16px;
+}
+
+.subscribe-list p,
+.subscribe-steps p {
+	color: #475569;
+	line-height: 1.6;
+}
+
+.subscribe-form {
+	margin-top: 20px;
+}
+
+.subscribe-form button {
+	width: 100%;
+	height: 48px;
+	border: 0;
+	border-radius: 10px;
+	background: #0f172a;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.subscribe-form button:hover {
+	background: #1e293b;
+}
+
+.microcopy {
+	margin-top: 10px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #64748b;
+}
+
+@media screen and (max-width: 900px) {
+	.subscribe-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.subscribe-card {
+		max-width: 100%;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.subscribe-card {
+		padding: 24px;
+	}
+
+	.subscribe-hero h1 {
+		font-size: 28px;
+	}
+}
+
 mark {
 	background-color: transparent;
 	color: inherit;
@@ -2619,7 +2764,7 @@ input, select, textarea {
 		-webkit-flex-wrap: wrap;
 		-ms-flex-wrap: wrap;
 		flex-wrap: wrap;
-		postiion: relative;
+		position: relative;
 		margin: -2.5em 0 2.5em -2.5em;
 	}
 
