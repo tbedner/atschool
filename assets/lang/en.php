@@ -116,5 +116,8 @@ return [
     'compare_courseblurb_p3' => '<p>A fast-paced, immersive program covering the same material at double speed with longer instructor sessions. Best for learners with specific goals or time-sensitive needs.</p>',
     'welcome_email_subject' => 'Welcome to the @School Portal',
     'welcome_email_message' => "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team",
+    'checkout_secure_payment' => 'Secure payment powered by Stripe Checkout',
+    'checkout_buy_button' => 'Buy and Enroll',
+    'checkout_subscribe_button' => 'Subscribe and Enroll',
 
 ];

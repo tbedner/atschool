@@ -102,13 +102,13 @@ if ($currency === 'jpy') {
 <main class="page">
 	<section class="card">
 		<h1><?php echo htmlspecialchars($courseDisplayName, ENT_QUOTES, 'UTF-8'); ?></h1>
-		<p>Secure payment powered by Stripe Checkout</p>
+		<p><?php echo htmlspecialchars($translations['checkout_secure_payment'] ?? 'Secure payment powered by Stripe Checkout', ENT_QUOTES, 'UTF-8'); ?></p>
 		<div class="price"><?php echo $amountDisplay; ?></div>
 
 		<form method="post" action="create-checkout-session.php">
 			<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeOne, ENT_QUOTES, 'UTF-8'); ?>">
 			<input type="hidden" name="price" value="<?php echo (int) $courseAmountOne; ?>">
-			<button type="submit">Buy and Enroll</button>
+			<button type="submit"><?php echo htmlspecialchars($translations['checkout_buy_button'] ?? 'Buy and Enroll', ENT_QUOTES, 'UTF-8'); ?></button>
 		</form>
 	</section>
 </main>
