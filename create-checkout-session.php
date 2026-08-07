@@ -76,7 +76,7 @@ try {
 		'line_items' => [$lineItem],
 		'metadata' => [
 			'moodle_course_id' => (string) ($checkoutCourseIds[0] ?? (int) $moodleCourseId),
-			'moodle_course_ids' => implode($checkoutCourseIds, ','),
+			'moodle_course_ids' => implode(',', $checkoutCourseIds),
 			'checkout_mode' => $checkoutMode,
 		],
 	];
