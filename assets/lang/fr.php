@@ -116,5 +116,9 @@ return [
     'compare_courseblurb_p3' => '<p>Un programme immersif et rapide couvrant la même matière à double vitesse avec des sessions plus longues aux côtés de l\'instructeur. Recommandé pour les apprenants ayant des objectifs spécifiques ou des contraintes de temps.</p>',
     'welcome_email_subject' => 'Bienvenue sur le portail @School',
     'welcome_email_message' => "Bonjour {first_name},\n\nVotre compte a été créé avec succès.\n\nVoici vos informations de connexion :\nNom d’utilisateur : {username}\nMot de passe : {password}\n\nVous pouvez vous connecter avec le lien suivant :\n{login_url}\n\nVeuillez modifier votre mot de passe après votre première connexion.\n\nCordialement,\nL’équipe @School",
+    'checkout_secure_payment' => 'Paiement sécurisé via Stripe Checkout',
+    'checkout_buy_button' => 'Acheter et s’inscrire',
+    'checkout_subscribe_button' => 'S’abonner et s’inscrire',
+    'checkout_course_title' => 'Cours @School',
     
 ];

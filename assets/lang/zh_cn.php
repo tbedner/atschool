@@ -117,4 +117,8 @@ return [
     'challenge15_nav' => '挑战 15 ― 任意提交・自我反思活动',
     'welcome_email_subject' => '欢迎来到 @School 门户',
     'welcome_email_message' => "{first_name}，您好，\n\n您的账户已成功创建。\n\n以下是您的登录信息：\n用户名：{username}\n密码：{password}\n\n您可以通过以下链接登录：\n{login_url}\n\n首次登录后请修改密码。\n\n此致敬礼，\n@School 团队",
+    'checkout_secure_payment' => '通过 Stripe Checkout 进行安全支付',
+    'checkout_buy_button' => '购买并注册',
+    'checkout_subscribe_button' => '订阅并注册',
+    'checkout_course_title' => '@School 课程',
 ];

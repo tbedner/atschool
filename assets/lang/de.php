@@ -116,5 +116,9 @@ return [
     'compare_courseblurb_p3' => '<p>Ein temporeiches Immersionsprogramm, das denselben Stoff mit doppelter Geschwindigkeit und längeren Dozentensitzungen vermittelt. Bestens geeignet für Lernende mit spezifischen Zielen oder zeitkritischen Anforderungen.</p>',
     'welcome_email_subject' => 'Willkommen im @School-Portal',
     'welcome_email_message' => "Hallo {first_name},\n\nIhr Konto wurde erfolgreich erstellt.\n\nHier sind Ihre Zugangsdaten:\nBenutzername: {username}\nPasswort: {password}\n\nSie können sich über den folgenden Link anmelden:\n{login_url}\n\nBitte ändern Sie Ihr Passwort nach dem ersten Anmelden.\n\nMit freundlichen Grüßen,\nDas Team von @School",
+    'checkout_secure_payment' => 'Sichere Zahlung über Stripe Checkout',
+    'checkout_buy_button' => 'Kaufen und einschreiben',
+    'checkout_subscribe_button' => 'Abonnieren und einschreiben',
+    'checkout_course_title' => '@School-Kurs',
     
 ];

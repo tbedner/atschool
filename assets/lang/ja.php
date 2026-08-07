@@ -132,6 +132,11 @@ return [
     'compare_courseblurb_title2' => '<h4>通常コース</h4>',
     'compare_courseblurb_p2' => '<p>自主学習に加えて、ネイティブ講師との週2回のライブセッションで学習内容を定着させるバランス型コースです。 着実に伸ばし、会話の自信をつけたい方におすすめです。</p>',
     'compare_courseblurb_title3' => '<h4>集中コース</h4>',
-    'compare_courseblurb_p3' => '<p>通常コースと同じ内容を、より短期間で（2倍のスピードで）進める高密度プログラムです。講師セッションも長く、学習と実践を強化できます。 明確な目標がある方、短期間で伸ばしたい方におすすめです。</p>',    'welcome_email_subject' => '@Schoolポータルへようこそ',
+    'compare_courseblurb_p3' => '<p>通常コースと同じ内容を、より短期間で（2倍のスピードで）進める高密度プログラムです。講師セッションも長く、学習と実践を強化できます。 明確な目標がある方、短期間で伸ばしたい方におすすめです。</p>',
+    'welcome_email_subject' => '@Schoolポータルへようこそ',
     'welcome_email_message' => "{first_name}さん、\n\nアカウントが正常に作成されました。\n\nログイン情報は次のとおりです:\nユーザー名: {username}\nパスワード: {password}\n\n次のリンクからログインできます:\n{login_url}\n\n初回ログイン後は、パスワードを変更してください。\n\nよろしくお願いいたします。\n@Schoolチーム",
+    'checkout_secure_payment' => 'Stripe Checkout による安全な決済',
+    'checkout_buy_button' => '購入して登録する',
+    'checkout_subscribe_button' => '申し込んで登録する',
+    'checkout_course_title' => '@Schoolコース',
 ];

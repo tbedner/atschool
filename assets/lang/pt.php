@@ -116,5 +116,9 @@ return [
     'compare_courseblurb_p3' => '<p>Um programa rápido e imersivo que cobre o mesmo material na velocidade dupla com sessões mais longas com o instrutor. Melhor para alunos com objetivos específicos ou necessidades urgentes.</p>',
     'welcome_email_subject' => 'Bem-vindo ao portal @School',
     'welcome_email_message' => "Olá, {first_name},\n\nSua conta foi criada com sucesso.\n\nAqui estão os seus dados de acesso:\nNome de usuário: {username}\nSenha: {password}\n\nVocê pode entrar com o seguinte link:\n{login_url}\n\nPor favor, altere sua senha após fazer o primeiro login.\n\nAtenciosamente,\nEquipe @School",
+    'checkout_secure_payment' => 'Pagamento seguro com Stripe Checkout',
+    'checkout_buy_button' => 'Comprar e se inscrever',
+    'checkout_subscribe_button' => 'Assinar e se inscrever',
+    'checkout_course_title' => 'Curso @School',
     
 ];

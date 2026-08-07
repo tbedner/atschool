@@ -116,5 +116,9 @@ return [
     'compare_courseblurb_p3' => '<p>進度緊湊的沉浸式計畫，以雙倍速度涵蓋標準課程的範疇，並享有更長的時間與導師深度互動。最適合有特定時效目標或即刻需要提升能力之學習者。</p>',
     'welcome_email_subject' => '歡迎來到 @School 入口網站',
     'welcome_email_message' => "{first_name} 您好，\n\n您的帳號已成功建立。\n\n以下是您的登入資訊：\n使用者名稱：{username}\n密碼：{password}\n\n您可以透過以下連結登入：\n{login_url}\n\n首次登入後請修改密碼。\n\n此致敬禮，\n@School 團隊",
+    'checkout_secure_payment' => '透過 Stripe Checkout 進行安全付款',
+    'checkout_buy_button' => '購買並註冊',
+    'checkout_subscribe_button' => '訂閱並註冊',
+    'checkout_course_title' => '@School 課程',
     
 ];
