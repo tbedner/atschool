@@ -269,15 +269,18 @@ function resolveMoodleLoginRedirectUrl(string $loginUrl, string $moodleBaseUrl):
         $basePath = '/moodle';
     }
 
-    $dashboardPath = rtrim($basePath, '/') . '/my/';
-
-    if (strpos($loginUrl, 'auth/userkey/login.php') !== false && strpos($loginUrl, 'wantsurl=') === false) {
-        $separator = strpos($loginUrl, '?') === false ? '?' : '&';
-        return $loginUrl . $separator . 'wantsurl=' . rawurlencode($dashboardPath);
+    $dashboardUrl = rtrim($moodleBaseUrl, '/') . '/my/';
+    if (strpos($dashboardUrl, '://') === false) {
+        $dashboardUrl = rtrim($basePath, '/') . '/my/';
     }
 
-    if (strpos($loginUrl, 'login/index.php') !== false) {
-        return str_replace('login/index.php', 'my/', $loginUrl);
+    if (strpos($loginUrl, 'auth/userkey/login.php') !== false || strpos($loginUrl, 'login/index.php') !== false) {
+        if (strpos($loginUrl, 'wantsurl=') !== false) {
+            return preg_replace('/([?&])wantsurl=[^&#]*/', '$1wantsurl=' . rawurlencode($dashboardUrl), $loginUrl, 1) ?? $loginUrl;
+        }
+
+        $separator = strpos($loginUrl, '?') === false ? '?' : '&';
+        return $loginUrl . $separator . 'wantsurl=' . rawurlencode($dashboardUrl);
     }
 
     return $loginUrl;
