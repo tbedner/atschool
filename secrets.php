@@ -19,7 +19,7 @@ $moodleRestFormat = 'json';
 
 // Enrollment target.
 $moodleCourseId = 24;
-$moodleSubscriptionCourseIds = [24, 25];
+$moodleSubscriptionCourseIds = [26, 27];
 $moodleStudentRoleId = 5;
 
 // Checkout configuration.
