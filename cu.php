@@ -305,6 +305,20 @@ $metadata = $checkoutSession->metadata ?? null;
 $checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
 $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
 
+$checkoutDebugPayload = [
+    'source' => 'cu.php',
+    'mode' => $checkoutMode,
+    'resolved_course_ids' => $courseIds,
+    'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
+    'session_id' => $sessionId,
+];
+error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
+@file_put_contents(
+    __DIR__ . '/checkout-debug.log',
+    json_encode($checkoutDebugPayload, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+    FILE_APPEND | LOCK_EX
+);
+
 $newUsername = getMoodleUsernameFromEmail($newEmail);
 
 // auth_userkey plugin settings.

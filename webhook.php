@@ -311,10 +311,25 @@ switch ($event->type) {
         $courseIds = [(string) $metadata->moodle_course_id];
     }
 
+    $resolvedCourseIds = array_values(array_filter(array_map('intval', $courseIds)));
+    $checkoutDebugPayload = [
+        'source' => 'webhook.php',
+        'mode' => $checkoutMode,
+        'resolved_course_ids' => $resolvedCourseIds,
+        'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
+        'session_id' => (string) $session->id,
+    ];
+    error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
+    @file_put_contents(
+        __DIR__ . '/checkout-debug.log',
+        json_encode($checkoutDebugPayload, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+        FILE_APPEND | LOCK_EX
+    );
+
     $provisioningResult = provision_moodle_user_from_session([
         'email' => trim((string) $email),
         'full_name' => (string) ($fullName ?? ''),
-        'course_ids' => array_values(array_filter(array_map('intval', $courseIds))),
+        'course_ids' => $resolvedCourseIds,
         'checkout_mode' => $checkoutMode,
     ]);
 

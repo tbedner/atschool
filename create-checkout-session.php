@@ -66,6 +66,19 @@ try {
 		$checkoutCourseIds = [(int) $moodleCourseId];
 	}
 
+	$checkoutDebugPayload = [
+		'source' => 'create-checkout-session',
+		'mode' => $checkoutMode,
+		'selected_course_ids' => $checkoutCourseIds,
+		'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
+	];
+	error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
+	@file_put_contents(
+		__DIR__ . '/checkout-debug.log',
+		json_encode($checkoutDebugPayload, JSON_UNESCAPED_SLASHES) . PHP_EOL,
+		FILE_APPEND | LOCK_EX
+	);
+
 	$sessionParams = [
 		'mode' => $checkoutMode,
 		'managed_payments' => [
