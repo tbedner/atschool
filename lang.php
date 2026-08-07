@@ -61,9 +61,12 @@ if (isset($_GET['lang'])) {
 
 // Load language file
 $langFile = "assets/lang/$lang.php";
-if (file_exists($langFile)) {
-    $translations = include($langFile);
-} else {
-    $translations = include("assets/lang/en.php");
+$translations = include("assets/lang/en.php");
+
+if ($lang !== 'en' && file_exists($langFile)) {
+    $languageTranslations = include($langFile);
+    if (is_array($languageTranslations)) {
+        $translations = array_replace($translations, $languageTranslations);
+    }
 }
 ?>
