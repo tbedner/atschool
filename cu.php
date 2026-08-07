@@ -253,6 +253,36 @@ function extractMoodleUserIds(array $decodedResponse): array {
     return $ids;
 }
 
+function resolveMoodleLoginRedirectUrl(string $loginUrl, string $moodleBaseUrl): string {
+    $loginUrl = trim($loginUrl);
+    if ($loginUrl === '') {
+        return $loginUrl;
+    }
+
+    $parsedBaseUrl = parse_url($moodleBaseUrl);
+    $basePath = '';
+    if (is_array($parsedBaseUrl) && isset($parsedBaseUrl['path']) && is_string($parsedBaseUrl['path'])) {
+        $basePath = '/' . trim($parsedBaseUrl['path'], '/');
+    }
+
+    if ($basePath === '' || $basePath === '/') {
+        $basePath = '/moodle';
+    }
+
+    $dashboardPath = rtrim($basePath, '/') . '/my/';
+
+    if (strpos($loginUrl, 'auth/userkey/login.php') !== false && strpos($loginUrl, 'wantsurl=') === false) {
+        $separator = strpos($loginUrl, '?') === false ? '?' : '&';
+        return $loginUrl . $separator . 'wantsurl=' . rawurlencode($dashboardPath);
+    }
+
+    if (strpos($loginUrl, 'login/index.php') !== false) {
+        return str_replace('login/index.php', 'my/', $loginUrl);
+    }
+
+    return $loginUrl;
+}
+
 // Configuration.
 // $env = parse_ini_file('.env');
 // $token = $env['TOKEN'];
@@ -479,12 +509,7 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
 
     $loginUrl = $loginResult['decoded']['loginurl'];
     if (is_string($loginUrl) && $loginUrl !== '') {
-        if (strpos($loginUrl, 'auth/userkey/login.php') !== false && strpos($loginUrl, 'wantsurl=') === false) {
-            $separator = strpos($loginUrl, '?') === false ? '?' : '&';
-            $loginUrl .= $separator . 'wantsurl=' . rawurlencode('/my/');
-        } elseif (strpos($loginUrl, 'login/index.php') !== false) {
-            $loginUrl = str_replace('login/index.php', 'my/', $loginUrl);
-        }
+        $loginUrl = resolveMoodleLoginRedirectUrl($loginUrl, $domainName);
     }
 
     header('Location: ' . $loginUrl);
