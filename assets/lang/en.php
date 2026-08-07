@@ -165,6 +165,6 @@ return [
     'onecoin_reason_3_title' => 'Special Bonus',
     'onecoin_reason_3_text' => 'Complete your 15-minute live session and apply your ¥500 payment as a full credit toward your first month of the full Monthly Subscription!',
     'onecoin_cta_primary' => 'Get Mission 1 for ¥500 Now',
-    'onecoin_cta_microcopy' => 'One-time payment of ¥500. Instant access upon checkout with no automatic recurring charges.',
+    'onecoin_cta_microcopy' => 'One-time payment of ¥500. Instant access upon checkout with no automatic recurring charges.'
 
 ];
