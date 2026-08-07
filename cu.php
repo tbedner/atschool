@@ -478,8 +478,13 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
     mail($to, $subject, $message, $headers);
 
     $loginUrl = $loginResult['decoded']['loginurl'];
-    if (strpos($loginUrl, 'login/index.php') !== false) {
-        $loginUrl = str_replace('login/index.php', 'my/', $loginUrl);
+    if (is_string($loginUrl) && $loginUrl !== '') {
+        if (strpos($loginUrl, 'auth/userkey/login.php') !== false && strpos($loginUrl, 'wantsurl=') === false) {
+            $separator = strpos($loginUrl, '?') === false ? '?' : '&';
+            $loginUrl .= $separator . 'wantsurl=' . rawurlencode('/my/');
+        } elseif (strpos($loginUrl, 'login/index.php') !== false) {
+            $loginUrl = str_replace('login/index.php', 'my/', $loginUrl);
+        }
     }
 
     header('Location: ' . $loginUrl);
