@@ -119,5 +119,6 @@ return [
     'checkout_secure_payment' => 'Secure payment powered by Stripe Checkout',
     'checkout_buy_button' => 'Buy and Enroll',
     'checkout_subscribe_button' => 'Subscribe and Enroll',
+    'checkout_course_title' => '@School Course',
 
 ];

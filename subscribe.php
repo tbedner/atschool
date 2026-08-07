@@ -27,7 +27,7 @@ if ($currency === 'jpy') {
 ?>
 <main class="page">
 	<section class="card checkout-card">
-		<h1><?php echo htmlspecialchars($courseDisplayName, ENT_QUOTES, 'UTF-8'); ?></h1>
+		<h1><?php echo htmlspecialchars($translations['checkout_course_title'] ?? $courseDisplayName, ENT_QUOTES, 'UTF-8'); ?></h1>
 		<p><?php echo htmlspecialchars($translations['checkout_secure_payment'] ?? 'Secure payment powered by Stripe Checkout', ENT_QUOTES, 'UTF-8'); ?></p>
 		<div class="price"><?php echo $amountDisplay; ?></div>
 
