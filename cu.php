@@ -377,6 +377,20 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
     $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
 }
 
+if ($userId === null && $newUsername !== '') {
+    $usernameLookupResult = moodle_rest_request($domainName, [
+        'wstoken' => $token,
+        'wsfunction' => 'core_user_get_users_by_field',
+        'moodlewsrestformat' => $restFormat,
+        'field' => 'username',
+        'values[0]' => $newUsername,
+    ]);
+
+    if (empty($usernameLookupResult['curl_error'])) {
+        $userId = extractMoodleUserId($usernameLookupResult['decoded'] ?? []);
+    }
+}
+
 if ($userId !== null) {
     $updateUserResult = moodle_rest_request($domainName, [
         'wstoken' => $token,
@@ -422,17 +436,14 @@ if ($userId !== null) {
 }
 
 $requestUser = [];
-switch ($userKeyMappingField) {
-    case 'id':
-        $requestUser['id'] = $userId;
-        break;
-    case 'username':
-        $requestUser['username'] = $user1['username'];
-        break;
-    case 'email':
-    default:
-        $requestUser['email'] = $user1['email'];
-        break;
+if ($userId !== null && $userKeyMappingField === 'id') {
+    $requestUser['id'] = $userId;
+}
+if ($newUsername !== '') {
+    $requestUser['username'] = $newUsername;
+}
+if ($newEmail !== '') {
+    $requestUser['email'] = $newEmail;
 }
 
 if ($userKeyIpRestriction && !empty($_SERVER['REMOTE_ADDR'])) {
