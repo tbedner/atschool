@@ -134,6 +134,34 @@ function splitName(string $fullName): array {
     return [$first, $last];
 }
 
+function resolveMoodleCheckoutMode($metadata, string $defaultMode): string {
+    $candidateModes = [];
+
+    if (is_object($metadata) && isset($metadata->checkout_mode)) {
+        $candidateModes[] = (string) $metadata->checkout_mode;
+    } elseif (is_array($metadata) && isset($metadata['checkout_mode'])) {
+        $candidateModes[] = (string) $metadata['checkout_mode'];
+    }
+
+    if (is_object($metadata) && isset($metadata->mode)) {
+        $candidateModes[] = (string) $metadata->mode;
+    } elseif (is_array($metadata) && isset($metadata['mode'])) {
+        $candidateModes[] = (string) $metadata['mode'];
+    }
+
+    foreach ($candidateModes as $candidateMode) {
+        $normalizedMode = strtolower(trim((string) $candidateMode));
+        if (in_array($normalizedMode, ['payment', 'subscription'], true)) {
+            return $normalizedMode;
+        }
+    }
+
+    $normalizedDefault = strtolower(trim($defaultMode));
+    return in_array($normalizedDefault, ['payment', 'subscription'], true)
+        ? $normalizedDefault
+        : 'payment';
+}
+
 function resolveMoodleCourseIds($metadata, string $checkoutMode, int $defaultCourseId, array $subscriptionCourseIds): array {
     $courseIds = [];
 
@@ -273,8 +301,9 @@ if (!is_string($newEmail) || trim($newEmail) === '') {
 $newEmail = trim($newEmail);
 [$newFirstname, $newLastname] = splitName($fullName);
 
-$checkoutMode = strtolower((string) ($checkoutSession->mode ?? 'payment'));
-$courseIds = resolveMoodleCourseIds($checkoutSession->metadata ?? null, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+$metadata = $checkoutSession->metadata ?? null;
+$checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
+$courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
 
 $newUsername = getMoodleUsernameFromEmail($newEmail);
 

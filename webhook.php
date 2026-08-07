@@ -298,12 +298,17 @@ switch ($event->type) {
         'created_at' => gmdate('c'),
     ];
 
-    $checkoutMode = strtolower((string) ($session->mode ?? 'payment'));
+    $metadata = $session->metadata ?? null;
+    $checkoutMode = strtolower((string) ($metadata->checkout_mode ?? $session->mode ?? 'payment'));
+    if (!in_array($checkoutMode, ['payment', 'subscription'], true)) {
+        $checkoutMode = 'payment';
+    }
+
     $courseIds = [];
-    if (!empty($session->metadata->moodle_course_ids)) {
-        $courseIds = preg_split('/[\s,]+/', (string) $session->metadata->moodle_course_ids) ?: [];
-    } elseif (!empty($session->metadata->moodle_course_id)) {
-        $courseIds = [(string) $session->metadata->moodle_course_id];
+    if (!empty($metadata->moodle_course_ids)) {
+        $courseIds = preg_split('/[\s,]+/', (string) $metadata->moodle_course_ids) ?: [];
+    } elseif (!empty($metadata->moodle_course_id)) {
+        $courseIds = [(string) $metadata->moodle_course_id];
     }
 
     $provisioningResult = provision_moodle_user_from_session([
