@@ -157,21 +157,44 @@ function provision_moodle_user_from_session(array $sessionData): array {
     $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
     $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
 
-    $enrolParams = [];
-    foreach ($courseIds as $index => $courseId) {
-        $enrolParams["enrolments[{$index}][roleid]"] = $moodleStudentRoleId;
-        $enrolParams["enrolments[{$index}][userid]"] = $userId;
-        $enrolParams["enrolments[{$index}][courseid]"] = $courseId;
+    $updateUserResult = moodle_rest_request($moodleDomainName, [
+        'wstoken' => $moodleWebserviceToken,
+        'wsfunction' => 'core_user_update_users',
+        'moodlewsrestformat' => $moodleRestFormat,
+    ] + ['users' => [[
+        'id' => $userId,
+        'firstname' => $firstName,
+        'lastname' => $lastName,
+        'email' => $email,
+        'country' => 'JP',
+        'timezone' => 'Asia/Tokyo',
+        'lang' => 'ja',
+    ]] ]);
+
+    if (!empty($updateUserResult['curl_error'])) {
+        error_log('Moodle user update failed for user ' . $userId . ': ' . $updateUserResult['curl_error']);
+    } elseif (is_array($updateUserResult['decoded']) && isset($updateUserResult['decoded']['exception'])) {
+        error_log('Moodle user update failed for user ' . $userId . ': ' . json_encode($updateUserResult['decoded']));
     }
 
-    $enrolResult = moodle_rest_request($moodleDomainName, [
-        'wstoken' => $moodleWebserviceToken,
-        'wsfunction' => 'enrol_manual_enrol_users',
-        'moodlewsrestformat' => $moodleRestFormat,
-    ] + $enrolParams);
+    foreach ($courseIds as $courseId) {
+        $enrolResult = moodle_rest_request($moodleDomainName, [
+            'wstoken' => $moodleWebserviceToken,
+            'wsfunction' => 'enrol_manual_enrol_users',
+            'moodlewsrestformat' => $moodleRestFormat,
+        ] + [
+            'enrolments[0][roleid]' => $moodleStudentRoleId,
+            'enrolments[0][userid]' => $userId,
+            'enrolments[0][courseid]' => $courseId,
+        ]);
 
-    if (!empty($enrolResult['curl_error'])) {
-        return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
+        if (!empty($enrolResult['curl_error'])) {
+            return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
+        }
+
+        if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+            return ['success' => false, 'reason' => 'enrol-exception', 'detail' => $enrolResult['decoded']];
+        }
     }
 
     return [

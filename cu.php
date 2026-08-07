@@ -371,27 +371,46 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
 }
 
 if ($userId !== null) {
-    $enrolParams = [];
-    foreach ($courseIds as $index => $courseId) {
-        $enrolParams["enrolments[{$index}][roleid]"] = (int) $moodleStudentRoleId;
-        $enrolParams["enrolments[{$index}][userid]"] = $userId;
-        $enrolParams["enrolments[{$index}][courseid]"] = (int) $courseId;
-    }
-
-    $enrolResult = moodle_rest_request($domainName, [
+    $updateUserResult = moodle_rest_request($domainName, [
         'wstoken' => $token,
-        'wsfunction' => 'enrol_manual_enrol_users',
+        'wsfunction' => 'core_user_update_users',
         'moodlewsrestformat' => $restFormat,
-    ] + $enrolParams);
+    ] + ['users' => [[
+        'id' => $userId,
+        'firstname' => $newFirstname,
+        'lastname' => $newLastname,
+        'email' => $newEmail,
+        'country' => 'JP',
+        'timezone' => 'Asia/Tokyo',
+        'lang' => 'ja',
+    ]]]);
 
-    if (!empty($enrolResult['curl_error'])) {
-        fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
-        exit;
+    if (!empty($updateUserResult['curl_error'])) {
+        error_log('Moodle user update failed for user ' . $userId . ': ' . $updateUserResult['curl_error']);
+    } elseif (is_array($updateUserResult['decoded']) && isset($updateUserResult['decoded']['exception'])) {
+        error_log('Moodle user update failed for user ' . $userId . ': ' . format_moodle_error($updateUserResult['decoded'], 'User update'));
     }
 
-    if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-        fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
-        exit;
+    foreach ($courseIds as $courseId) {
+        $enrolResult = moodle_rest_request($domainName, [
+            'wstoken' => $token,
+            'wsfunction' => 'enrol_manual_enrol_users',
+            'moodlewsrestformat' => $restFormat,
+        ] + [
+            'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
+            'enrolments[0][userid]' => $userId,
+            'enrolments[0][courseid]' => (int) $courseId,
+        ]);
+
+        if (!empty($enrolResult['curl_error'])) {
+            fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
+            exit;
+        }
+
+        if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+            fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
+            exit;
+        }
     }
 }
 
