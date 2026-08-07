@@ -115,5 +115,7 @@ Los estudiantes participan en dos sesiones en directo de 30 minutos cada semana 
     'compare_courseblurb_p2' => '<p>Una experiencia equilibrada que combina estudio independiente con sesiones semanales en vivo dirigidas por un instructor nativo. Ideal para progreso constante y desarrollar confianza.</p>',
     'compare_courseblurb_title3' => '<h4>Curso Intensivo</h4>',
     'compare_courseblurb_p3' => '<p>Un programa dinámico e inmersivo que cubre el mismo material al doble de velocidad con sesiones más largas con el instructor. Ideal para objetivos específicos o plazos ajustados.</p>',
+    'welcome_email_subject' => 'Bienvenido al portal de @School',
+    'welcome_email_message' => "Hola {first_name},\n\nTu cuenta se ha creado correctamente.\n\nAquí están tus datos de acceso:\nUsuario: {username}\nContraseña: {password}\n\nPuedes iniciar sesión con el siguiente enlace:\n{login_url}\n\nPor favor cambia tu contraseña después de iniciar sesión por primera vez.\n\nAtentamente,\nEl equipo de @School",
 
 ];

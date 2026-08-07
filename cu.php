@@ -331,18 +331,13 @@ if (!empty($loginResult['curl_error'])) {
 }
 
 if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl'])) {
-    $subject = "Welcome to the @School Portal";
-    $message = "Hello ".$newFirstname.",\n\n".
-               "Your account has been created successfully.\n\n".
-               "Here are your login details:\n".
-               "Username: ".$newUsername."\n".
-               "Password: ".$newPassword."\n\n".
-               "You can log in using the following link:\n".
-               "https://www.at-school-portal.com/moodle/?lang=".$lang."\n\n".
-               "Please change your password after logging in for the first time.\n\n".
-               "Best regards,\n".
-               "@School Team";
-    $message = $name." - ".$email." - ".$message;
+    $subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';
+    $message = strtr($translations['welcome_email_message'] ?? "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team", [
+        '{first_name}' => $newFirstname,
+        '{username}' => $newUsername,
+        '{password}' => $newPassword,
+        '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $lang,
+    ]);
     $to = $newEmail;
     $headers =  'From: support@at-school-portal.com'       . "\r\n" .
                 'Reply-To: support@at-school-portal.com' . "\r\n" .

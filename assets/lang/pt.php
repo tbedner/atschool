@@ -114,5 +114,7 @@ return [
     'compare_courseblurb_p2' => '<p>Uma experiência de aprendizado equilibrada combinando o estudo independente com sessões semanais ao vivo lideradas por um instrutor nativo. Ideal para progresso constante e construção de confiança.</p>',
     'compare_courseblurb_title3' => '<h4>Curso Intensivo</h4>',
     'compare_courseblurb_p3' => '<p>Um programa rápido e imersivo que cobre o mesmo material na velocidade dupla com sessões mais longas com o instrutor. Melhor para alunos com objetivos específicos ou necessidades urgentes.</p>',
+    'welcome_email_subject' => 'Bem-vindo ao portal @School',
+    'welcome_email_message' => "Olá, {first_name},\n\nSua conta foi criada com sucesso.\n\nAqui estão os seus dados de acesso:\nNome de usuário: {username}\nSenha: {password}\n\nVocê pode entrar com o seguinte link:\n{login_url}\n\nPor favor, altere sua senha após fazer o primeiro login.\n\nAtenciosamente,\nEquipe @School",
     
 ];

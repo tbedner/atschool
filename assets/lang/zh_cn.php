@@ -115,4 +115,6 @@ return [
     'compare_courseblurb_title3' => '<h4>全方位密集课程</h4>',
     'compare_courseblurb_p3' => '<p>进度紧凑的沉浸式计划，以双倍速度涵盖标准课程的范畴，并享有更长的时间与导师深度互动。最适合有特定时效目标或即刻需要提升能力之学习者。</p>',
     'challenge15_nav' => '挑战 15 ― 任意提交・自我反思活动',
+    'welcome_email_subject' => '欢迎来到 @School 门户',
+    'welcome_email_message' => "{first_name}，您好，\n\n您的账户已成功创建。\n\n以下是您的登录信息：\n用户名：{username}\n密码：{password}\n\n您可以通过以下链接登录：\n{login_url}\n\n首次登录后请修改密码。\n\n此致敬礼，\n@School 团队",
 ];

@@ -113,6 +113,6 @@ return [
     'compare_courseblurb_title2' => '<h4>정규 코스</h4>',
     'compare_courseblurb_p2' => '<p>개인 학습과 원어민 강사가 이끄는 주간 라이브 화상 수업이 결합된 가장 균형 잡힌 학습 모델입니다. 꾸준한 실력 향상과 탄탄한 의사소통 자신감을 쌓고자 하는 분들에게 추천합니다.</p>',
     'compare_courseblurb_title3' => '<h4>집중 코스</h4>',
-    'compare_courseblurb_p3' => '<p>정규 코스와 동일한 핵심 범위를 2배 빠른 속도로 커버하며 강사와의 소통 시간도 늘어난 몰입형 프로그램입니다. 단기 목표가 있거나 시간 제약이 큰 학습자에게 적합합니다.</p>',
-    
+    'compare_courseblurb_p3' => '<p>정규 코스와 동일한 핵심 범위를 2배 빠른 속도로 커버하며 강사와의 소통 시간도 늘어난 몰입형 프로그램입니다. 단기 목표가 있거나 시간 제약이 큰 학습자에게 적합합니다.</p>',    'welcome_email_subject' => '@School 포털에 오신 것을 환영합니다',
+    'welcome_email_message' => "안녕하세요, {first_name}님,\n\n계정이 성공적으로 생성되었습니다.\n\n로그인 정보는 다음과 같습니다:\n사용자 이름: {username}\n비밀번호: {password}\n\n다음 링크로 로그인할 수 있습니다:\n{login_url}\n\n처음 로그인한 후에는 비밀번호를 변경해 주세요.\n\n감사합니다.\n@School 팀",    
 ];

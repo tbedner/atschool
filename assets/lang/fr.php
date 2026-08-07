@@ -114,5 +114,7 @@ return [
     'compare_courseblurb_p2' => '<p>Une expérience d\'apprentissage équilibrée combinant l\'étude indépendante et des sessions hebdomadaires en direct animées par un instructeur de langue maternelle. Idéal pour progresser régulièrement et gagner en confiance.</p>',
     'compare_courseblurb_title3' => '<h4>Cours Intensif</h4>',
     'compare_courseblurb_p3' => '<p>Un programme immersif et rapide couvrant la même matière à double vitesse avec des sessions plus longues aux côtés de l\'instructeur. Recommandé pour les apprenants ayant des objectifs spécifiques ou des contraintes de temps.</p>',
+    'welcome_email_subject' => 'Bienvenue sur le portail @School',
+    'welcome_email_message' => "Bonjour {first_name},\n\nVotre compte a été créé avec succès.\n\nVoici vos informations de connexion :\nNom d’utilisateur : {username}\nMot de passe : {password}\n\nVous pouvez vous connecter avec le lien suivant :\n{login_url}\n\nVeuillez modifier votre mot de passe après votre première connexion.\n\nCordialement,\nL’équipe @School",
     
 ];
