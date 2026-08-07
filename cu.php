@@ -165,12 +165,11 @@ function resolveMoodleCheckoutMode($metadata, string $defaultMode): string {
 function resolveMoodleCourseIds($metadata, string $checkoutMode, int $defaultCourseId, array $subscriptionCourseIds): array {
     $courseIds = [];
 
+    $metadataValue = '';
     if (is_object($metadata) && isset($metadata->moodle_course_ids)) {
         $metadataValue = (string) $metadata->moodle_course_ids;
     } elseif (is_array($metadata) && isset($metadata['moodle_course_ids'])) {
         $metadataValue = (string) $metadata['moodle_course_ids'];
-    } else {
-        $metadataValue = '';
     }
 
     if ($metadataValue !== '') {
@@ -197,9 +196,12 @@ function resolveMoodleCourseIds($metadata, string $checkoutMode, int $defaultCou
     }
 
     if ($courseIds === []) {
-        $courseIds = ($checkoutMode === 'subscription')
+        $fallbackCourseIds = ($checkoutMode === 'subscription')
             ? array_values(array_unique(array_map('intval', $subscriptionCourseIds)))
             : [$defaultCourseId];
+        $courseIds = array_values(array_filter($fallbackCourseIds, static function ($courseId): bool {
+            return (int) $courseId > 0;
+        }));
     }
 
     return array_values(array_unique(array_filter($courseIds, static function ($courseId): bool {
@@ -311,6 +313,11 @@ $checkoutDebugPayload = [
     'resolved_course_ids' => $courseIds,
     'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
     'session_id' => $sessionId,
+    'metadata' => [
+        'checkout_mode' => $metadata->checkout_mode ?? null,
+        'moodle_course_id' => $metadata->moodle_course_id ?? null,
+        'moodle_course_ids' => $metadata->moodle_course_ids ?? null,
+    ],
 ];
 error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
 @file_put_contents(

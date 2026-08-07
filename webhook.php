@@ -341,6 +341,11 @@ switch ($event->type) {
         'resolved_course_ids' => $resolvedCourseIds,
         'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
         'session_id' => (string) $session->id,
+        'metadata' => [
+            'checkout_mode' => $metadata->checkout_mode ?? null,
+            'moodle_course_id' => $metadata->moodle_course_id ?? null,
+            'moodle_course_ids' => $metadata->moodle_course_ids ?? null,
+        ],
     ];
     error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
     @file_put_contents(
