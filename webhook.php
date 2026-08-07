@@ -79,6 +79,37 @@ function split_name_parts(string $fullName): array {
     return [$first, $last];
 }
 
+function resolve_moodle_course_ids_from_session_data(array $sessionData, string $checkoutMode, int $defaultCourseId, array $subscriptionCourseIds): array {
+    $courseIds = [];
+
+    if (!empty($sessionData['course_ids']) && is_array($sessionData['course_ids'])) {
+        foreach ($sessionData['course_ids'] as $courseId) {
+            $courseId = (int) $courseId;
+            if ($courseId > 0) {
+                $courseIds[] = $courseId;
+            }
+        }
+    } elseif (!empty($sessionData['course_ids_csv'])) {
+        $parsedIds = preg_split('/[\s,]+/', (string) $sessionData['course_ids_csv']) ?: [];
+        foreach ($parsedIds as $candidate) {
+            $courseId = (int) trim((string) $candidate);
+            if ($courseId > 0) {
+                $courseIds[] = $courseId;
+            }
+        }
+    }
+
+    if ($courseIds === []) {
+        $courseIds = ($checkoutMode === 'subscription')
+            ? array_values(array_unique(array_map('intval', $subscriptionCourseIds)))
+            : [$defaultCourseId];
+    }
+
+    return array_values(array_unique(array_filter($courseIds, static function ($courseId): bool {
+        return (int) $courseId > 0;
+    })));
+}
+
 function provision_moodle_user_from_session(array $sessionData): array {
     global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleStudentRoleId;
 
@@ -123,14 +154,21 @@ function provision_moodle_user_from_session(array $sessionData): array {
         return ['success' => false, 'reason' => 'missing-user-id'];
     }
 
+    $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
+    $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+
+    $enrolParams = [];
+    foreach ($courseIds as $index => $courseId) {
+        $enrolParams["enrolments[{$index}][roleid]"] = $moodleStudentRoleId;
+        $enrolParams["enrolments[{$index}][userid]"] = $userId;
+        $enrolParams["enrolments[{$index}][courseid]"] = $courseId;
+    }
+
     $enrolResult = moodle_rest_request($moodleDomainName, [
         'wstoken' => $moodleWebserviceToken,
         'wsfunction' => 'enrol_manual_enrol_users',
         'moodlewsrestformat' => $moodleRestFormat,
-        'enrolments[0][roleid]' => $moodleStudentRoleId,
-        'enrolments[0][userid]' => $userId,
-        'enrolments[0][courseid]' => $moodleCourseId,
-    ]);
+    ] + $enrolParams);
 
     if (!empty($enrolResult['curl_error'])) {
         return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
@@ -260,9 +298,19 @@ switch ($event->type) {
         'created_at' => gmdate('c'),
     ];
 
+    $checkoutMode = strtolower((string) ($session->mode ?? 'payment'));
+    $courseIds = [];
+    if (!empty($session->metadata->moodle_course_ids)) {
+        $courseIds = preg_split('/[\s,]+/', (string) $session->metadata->moodle_course_ids) ?: [];
+    } elseif (!empty($session->metadata->moodle_course_id)) {
+        $courseIds = [(string) $session->metadata->moodle_course_id];
+    }
+
     $provisioningResult = provision_moodle_user_from_session([
         'email' => trim((string) $email),
         'full_name' => (string) ($fullName ?? ''),
+        'course_ids' => array_values(array_filter(array_map('intval', $courseIds))),
+        'checkout_mode' => $checkoutMode,
     ]);
 
     if ($provisioningResult['success'] ?? false) {

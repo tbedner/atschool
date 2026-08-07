@@ -134,6 +134,51 @@ function splitName(string $fullName): array {
     return [$first, $last];
 }
 
+function resolveMoodleCourseIds($metadata, string $checkoutMode, int $defaultCourseId, array $subscriptionCourseIds): array {
+    $courseIds = [];
+
+    if (is_object($metadata) && isset($metadata->moodle_course_ids)) {
+        $metadataValue = (string) $metadata->moodle_course_ids;
+    } elseif (is_array($metadata) && isset($metadata['moodle_course_ids'])) {
+        $metadataValue = (string) $metadata['moodle_course_ids'];
+    } else {
+        $metadataValue = '';
+    }
+
+    if ($metadataValue !== '') {
+        $parsedIds = preg_split('/[\s,]+/', $metadataValue) ?: [];
+        foreach ($parsedIds as $candidate) {
+            $courseId = (int) trim((string) $candidate);
+            if ($courseId > 0) {
+                $courseIds[] = $courseId;
+            }
+        }
+    }
+
+    if ($courseIds === []) {
+        $singleCourseId = 0;
+        if (is_object($metadata) && isset($metadata->moodle_course_id)) {
+            $singleCourseId = (int) $metadata->moodle_course_id;
+        } elseif (is_array($metadata) && isset($metadata['moodle_course_id'])) {
+            $singleCourseId = (int) $metadata['moodle_course_id'];
+        }
+
+        if ($singleCourseId > 0) {
+            $courseIds[] = $singleCourseId;
+        }
+    }
+
+    if ($courseIds === []) {
+        $courseIds = ($checkoutMode === 'subscription')
+            ? array_values(array_unique(array_map('intval', $subscriptionCourseIds)))
+            : [$defaultCourseId];
+    }
+
+    return array_values(array_unique(array_filter($courseIds, static function ($courseId): bool {
+        return (int) $courseId > 0;
+    })));
+}
+
 function extractMoodleUserId(array $decodedResponse): ?int {
     if (!is_array($decodedResponse)) {
         return null;
@@ -228,6 +273,9 @@ if (!is_string($newEmail) || trim($newEmail) === '') {
 $newEmail = trim($newEmail);
 [$newFirstname, $newLastname] = splitName($fullName);
 
+$checkoutMode = strtolower((string) ($checkoutSession->mode ?? 'payment'));
+$courseIds = resolveMoodleCourseIds($checkoutSession->metadata ?? null, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+
 $newUsername = getMoodleUsernameFromEmail($newEmail);
 
 // auth_userkey plugin settings.
@@ -280,14 +328,18 @@ if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']
 }
 
 if ($userId !== null) {
+    $enrolParams = [];
+    foreach ($courseIds as $index => $courseId) {
+        $enrolParams["enrolments[{$index}][roleid]"] = (int) $moodleStudentRoleId;
+        $enrolParams["enrolments[{$index}][userid]"] = $userId;
+        $enrolParams["enrolments[{$index}][courseid]"] = (int) $courseId;
+    }
+
     $enrolResult = moodle_rest_request($domainName, [
         'wstoken' => $token,
         'wsfunction' => 'enrol_manual_enrol_users',
         'moodlewsrestformat' => $restFormat,
-        'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
-        'enrolments[0][userid]' => $userId,
-        'enrolments[0][courseid]' => (int) $moodleCourseId,
-    ]);
+    ] + $enrolParams);
 
     if (!empty($enrolResult['curl_error'])) {
         fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');

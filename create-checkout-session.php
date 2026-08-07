@@ -54,6 +54,18 @@ try {
 		];
 	}
 
+	$checkoutCourseIds = ($checkoutMode === 'subscription')
+		? array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds)))
+		: [(int) $moodleCourseId];
+
+	$checkoutCourseIds = array_values(array_filter($checkoutCourseIds, static function ($courseId): bool {
+		return (int) $courseId > 0;
+	}));
+
+	if ($checkoutCourseIds === []) {
+		$checkoutCourseIds = [(int) $moodleCourseId];
+	}
+
 	$sessionParams = [
 		'mode' => $checkoutMode,
 		'managed_payments' => [
@@ -63,7 +75,9 @@ try {
 		'cancel_url' => $cancelUrl,
 		'line_items' => [$lineItem],
 		'metadata' => [
-			'moodle_course_id' => (string) $moodleCourseId,
+			'moodle_course_id' => (string) ($checkoutCourseIds[0] ?? (int) $moodleCourseId),
+			'moodle_course_ids' => implode($checkoutCourseIds, ','),
+			'checkout_mode' => $checkoutMode,
 		],
 	];
 
