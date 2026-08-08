@@ -139,7 +139,7 @@ return [
     'subscribe_reason_3_title' => '完全灵活（可随时取消）',
     'subscribe_reason_3_text' => '没有长期合同或锁定条款。你可以根据自己的日程安排随时暂停或取消订阅。',
     'subscribe_cta_primary' => '开始你的月度订阅（可随时取消）',
-    'subscribe_cta_microcopy' => 'Get instant access to the AI voice chatbot and this month’s featured mission when you register.',
+    'subscribe_cta_microcopy' => '注册后即可立即访问 AI 语音聊天机器人和本月的精选任务。',
     'onecoin_badge' => '只需¥500即可体验 Mission 1',
     'onecoin_title' => '害怕突如其来的英语对话吗？先用AI练习，然后在15分钟的直播会话中测试你的技能！',
     'onecoin_subhead' => '在零压力下掌握你的第一个真实英语场景。获得AI语音聊天机器人、Moodle互动测验和与母语导师进行15分钟直播“Boss Battle”的完整权限——全部只需一枚硬币。',

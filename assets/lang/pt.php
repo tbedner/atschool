@@ -139,7 +139,7 @@ return [
     'subscribe_reason_3_title' => 'Flexibilidade total (cancelável a qualquer momento)',
     'subscribe_reason_3_text' => 'Não há contratos de longo prazo nem compromissos de permanência. Você pode pausar ou cancelar sua assinatura sempre que precisar para encaixar na sua rotina pessoal.',
     'subscribe_cta_primary' => 'Comece sua assinatura mensal (cancelável a qualquer momento)',
-    'subscribe_cta_microcopy' => 'Get instant access to the AI voice chatbot and this month’s featured mission when you register.',
+    'subscribe_cta_microcopy' => 'Tenha acesso instantâneo ao chatbot de voz com IA e à missão em destaque deste mês ao se registrar.',
     'onecoin_badge' => 'Experimente a Missão 1 por apenas ¥500',
     'onecoin_title' => 'Tem medo de uma conversa inesperada em inglês? Pratique primeiro com IA e depois teste suas habilidades em uma sessão ao vivo de 15 minutos\\!',
     'onecoin_subhead' => 'Domine seu primeiro cenário real em inglês sem pressão. Tenha acesso completo ao chatbot de voz com IA, quizzes interativos do Moodle e uma sessão ao vivo “Boss Battle” de 15 minutos com um instrutor nativo — tudo por uma única moeda.',

@@ -139,7 +139,7 @@ return [
     'subscribe_reason_3_title' => '完全な柔軟性（いつでもキャンセル可能）',
     'subscribe_reason_3_text' => '長期契約やロックインはありません。自分のスケジュールに合わせて、いつでもサブスクリプションを一時停止またはキャンセルできます。',
     'subscribe_cta_primary' => '月額サブスクリプションを開始する（いつでもキャンセル可能）',
-    'subscribe_cta_microcopy' => 'Get instant access to the AI voice chatbot and this month’s featured mission when you register.',
+    'subscribe_cta_microcopy' => '登録すると、AI音声チャットボットと今月の注目ミッションにすぐアクセスできます。',
     'onecoin_badge' => 'Mission 1をたった¥500で体験',
     'onecoin_title' => '突然の英会話が怖いですか？ まずAIで練習してから、15分間のライブセッションでスキルを試してみましょう！',
     'onecoin_subhead' => 'プレッシャーなく最初の現実的な英語シナリオをマスターしましょう。AI音声チャットボット、Moodleのインタラクティブクイズ、ネイティブ講師との15分のライブ“Boss Battle”を一枚のコインで体験できます。',

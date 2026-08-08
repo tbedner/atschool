@@ -139,7 +139,7 @@ return [
     'subscribe_reason_3_title' => 'Vollständige Flexibilität (jederzeit kündbar)',
     'subscribe_reason_3_text' => 'Keine langfristigen Verträge oder Sperrfristen. Du kannst dein Abo jederzeit pausieren oder kündigen, wenn es zu deinem Zeitplan passt.',
     'subscribe_cta_primary' => 'Starte dein monatliches Abo (jederzeit kündbar)',
-    'subscribe_cta_microcopy' => 'Get instant access to the AI voice chatbot and this month’s featured mission when you register.',
+    'subscribe_cta_microcopy' => 'Erhalten Sie sofortigen Zugriff auf den AI-Voice-Chatbot und die aktuelle Mission dieses Monats, sobald Sie sich registrieren.',
     'onecoin_badge' => 'Probiere Mission 1 für nur ¥500',
     'onecoin_title' => 'Ängstlich vor plötzlichen englischen Gesprächen? Übe zuerst mit KI und teste dann deine Fähigkeiten in einer 15-Minuten-Live-Sitzung\\!',
     'onecoin_subhead' => 'Meistere dein erstes reales englisches Szenario ohne Druck. Erhalte vollständigen Zugriff auf den KI-Sprach-Chatbot, interaktive Moodle-Quizze und eine 15-Minuten-Live-„Boss Battle“ mit einem Muttersprachler – alles für einen einzigen Einsatz.',

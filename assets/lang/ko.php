@@ -139,7 +139,7 @@ return [
     'subscribe_reason_3_title' => '완전한 유연성 (언제든 해지 가능)',
     'subscribe_reason_3_text' => '장기 계약이나 잠금 조건은 없습니다. 개인 일정에 맞게 언제든 구독을 일시정지하거나 해지할 수 있습니다.',
     'subscribe_cta_primary' => '월간 구독 시작하기 (언제든 해지 가능)',
-    'subscribe_cta_microcopy' => 'Get instant access to the AI voice chatbot and this month’s featured mission when you register.',
+    'subscribe_cta_microcopy' => '등록하면 AI 음성 챗봇과 이번 달의 주요 미션에 즉시 접근할 수 있습니다.',
     'onecoin_badge' => 'Mission 1을 단 ¥500에 체험하기',
     'onecoin_title' => '갑작스러운 영어 대화가 두렵나요? 먼저 AI로 연습한 뒤 15분 라이브 세션에서 실력을 시험해 보세요\\!',
     'onecoin_subhead' => '압박 없이 첫 현실적인 영어 시나리오를 마스터하세요. AI 음성 챗봇, Moodle 인터랙티브 퀴즈, 원어민 강사와의 15분 라이브 “Boss Battle”까지 — 모두 한 코인으로.',
