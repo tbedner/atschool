@@ -25,6 +25,8 @@ if ($currency === 'jpy') {
 	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountTwo) / 100, 2);
 }
 
+$subscribePriceDisplay = $translations['subscribe_price_display'] ?? ($amountDisplay . ' / month');
+
 $subscribeBadge = $translations['subscribe_badge'] ?? 'Monthly Subscription';
 $subscribeHeadline = $translations['subscribe_page_title'] ?? 'Continuous Growth: The Monthly Mission Pass';
 $subscribeSubhead = $translations['subscribe_page_subhead'] ?? 'Challenge a new mission every month! Practice with AI first, then step into real conversations with confidence.';
@@ -41,7 +43,7 @@ $subscribeMicrocopy = $translations['subscribe_cta_microcopy'] ?? 'Instant acces
 			<h1><?php echo htmlspecialchars($subscribeHeadline, ENT_QUOTES, 'UTF-8'); ?></h1>
 			<p class="lead"><?php echo htmlspecialchars($subscribeSubhead, ENT_QUOTES, 'UTF-8'); ?></p>
 			<p class="intro"><?php echo htmlspecialchars($subscribeIntro, ENT_QUOTES, 'UTF-8'); ?></p>
-			<div class="subscribe-price"><?php echo htmlspecialchars($amountDisplay, ENT_QUOTES, 'UTF-8'); ?> / month</div>
+			<div class="subscribe-price"><?php echo htmlspecialchars($subscribePriceDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
 		</div>
 
 		<div class="subscribe-grid">
