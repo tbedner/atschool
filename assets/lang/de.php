@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'Los geht’s',
     'compare_courseblurb_main' => '<h3>Wähle den Plan, der zu deinem nächsten Schritt passt</h3>',
     'compare_courseblurb_title1' => '<h4>Mission 1 Trial Pass</h4>',
     'compare_courseblurb_p1' => '<p>Starte mit einem risikofreien Test und erlebe den kompletten Ablauf aus KI-Warmup, interaktiver Vorbereitung und einer Live-Boss-Battle für nur ¥500.</p>',

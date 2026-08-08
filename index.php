@@ -53,7 +53,10 @@ include('carousel.php');
 								<p style="margin: 0 0 0.5rem; font-weight: 600;"><?php echo htmlspecialchars($translations['home_jp_hero_timeline'], ENT_QUOTES, 'UTF-8'); ?></p>
 								<p style="margin: 0 0 0.5rem;"><?php echo htmlspecialchars($translations['home_jp_hero_instructor'], ENT_QUOTES, 'UTF-8'); ?></p>
 								<p style="margin: 0 0 1rem;"><?php echo htmlspecialchars($translations['home_jp_hero_risk'], ENT_QUOTES, 'UTF-8'); ?></p>
-								<p class="text-center" style="margin: 0;"><a href="join.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" style="color:#fff;"><button type="button" class="btn btn-dark">Mission 1を体験する</button></a></p>
+								<div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+									<a href="join.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" style="color:#fff;"><button type="button" class="btn btn-dark">Mission 1を体験する</button></a>
+									<a href="subscribe.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" style="color:#111;"><button type="button" class="btn btn-outline-dark"><?php echo htmlspecialchars($translations['home_jp_subscribe_button'], ENT_QUOTES, 'UTF-8'); ?></button></a>
+								</div>
 							</section>
 							<?php endif; ?>
 

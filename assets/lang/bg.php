@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'Започнете',
     'compare_courseblurb_main' => '<h3>Изберете плана, който пасва на следващата ви стъпка</h3>',
     'compare_courseblurb_title1' => '<h4>Mission 1 Trial Pass</h4>',
     'compare_courseblurb_p1' => '<p>Започнете с нискорискова проба и изпитайте пълния поток: AI загряване, интерактивна подготовка и една жива Boss Battle за само ¥500.</p>',

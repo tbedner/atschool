@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'Get started',
     'compare_courseblurb_main' => '<h3>다음 단계에 맞는 플랜을 선택하세요</h3>',
     'compare_courseblurb_title1' => '<h4>Mission 1 Trial Pass</h4>',
     'compare_courseblurb_p1' => '<p>저위험 체험으로 시작해 AI 워밍업, 인터랙티브 준비, 1회 라이브 Boss Battle까지 단 ¥500에 경험해 보세요.</p>',

@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'Get started',
     'compare_courseblurb_main' => '<h3>Choisissez le plan qui correspond à votre prochaine étape</h3>',
     'compare_courseblurb_title1' => '<h4>Mission 1 Trial Pass</h4>',
     'compare_courseblurb_p1' => '<p>Commencez par un essai à faible risque et expérimentez tout le parcours : échauffement IA, préparation interactive et une seule Boss Battle en direct pour seulement ¥500.</p>',

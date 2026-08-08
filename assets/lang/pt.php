@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'Começar',
     'compare_courseblurb_main' => '<h3>Escolha o plano que melhor se encaixa no próximo passo</h3>',
     'compare_courseblurb_title1' => '<h4>Passe de teste da Missão 1</h4>',
     'compare_courseblurb_p1' => '<p>Comece com um teste de baixo risco e experimente o fluxo completo de aquecimento com IA, preparação interativa e uma sessão ao vivo de Boss Battle por apenas ¥500.</p>',

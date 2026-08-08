@@ -107,6 +107,7 @@ return [
     'compare_table12' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table13' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
     'compare_table14' => '<tr><th scope="row"></th><td></td><td></td><td></td></tr>',
+    'compare_get_started' => 'शुरू करें',
     'compare_courseblurb_main' => '<h3>अपनी अगली स्टेप के लिए वह प्लान चुनें</h3>',
     'compare_courseblurb_title1' => '<h4>Mission 1 Trial Pass</h4>',
     'compare_courseblurb_p1' => '<p>कम-जोखिम वाले ट्रायल से शुरुआत करें और AI वॉर्म-अप, इंटरैक्टिव तैयारी और एक लाइव Boss Battle सत्र का पूरा अनुभव केवल ¥500 में लें।</p>',
