@@ -90,7 +90,7 @@ return [
     'about_p7' => '<p>Que vous appreniez pour voyager, travailler ou grandir personnellement, @School vous donne les compétences et la confiance nécessaires pour réussir.</p>',
     'compare_intro' => 'Choisissez l’option qui correspond à vos objectifs.',
     'compare_title' => '<h2>Choisissez votre chemin vers l’aisance</h2>',
-    'compare_tabletitle1' => '<th scope="col" style="text-align:center;">Fonction</th>',
+    'compare_tabletitle1' => '<th scope="col" style="text-align:center;">Fonctionnalité</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',
     'compare_tabletitle3' => '<th scope="col" style="text-align:center;">Monthly Mission Pass<br>Mensuel</th>',
     'compare_tabletitle4' => '<th scope="col" style="text-align:center;">Idéal pour</th>',

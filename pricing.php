@@ -23,10 +23,10 @@ include('menu.php');
   <table class="atschool-table">
     <thead>
       <tr>
-        <?php echo $translations['compare_tabletitle1']; ?>
-        <?php echo $translations['compare_tabletitle2']; ?>
-        <?php echo $translations['compare_tabletitle3']; ?>
-        <?php echo $translations['compare_tabletitle4']; ?>
+        <?php echo isset($translations['compare_tabletitle1']) ? $translations['compare_tabletitle1'] : '<th scope="col" style="text-align:center;">Feature</th>'; ?>
+        <?php echo isset($translations['compare_tabletitle2']) ? $translations['compare_tabletitle2'] : '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>'; ?>
+        <?php echo isset($translations['compare_tabletitle3']) ? $translations['compare_tabletitle3'] : '<th scope="col" style="text-align:center;">Monthly Mission Pass<br>Monthly</th>'; ?>
+        <?php echo isset($translations['compare_tabletitle4']) ? $translations['compare_tabletitle4'] : '<th scope="col" style="text-align:center;">Best for</th>'; ?>
       </tr>
     </thead>
     <tbody style="text-align:center;">
