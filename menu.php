@@ -10,6 +10,7 @@ $menu_items = array(
     $translations['about_nav'] => 'about.php',
     $translations['pricing_nav'] => 'pricing.php',
     $translations['faq_nav'] => 'faq.php',
+    $translations['subscribe_nav'] ?? 'Subscribe' => 'subscribe.php',
     $translations['portal_nav'] => 'moodle/?lang='.$lang,
 );
 foreach($menu_items as $item => $value) {
