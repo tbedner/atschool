@@ -5,6 +5,7 @@ return [
     'about_nav' => 'About',
     'pricing_nav' => 'Pricing',
     'faq_nav' => 'FAQs',
+    'subscribe_nav' => 'Subscribe',
     'portal_nav' => '@School Portal Login',
     'title' => 'Welcome to @School',
     'home_title' => 'Master Real-World Speaking Without the Anxiety',

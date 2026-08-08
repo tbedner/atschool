@@ -5,6 +5,7 @@ return [
     'about_nav' => 'من نحن',
     'pricing_nav' => 'التسعير',
     'faq_nav' => 'الأسئلة الشائعة',
+    'subscribe_nav' => 'اشترك',
     'portal_nav' => 'تسجيل الدخول إلى بوابة الطالب',
     'title' => 'مرحبًا بكم في @School',
     'home_title' => 'تعلّم الإنجليزية بثقة دون ضغط',

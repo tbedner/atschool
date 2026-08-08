@@ -5,6 +5,7 @@ return [
     'about_nav' => '关于我们',
     'pricing_nav' => '价格',
     'faq_nav' => '常见问题',
+    'subscribe_nav' => '订阅',
     'portal_nav' => '学生门户登录',
     'title' => '欢迎来到 @School',
     'home_title' => '轻松自信地学习英语',

@@ -5,6 +5,7 @@ return [
     'about_nav' => 'について',
     'pricing_nav' => '料金',
     'faq_nav' => 'よくある質問',
+    'subscribe_nav' => 'サブスク',
     'portal_nav' => '生徒ポータルにログイン',
     'title' => '@Schoolへようこそ',
     'home_title' => 'ストレスなく英語を自信を持って学ぶ',

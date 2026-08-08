@@ -5,6 +5,7 @@ return [
     'about_nav' => '소개',
     'pricing_nav' => '요금',
     'faq_nav' => '자주 묻는 질문',
+    'subscribe_nav' => '구독',
     'portal_nav' => '학생 포털 로그인',
     'title' => '@School에 오신 것을 환영합니다',
     'home_title' => '스트레스 없이 자신 있게 영어 배우기',

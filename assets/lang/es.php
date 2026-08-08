@@ -5,6 +5,7 @@ return [
     'about_nav' => 'Sobre nosotros',
     'pricing_nav' => 'Precios',
     'faq_nav' => 'Preguntas frecuentes',
+    'subscribe_nav' => 'Suscribirse',
     'portal_nav' => 'Acceso al portal del estudiante',
     'title' => 'Bienvenido a @School',
     'home_title' => 'Aprende inglés con confianza, sin estrés',

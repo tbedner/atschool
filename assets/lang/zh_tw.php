@@ -5,6 +5,7 @@ return [
     'about_nav' => '關於我們',
     'pricing_nav' => '價格',
     'faq_nav' => '常見問題',
+    'subscribe_nav' => '訂閱',
     'portal_nav' => '學生入口登入',
     'title' => '歡迎來到 @School',
     'home_title' => '輕鬆自信地學習英語',

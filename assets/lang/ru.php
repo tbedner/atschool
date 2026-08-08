@@ -5,6 +5,7 @@ return [
     'about_nav' => 'О нас',
     'pricing_nav' => 'Цены',
     'faq_nav' => 'FAQ',
+    'subscribe_nav' => 'Подписаться',
     'portal_nav' => 'Вход в студенческий портал',
     'title' => 'Добро пожаловать в @School',
     'home_title' => 'Изучайте английский с уверенностью без стресса',
