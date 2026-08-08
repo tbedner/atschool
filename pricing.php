@@ -41,8 +41,8 @@ include('menu.php');
         <?php echo $translations['compare_table9']; ?>
         <tr>
           <th scope="row">Get started</th>
-          <td><a href="onecoin.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-outline-dark">Purchase Mission 1</a></td>
-          <td><a href="subscribe.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-dark">Subscribe</a></td>
+          <td><a href="onecoin.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-outline-dark" style="padding: 0.75rem 1.25rem; font-weight: 700; border-width: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">Purchase Mission 1</a></td>
+          <td><a href="subscribe.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-dark" style="padding: 0.75rem 1.25rem; font-weight: 700; box-shadow: 0 2px 10px rgba(0,0,0,0.16);">Subscribe</a></td>
           <td></td>
         </tr>
     </tbody>
