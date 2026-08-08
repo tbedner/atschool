@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '<h2>加入我們</h2>',
     'about_p7' => '<p>無論你是為了旅行、工作或個人成長而學習，@School都能為你提供成功所需的技能和信心。</p>',
+    'compare_intro' => '選擇最符合你目標的方案。',
     'compare_title' => '<h2>選擇通往流利的道路</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">功能</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',

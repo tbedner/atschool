@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '',
     'about_p7' => '',
+    'compare_intro' => 'Choose the option that fits your goals.',
     'compare_title' => '<h2>Choose Your Path to Fluency</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">Feature</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',

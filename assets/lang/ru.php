@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '<h2>Присоединяйтесь</h2>',
     'about_p7' => '<p>Учитесь ли вы для путешествий, работы или личного роста, @School дарит вам навыки и уверенность для успеха.</p>',
+    'compare_intro' => 'Выберите вариант, который соответствует вашим целям.',
     'compare_title' => '<h2>Выберите путь к беглости</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">Функция</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',

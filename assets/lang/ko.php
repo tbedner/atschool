@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '<h2>함께하세요</h2>',
     'about_p7' => '<p>여행, 업무, 또는 개인적 성장을 위해 배우고 있든, @School은 여러분이 성공할 수 있도록 필요한 기술과 자신감을 제공합니다.</p>',
+    'compare_intro' => '당신의 목표에 맞는 옵션을 선택하세요.',
     'compare_title' => '<h2>유창성을 향한 길을 선택하세요</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">기능</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',

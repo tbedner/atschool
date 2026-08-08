@@ -18,7 +18,7 @@ include('menu.php');
 <section class="atschool-course-comparison" lang="en">
 							<?php echo $translations['compare_title']; ?>
 
-  <p style="margin: 0 0 1rem 0;"><strong>Choose the option that fits your goals.</strong></p>
+  <p style="margin: 0 0 1rem 0;"><strong><?php echo isset($translations['compare_intro']) ? htmlspecialchars($translations['compare_intro'], ENT_QUOTES, 'UTF-8') : 'Choose the option that fits your goals.'; ?></strong></p>
 
   <table class="atschool-table">
     <thead>

@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '<h2>हमसे जुड़ें</h2>',
     'about_p7' => '<p>चाहे आप यात्रा, काम या व्यक्तिगत विकास के लिए सीख रहे हों, @School आपको सफल होने के लिए कौशल और आत्मविश्वास देता है।</p>',
+    'compare_intro' => 'उस विकल्प का चयन करें जो आपके लक्ष्यों के अनुरूप हो।',
     'compare_title' => '<h2>फ्लुएंसी की ओर अपने रास्ते का चयन करें</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">विशेषता</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',

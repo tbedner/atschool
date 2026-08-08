@@ -88,6 +88,7 @@ return [
     'about_ul3' => '',
     'about_h7' => '<h2>Rejoignez-nous</h2>',
     'about_p7' => '<p>Que vous appreniez pour voyager, travailler ou grandir personnellement, @School vous donne les compétences et la confiance nécessaires pour réussir.</p>',
+    'compare_intro' => 'Choisissez l’option qui correspond à vos objectifs.',
     'compare_title' => '<h2>Choisissez votre chemin vers l’aisance</h2>',
     'compare_tabletitle1' => '<th scope="col" style="text-align:center;">Fonction</th>',
     'compare_tabletitle2' => '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>',
