@@ -19,20 +19,22 @@ include('menu.php');
 require_once __DIR__ . '/secrets.php';
 
 $currency = strtolower((string) $courseCurrency);
-if ($currency === 'jpy') {
+if (($lang ?? '') === 'ja') {
 	$amountDisplay = '¥' . number_format((int) $courseAmountOne);
+} elseif ($currency === 'jpy') {
+	$amountDisplay = 'A$' . number_format(((int) $courseAmountOne) / 100, 0);
 } else {
 	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountOne) / 100, 2);
 }
 
-$offerBadge = $translations['onecoin_badge'] ?? 'Try Mission 1 for Just ¥500';
+$offerBadge = $translations['onecoin_badge'] ?? 'Try Mission 1 for Just A$5';
 $offerHeadline = $translations['onecoin_title'] ?? 'Scared of Sudden English Conversation? Practice with AI First, Then Test Your Skills in a 15-Minute Live Session!';
 $offerSubhead = $translations['onecoin_subhead'] ?? 'Master your first real-world English scenario with zero pressure. Get full access to our AI voice chatbot, Moodle interactive quizzes, and a 15-minute live "Boss Battle" call with a native instructor—all for one coin.';
-$offerBenefitsTitle = $translations['onecoin_benefits_title'] ?? 'What You Get for ¥500';
+$offerBenefitsTitle = $translations['onecoin_benefits_title'] ?? 'What You Get for A$5';
 $offerStepsTitle = $translations['onecoin_steps_title'] ?? 'How It Works (The 3-Step Flow)';
 $offerReasonsTitle = $translations['onecoin_reasons_title'] ?? 'Why Start with the One-Coin Offer?';
-$offerCta = $translations['onecoin_cta_primary'] ?? 'Get Mission 1 for ¥500 Now';
-$offerMicrocopy = $translations['onecoin_cta_microcopy'] ?? 'One-time payment of ¥500. Instant access upon checkout with no automatic recurring charges.';
+$offerCta = $translations['onecoin_cta_primary'] ?? 'Get Mission 1 for A$5 Now';
+$offerMicrocopy = $translations['onecoin_cta_microcopy'] ?? 'One-time payment of A$5. Instant access upon checkout with no automatic recurring charges.';
 ?>
 <main class="page">
 	<section class="card subscribe-card">

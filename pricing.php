@@ -24,7 +24,7 @@ include('menu.php');
     <thead>
       <tr>
         <?php echo isset($translations['compare_tabletitle1']) ? $translations['compare_tabletitle1'] : '<th scope="col" style="text-align:center;">Feature</th>'; ?>
-        <?php echo isset($translations['compare_tabletitle2']) ? $translations['compare_tabletitle2'] : '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>¥500</th>'; ?>
+        <?php echo isset($translations['compare_tabletitle2']) ? $translations['compare_tabletitle2'] : '<th scope="col" style="text-align:center;">Mission 1 Trial Pass<br>A$5</th>'; ?>
         <?php echo isset($translations['compare_tabletitle3']) ? $translations['compare_tabletitle3'] : '<th scope="col" style="text-align:center;">Monthly Mission Pass<br>Monthly</th>'; ?>
         <?php echo isset($translations['compare_tabletitle4']) ? $translations['compare_tabletitle4'] : '<th scope="col" style="text-align:center;">Best for</th>'; ?>
       </tr>
