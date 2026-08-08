@@ -39,11 +39,6 @@ include('menu.php');
         <?php echo $translations['compare_table7']; ?>
         <?php echo $translations['compare_table8']; ?>
         <?php echo $translations['compare_table9']; ?>
-        <?php echo $translations['compare_table10']; ?>
-        <?php echo $translations['compare_table11']; ?>
-        <?php echo $translations['compare_table12']; ?>
-        <?php echo $translations['compare_table13']; ?>
-        <?php echo $translations['compare_table14']; ?>
         <tr>
           <th scope="row">Get started</th>
           <td><a href="onecoin.php?lang=<?php echo htmlspecialchars($lang, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-outline-dark">Purchase Mission 1</a></td>
