@@ -58,6 +58,22 @@ $checkoutLocaleMap = [
 	'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
 	'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
 ];
+$checkoutStripeLocaleMap = [
+	'ar' => 'auto',
+	'bg' => 'en',
+	'de' => 'de',
+	'en' => 'en',
+	'es' => 'es',
+	'fr' => 'fr',
+	'hi' => 'en',
+	'ja' => 'ja',
+	'ko' => 'ko',
+	'pt' => 'pt',
+	'ru' => 'ru',
+	'zh_cn' => 'zh',
+	'zh_tw' => 'zh',
+];
+$selectedStripeCheckoutLocale = $checkoutStripeLocaleMap[$selectedCheckoutLanguage] ?? 'en';
 
 if ($selectedCheckoutCountry === '') {
 	$mappedValues = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
@@ -118,6 +134,7 @@ try {
 
 	$sessionParams = [
 		'mode' => $checkoutMode,
+		'locale' => $selectedStripeCheckoutLocale,
 		'managed_payments' => [
 			'enabled' => false,
 		],
