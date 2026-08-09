@@ -2,7 +2,10 @@
 require_once __DIR__ . '/stripe/init.php';
 require_once __DIR__ . '/secrets.php';
 include('lang.php');
-
+require 'PHPMailer.php';
+require 'SMTP.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 
@@ -496,19 +499,40 @@ if (!empty($loginResult['curl_error'])) {
 }
 
 if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl'])) {
-    $subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';
-    $message = strtr($translations['welcome_email_message'] ?? "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team", [
-        '{first_name}' => $newFirstname,
-        '{username}' => $newUsername,
-        '{password}' => $newPassword,
-        '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $lang,
-    ]);
-    $to = $newEmail;
-    $headers =  'From: support@at-school-portal.com'       . "\r\n" .
-                'Reply-To: support@at-school-portal.com' . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();                                            //Send using SMTP
+        $mail->Host       = $emailHost;                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+        $mail->Username   = $emailUser;                     //SMTP username
+        $mail->Password   = $emailPassword;                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+        $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-    mail($to, $subject, $message, $headers);
+        //Recipients
+        $mail->setFrom($emailFromAddress, $emailFromName);
+        $mail->addAddress($newEmail, $newFirstname.' '.$newLastname);     //Add a recipient
+
+        //Attachments
+        //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+
+        //Content
+        $message = strtr($translations['welcome_email_message'] ?? "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team", [
+            '{first_name}' => $newFirstname,
+            '{username}' => $newUsername,
+            '{password}' => $newPassword,
+            '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $lang,
+        ]);
+        
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';
+        $mail->Body    = $message;
+        $mail->AltBody = strip_tags($message);
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");         
+    }
 
     $loginUrl = $loginResult['decoded']['loginurl'];
     if (is_string($loginUrl) && $loginUrl !== '') {
