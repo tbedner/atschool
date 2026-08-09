@@ -123,6 +123,38 @@ function provision_moodle_user_from_session(array $sessionData): array {
     $newUsername = get_moodle_username_from_email($email);
     $newPassword = generate_moodle_password(12);
 
+    $lang = strtolower(trim((string) ($sessionData['moodle_user_lang'] ?? 'en')));
+    if ($lang === '') {
+        $lang = 'en';
+    }
+
+    $country = trim((string) ($sessionData['moodle_user_country'] ?? ''));
+    $timezone = trim((string) ($sessionData['moodle_user_timezone'] ?? ''));
+
+    $localeMap = [
+        'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
+        'bg' => ['country' => 'BG', 'timezone' => 'Europe/Sofia'],
+        'de' => ['country' => 'DE', 'timezone' => 'Europe/Berlin'],
+        'en' => ['country' => 'US', 'timezone' => 'America/New_York'],
+        'es' => ['country' => 'ES', 'timezone' => 'Europe/Madrid'],
+        'fr' => ['country' => 'FR', 'timezone' => 'Europe/Paris'],
+        'hi' => ['country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+        'ja' => ['country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+        'ko' => ['country' => 'KR', 'timezone' => 'Asia/Seoul'],
+        'pt' => ['country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+        'ru' => ['country' => 'RU', 'timezone' => 'Europe/Moscow'],
+        'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+        'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
+    ];
+
+    if ($country === '') {
+        $country = (string) ($localeMap[$lang]['country'] ?? 'US');
+    }
+
+    if ($timezone === '') {
+        $timezone = (string) ($localeMap[$lang]['timezone'] ?? 'America/New_York');
+    }
+
     $userPayload = [
         'username' => $newUsername,
         'password' => $newPassword,
@@ -130,9 +162,9 @@ function provision_moodle_user_from_session(array $sessionData): array {
         'lastname' => $lastName,
         'email' => $email,
         'auth' => 'manual',
-        'country' => 'JP',
-        'timezone' => 'Asia/Tokyo',
-        'lang' => 'ja',
+        'country' => $country,
+        'timezone' => $timezone,
+        'lang' => $lang,
     ];
 
     $createUserResult = moodle_rest_request($moodleDomainName, [
@@ -166,9 +198,9 @@ function provision_moodle_user_from_session(array $sessionData): array {
         'firstname' => $firstName,
         'lastname' => $lastName,
         'email' => $email,
-        'country' => 'JP',
-        'timezone' => 'Asia/Tokyo',
-        'lang' => 'ja',
+        'country' => $country,
+        'timezone' => $timezone,
+        'lang' => $lang,
     ]] ]);
 
     if (!empty($updateUserResult['curl_error'])) {
@@ -359,6 +391,9 @@ switch ($event->type) {
         'full_name' => (string) ($fullName ?? ''),
         'course_ids' => $resolvedCourseIds,
         'checkout_mode' => $checkoutMode,
+        'moodle_user_lang' => (string) ($metadata->moodle_user_lang ?? ''),
+        'moodle_user_country' => (string) ($metadata->moodle_user_country ?? ''),
+        'moodle_user_timezone' => (string) ($metadata->moodle_user_timezone ?? ''),
     ]);
 
     if ($provisioningResult['success'] ?? false) {
