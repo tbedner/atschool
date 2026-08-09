@@ -157,6 +157,11 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     $country = $metadataValue('moodle_user_country');
     $timezone = $metadataValue('moodle_user_timezone');
 
+    $metadataLanguageCode = $metadataValue('moodle_user_lang');
+    if ($metadataLanguageCode !== '') {
+        $languageCode = strtolower(trim($metadataLanguageCode));
+    }
+
     if ($country === '' || $timezone === '') {
         $languageCodeFromMetadata = $metadataValue('moodle_user_lang');
         if ($languageCodeFromMetadata !== '') {
@@ -193,6 +198,7 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     }
 
     return [
+        'lang' => $languageCode !== '' ? $languageCode : 'en',
         'country' => $country !== '' ? $country : 'JP',
         'timezone' => $timezone !== '' ? $timezone : 'Asia/Tokyo',
     ];
@@ -442,7 +448,7 @@ $user1 = [
     'auth' => 'manual',
     'country' => $moodleUserLocaleSettings['country'],
     'timezone' => $moodleUserLocaleSettings['timezone'],
-    'lang' => $lang,
+    'lang' => $moodleUserLocaleSettings['lang'],
 ];
 
 $createUserParams = ['users' => [$user1]];
@@ -501,7 +507,7 @@ if ($userId !== null) {
         'email' => $newEmail,
         'country' => $moodleUserLocaleSettings['country'],
         'timezone' => $moodleUserLocaleSettings['timezone'],
-        'lang' => $lang,
+        'lang' => $moodleUserLocaleSettings['lang'],
     ]]]);
 
     if (!empty($updateUserResult['curl_error'])) {
@@ -583,7 +589,7 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
         '{first_name}' => $newFirstname,
         '{username}' => $newUsername,
         '{password}' => $newPassword,
-        '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $lang,
+        '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $moodleUserLocaleSettings['lang'],
     ]);
     
     $mail->isHTML(true);                                  //Set email format to HTML
