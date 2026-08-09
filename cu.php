@@ -142,6 +142,15 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     $country = '';
     $timezone = '';
 
+    $requestValue = static function (string $name): string {
+        $value = $_GET[$name] ?? ($_POST[$name] ?? '');
+        if (is_scalar($value)) {
+            return trim((string) $value);
+        }
+
+        return '';
+    };
+
     $metadataValue = function ($name) use ($metadata): string {
         if (is_object($metadata) && isset($metadata->{$name})) {
             return trim((string) $metadata->{$name});
@@ -154,16 +163,30 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
         return '';
     };
 
-    $country = $metadataValue('moodle_user_country');
-    $timezone = $metadataValue('moodle_user_timezone');
+    $country = $requestValue('moodle_user_country');
+    if ($country === '') {
+        $country = $metadataValue('moodle_user_country');
+    }
 
-    $metadataLanguageCode = $metadataValue('moodle_user_lang');
+    $timezone = $requestValue('moodle_user_timezone');
+    if ($timezone === '') {
+        $timezone = $metadataValue('moodle_user_timezone');
+    }
+
+    $metadataLanguageCode = $requestValue('moodle_user_lang');
+    if ($metadataLanguageCode === '') {
+        $metadataLanguageCode = $metadataValue('moodle_user_lang');
+    }
+
     if ($metadataLanguageCode !== '') {
         $languageCode = strtolower(trim($metadataLanguageCode));
     }
 
     if ($country === '' || $timezone === '') {
-        $languageCodeFromMetadata = $metadataValue('moodle_user_lang');
+        $languageCodeFromMetadata = $requestValue('moodle_user_lang');
+        if ($languageCodeFromMetadata === '') {
+            $languageCodeFromMetadata = $metadataValue('moodle_user_lang');
+        }
         if ($languageCodeFromMetadata !== '') {
             $languageCode = strtolower(trim($languageCodeFromMetadata));
         }

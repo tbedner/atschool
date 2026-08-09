@@ -33,7 +33,14 @@ if (is_numeric($requestedPrice) && (int) $requestedPrice >= 0) {
 	$unitAmountCents = (int) $courseAmountCents;
 }
 
-$successUrl = rtrim($siteBaseUrl, '/') . '/cu.php?session_id={CHECKOUT_SESSION_ID}';
+$successQuery = http_build_query([
+	'session_id' => '{CHECKOUT_SESSION_ID}',
+	'moodle_user_lang' => $selectedCheckoutLanguage,
+	'moodle_user_country' => $selectedCheckoutCountry,
+	'moodle_user_timezone' => $selectedCheckoutTimezone,
+], '', '&', PHP_QUERY_RFC3986);
+
+$successUrl = rtrim($siteBaseUrl, '/') . '/cu.php?' . $successQuery;
 $cancelUrl = rtrim($siteBaseUrl, '/') . '/index.php?canceled=1';
 
 try {
