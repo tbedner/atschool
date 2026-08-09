@@ -35,6 +35,24 @@ $offerStepsTitle = $translations['onecoin_steps_title'] ?? 'How It Works (The 3-
 $offerReasonsTitle = $translations['onecoin_reasons_title'] ?? 'Why Start with the One-Coin Offer?';
 $offerCta = $translations['onecoin_cta_primary'] ?? 'Get Mission 1 for A$5 Now';
 $offerMicrocopy = $translations['onecoin_cta_microcopy'] ?? 'One-time payment of A$5. Instant access upon checkout with no automatic recurring charges.';
+
+$selectedCheckoutLanguage = strtolower(trim((string) ($lang ?? 'en')));
+$checkoutLocaleMap = [
+	'ar' => ['lang' => 'ar', 'country' => 'AE', 'timezone' => 'Asia/Dubai'],
+	'bg' => ['lang' => 'bg', 'country' => 'BG', 'timezone' => 'Europe/Sofia'],
+	'de' => ['lang' => 'de', 'country' => 'DE', 'timezone' => 'Europe/Berlin'],
+	'en' => ['lang' => 'en', 'country' => 'US', 'timezone' => 'America/New_York'],
+	'es' => ['lang' => 'es', 'country' => 'ES', 'timezone' => 'Europe/Madrid'],
+	'fr' => ['lang' => 'fr', 'country' => 'FR', 'timezone' => 'Europe/Paris'],
+	'hi' => ['lang' => 'hi', 'country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+	'ja' => ['lang' => 'ja', 'country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+	'ko' => ['lang' => 'ko', 'country' => 'KR', 'timezone' => 'Asia/Seoul'],
+	'pt' => ['lang' => 'pt', 'country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+	'ru' => ['lang' => 'ru', 'country' => 'RU', 'timezone' => 'Europe/Moscow'],
+	'zh_cn' => ['lang' => 'zh_cn', 'country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+	'zh_tw' => ['lang' => 'zh_tw', 'country' => 'TW', 'timezone' => 'Asia/Taipei'],
+];
+$checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
 ?>
 <main class="page">
 	<section class="card subscribe-card">
@@ -100,6 +118,9 @@ $offerMicrocopy = $translations['onecoin_cta_microcopy'] ?? 'One-time payment of
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeOne, ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="price" value="<?php echo (int) $courseAmountOne; ?>">
+					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
+					<input type="hidden" name="moodle_user_country" value="<?php echo htmlspecialchars($checkoutLocaleSettings['country'], ENT_QUOTES, 'UTF-8'); ?>">
+					<input type="hidden" name="moodle_user_timezone" value="<?php echo htmlspecialchars($checkoutLocaleSettings['timezone'], ENT_QUOTES, 'UTF-8'); ?>">
 					<button type="submit"><?php echo htmlspecialchars($offerCta, ENT_QUOTES, 'UTF-8'); ?></button>
 				</form>
 				<p class="microcopy"><?php echo htmlspecialchars($offerMicrocopy, ENT_QUOTES, 'UTF-8'); ?></p>

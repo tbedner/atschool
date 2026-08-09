@@ -35,6 +35,24 @@ $subscribeIncludedTitle = $translations['subscribe_included_title'] ?? 'What’s
 $subscribeReasonsTitle = $translations['subscribe_reasons_title'] ?? 'Why Join the Monthly Subscription?';
 $subscribeCta = $translations['subscribe_cta_primary'] ?? 'Start Your Monthly Subscription (Cancel Anytime)';
 $subscribeMicrocopy = $translations['subscribe_cta_microcopy'] ?? 'Instant access to the AI voice chatbot and this month’s featured mission upon registration.';
+
+$selectedCheckoutLanguage = strtolower(trim((string) ($lang ?? 'en')));
+$checkoutLocaleMap = [
+	'ar' => ['lang' => 'ar', 'country' => 'AE', 'timezone' => 'Asia/Dubai'],
+	'bg' => ['lang' => 'bg', 'country' => 'BG', 'timezone' => 'Europe/Sofia'],
+	'de' => ['lang' => 'de', 'country' => 'DE', 'timezone' => 'Europe/Berlin'],
+	'en' => ['lang' => 'en', 'country' => 'US', 'timezone' => 'America/New_York'],
+	'es' => ['lang' => 'es', 'country' => 'ES', 'timezone' => 'Europe/Madrid'],
+	'fr' => ['lang' => 'fr', 'country' => 'FR', 'timezone' => 'Europe/Paris'],
+	'hi' => ['lang' => 'hi', 'country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+	'ja' => ['lang' => 'ja', 'country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+	'ko' => ['lang' => 'ko', 'country' => 'KR', 'timezone' => 'Asia/Seoul'],
+	'pt' => ['lang' => 'pt', 'country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+	'ru' => ['lang' => 'ru', 'country' => 'RU', 'timezone' => 'Europe/Moscow'],
+	'zh_cn' => ['lang' => 'zh_cn', 'country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+	'zh_tw' => ['lang' => 'zh_tw', 'country' => 'TW', 'timezone' => 'Asia/Taipei'],
+];
+$checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
 ?>
 <main class="page">
 	<section class="card subscribe-card">
@@ -85,6 +103,9 @@ $subscribeMicrocopy = $translations['subscribe_cta_microcopy'] ?? 'Instant acces
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="price" value="<?php echo (int) $courseAmountTwo; ?>">
+					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
+					<input type="hidden" name="moodle_user_country" value="<?php echo htmlspecialchars($checkoutLocaleSettings['country'], ENT_QUOTES, 'UTF-8'); ?>">
+					<input type="hidden" name="moodle_user_timezone" value="<?php echo htmlspecialchars($checkoutLocaleSettings['timezone'], ENT_QUOTES, 'UTF-8'); ?>">
 					<button type="submit"><?php echo htmlspecialchars($translations['checkout_subscribe_button'] ?? 'Subscribe and Enroll', ENT_QUOTES, 'UTF-8'); ?></button>
 				</form>
 				<p class="microcopy"><?php echo htmlspecialchars($subscribeMicrocopy, ENT_QUOTES, 'UTF-8'); ?></p>

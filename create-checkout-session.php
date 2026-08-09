@@ -80,7 +80,42 @@ try {
 		FILE_APPEND | LOCK_EX
 	);
 
-	$selectedCheckoutLanguage = isset($lang) && is_string($lang) && $lang !== '' ? $lang : 'en';
+	$selectedCheckoutLanguage = isset($_POST['moodle_user_lang']) && is_string($_POST['moodle_user_lang']) && trim((string) $_POST['moodle_user_lang']) !== ''
+		? strtolower(trim((string) $_POST['moodle_user_lang']))
+		: (isset($lang) && is_string($lang) && $lang !== '' ? strtolower(trim((string) $lang)) : 'en');
+	$selectedCheckoutCountry = isset($_POST['moodle_user_country']) && is_string($_POST['moodle_user_country']) && trim((string) $_POST['moodle_user_country']) !== ''
+		? trim((string) $_POST['moodle_user_country'])
+		: '';
+	$selectedCheckoutTimezone = isset($_POST['moodle_user_timezone']) && is_string($_POST['moodle_user_timezone']) && trim((string) $_POST['moodle_user_timezone']) !== ''
+		? trim((string) $_POST['moodle_user_timezone'])
+		: '';
+
+	$checkoutLocaleMap = [
+		'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
+		'bg' => ['country' => 'BG', 'timezone' => 'Europe/Sofia'],
+		'de' => ['country' => 'DE', 'timezone' => 'Europe/Berlin'],
+		'en' => ['country' => 'US', 'timezone' => 'America/New_York'],
+		'es' => ['country' => 'ES', 'timezone' => 'Europe/Madrid'],
+		'fr' => ['country' => 'FR', 'timezone' => 'Europe/Paris'],
+		'hi' => ['country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+		'ja' => ['country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+		'ko' => ['country' => 'KR', 'timezone' => 'Asia/Seoul'],
+		'pt' => ['country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+		'ru' => ['country' => 'RU', 'timezone' => 'Europe/Moscow'],
+		'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+		'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
+	];
+
+	if ($selectedCheckoutCountry === '') {
+		$mappedValues = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
+		$selectedCheckoutCountry = (string) ($mappedValues['country'] ?? '');
+	}
+
+	if ($selectedCheckoutTimezone === '') {
+		$mappedValues = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
+		$selectedCheckoutTimezone = (string) ($mappedValues['timezone'] ?? '');
+	}
+
 	$sessionParams = [
 		'mode' => $checkoutMode,
 		'managed_payments' => [
@@ -94,6 +129,8 @@ try {
 			'moodle_course_ids' => implode(',', $checkoutCourseIds),
 			'checkout_mode' => $checkoutMode,
 			'moodle_user_lang' => $selectedCheckoutLanguage,
+			'moodle_user_country' => $selectedCheckoutCountry,
+			'moodle_user_timezone' => $selectedCheckoutTimezone,
 		],
 	];
 
