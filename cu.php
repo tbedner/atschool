@@ -500,6 +500,8 @@ if (!empty($loginResult['curl_error'])) {
 
 if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl'])) {
     $mail = new PHPMailer(true);
+    $mail->CharSet = 'UTF-8';
+    $mail->Encoding = 'base64';
     $mail->isSMTP();                                            //Send using SMTP
     $mail->Host       = $emailHost;                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
