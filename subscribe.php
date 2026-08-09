@@ -20,7 +20,25 @@ require_once __DIR__ . '/secrets.php';
 
 function buildLocalizedSubscribePriceDisplay(int $amountCents, string $courseCurrency, string $language): string {
 	$normalizedLanguage = strtolower(trim($language));
-	$amount = max(0, (int) round($amountCents / 100));
+	$normalizedCurrency = strtolower(trim($courseCurrency));
+	$minorUnitScaleByCurrency = [
+		'bhd' => 1000,
+		'clp' => 1,
+		'cny' => 1,
+		'huf' => 1,
+		'isk' => 1,
+		'jod' => 1000,
+		'jpy' => 1,
+		'krw' => 1,
+		'kwd' => 1000,
+		'omr' => 1000,
+		'pyg' => 1,
+		'tnd' => 1000,
+		'twd' => 1,
+		'vnd' => 1,
+	];
+	$divisor = $minorUnitScaleByCurrency[$normalizedCurrency] ?? 100;
+	$amount = max(0, (int) round($amountCents / $divisor));
 
 	$currencyConfig = [
 		'ar' => ['symbol' => 'د.إ', 'currency' => 'AED'],
