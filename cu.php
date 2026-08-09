@@ -198,7 +198,7 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     }
 
     return [
-        'lang' => $languageCode !== '' ? $languageCode : 'en',
+        'lang' => $languageCode !== '' ? $languageCode : 'ja',
         'country' => $country !== '' ? $country : 'JP',
         'timezone' => $timezone !== '' ? $timezone : 'Asia/Tokyo',
     ];
