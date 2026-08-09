@@ -18,52 +18,39 @@ include('menu.php');
 <?php
 require_once __DIR__ . '/secrets.php';
 
-function buildLocalizedSubscribePriceDisplay(int $amountCents, string $courseCurrency, string $language): string {
-	$normalizedLanguage = strtolower(trim($language));
-	$normalizedCurrency = strtolower(trim($courseCurrency));
-	$minorUnitScaleByCurrency = [
-		'bhd' => 1000,
-		'clp' => 1,
-		'cny' => 1,
-		'huf' => 1,
-		'isk' => 1,
-		'jod' => 1000,
-		'jpy' => 1,
-		'krw' => 1,
-		'kwd' => 1000,
-		'omr' => 1000,
-		'pyg' => 1,
-		'tnd' => 1000,
-		'twd' => 1,
-		'vnd' => 1,
-	];
-	$divisor = $minorUnitScaleByCurrency[$normalizedCurrency] ?? 100;
-	$amount = max(0, (int) round($amountCents / $divisor));
-
+function getSubscribeCurrencyConfigForLanguage(string $language): array {
 	$currencyConfig = [
-		'ar' => ['symbol' => 'د.إ', 'currency' => 'AED'],
-		'bg' => ['symbol' => 'лв', 'currency' => 'BGN'],
-		'de' => ['symbol' => '€', 'currency' => 'EUR'],
-		'en' => ['symbol' => 'A$', 'currency' => 'AUD'],
-		'es' => ['symbol' => '€', 'currency' => 'EUR'],
-		'fr' => ['symbol' => '€', 'currency' => 'EUR'],
-		'hi' => ['symbol' => '₹', 'currency' => 'INR'],
-		'ja' => ['symbol' => '¥', 'currency' => 'JPY'],
-		'ko' => ['symbol' => '₩', 'currency' => 'KRW'],
-		'pt' => ['symbol' => '€', 'currency' => 'EUR'],
-		'ru' => ['symbol' => '₽', 'currency' => 'RUB'],
-		'zh_cn' => ['symbol' => '¥', 'currency' => 'CNY'],
-		'zh_tw' => ['symbol' => 'NT$', 'currency' => 'TWD'],
+		'ar' => ['symbol' => 'د.إ', 'currency' => 'aed'],
+		'bg' => ['symbol' => 'лв', 'currency' => 'bgn'],
+		'de' => ['symbol' => '€', 'currency' => 'eur'],
+		'en' => ['symbol' => 'A$', 'currency' => 'aud'],
+		'es' => ['symbol' => '€', 'currency' => 'eur'],
+		'fr' => ['symbol' => '€', 'currency' => 'eur'],
+		'hi' => ['symbol' => '₹', 'currency' => 'inr'],
+		'ja' => ['symbol' => '¥', 'currency' => 'jpy'],
+		'ko' => ['symbol' => '₩', 'currency' => 'krw'],
+		'pt' => ['symbol' => '€', 'currency' => 'eur'],
+		'ru' => ['symbol' => '₽', 'currency' => 'rub'],
+		'zh_cn' => ['symbol' => '¥', 'currency' => 'cny'],
+		'zh_tw' => ['symbol' => 'NT$', 'currency' => 'twd'],
 	];
 
-	$selectedCurrency = $currencyConfig[$normalizedLanguage] ?? $currencyConfig['en'];
-	$formattedAmount = number_format($amount, 0, '.', ',');
+	$normalizedLanguage = strtolower(trim($language));
+	return $currencyConfig[$normalizedLanguage] ?? $currencyConfig['en'];
+}
+
+function buildLocalizedSubscribePriceDisplay(int $referenceAmount, string $language): string {
+	$selectedCurrency = getSubscribeCurrencyConfigForLanguage($language);
+	$pricing = getSubscriptionPriceForCurrency($selectedCurrency['currency'], $referenceAmount);
+	$formattedAmount = number_format($pricing['display_amount'], 0, '.', ',');
 
 	return $selectedCurrency['symbol'] . $formattedAmount;
 }
 
 $selectedPriceLanguage = strtolower(trim((string) ($lang ?? 'en')));
-$subscribePriceDisplay = buildLocalizedSubscribePriceDisplay((int) $courseAmountTwo, (string) $courseCurrency, $selectedPriceLanguage) . ' / ' . ($translations['subscribe_price_period'] ?? 'month');
+$checkoutCurrencyConfig = getSubscribeCurrencyConfigForLanguage($selectedPriceLanguage);
+$checkoutMinorUnitPrice = getSubscriptionPriceForCurrency($checkoutCurrencyConfig['currency'], (int) $subscriptionReferenceAmount)['minor_unit_amount'];
+$subscribePriceDisplay = buildLocalizedSubscribePriceDisplay((int) $subscriptionReferenceAmount, $selectedPriceLanguage) . ' / ' . ($translations['subscribe_price_period'] ?? 'month');
 
 $subscribeBadge = $translations['subscribe_badge'] ?? 'Monthly Subscription';
 $subscribeHeadline = $translations['subscribe_page_title'] ?? 'Continuous Growth: The Monthly Mission Pass';
@@ -140,7 +127,7 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
-					<input type="hidden" name="price" value="<?php echo (int) $courseAmountTwo; ?>">
+					<input type="hidden" name="price" value="<?php echo (int) $checkoutMinorUnitPrice; ?>">
 					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="moodle_user_country" value="<?php echo htmlspecialchars($checkoutLocaleSettings['country'], ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="moodle_user_timezone" value="<?php echo htmlspecialchars($checkoutLocaleSettings['timezone'], ENT_QUOTES, 'UTF-8'); ?>">
