@@ -139,8 +139,27 @@ function splitName(string $fullName): array {
 
 function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array {
     $languageCode = strtolower(trim($languageCode));
+    if ($languageCode === '') {
+        $languageCode = 'en';
+    }
+
     $country = '';
     $timezone = '';
+    $languageMap = [
+        'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
+        'bg' => ['country' => 'BG', 'timezone' => 'Europe/Sofia'],
+        'de' => ['country' => 'DE', 'timezone' => 'Europe/Berlin'],
+        'en' => ['country' => 'US', 'timezone' => 'America/New_York'],
+        'es' => ['country' => 'ES', 'timezone' => 'Europe/Madrid'],
+        'fr' => ['country' => 'FR', 'timezone' => 'Europe/Paris'],
+        'hi' => ['country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+        'ja' => ['country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+        'ko' => ['country' => 'KR', 'timezone' => 'Asia/Seoul'],
+        'pt' => ['country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+        'ru' => ['country' => 'RU', 'timezone' => 'Europe/Moscow'],
+        'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+        'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
+    ];
 
     $requestValue = static function (string $name): string {
         $value = $_GET[$name] ?? ($_POST[$name] ?? '');
@@ -193,22 +212,6 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     }
 
     if ($country === '' || $timezone === '') {
-        $languageMap = [
-            'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
-            'bg' => ['country' => 'BG', 'timezone' => 'Europe/Sofia'],
-            'de' => ['country' => 'DE', 'timezone' => 'Europe/Berlin'],
-            'en' => ['country' => 'US', 'timezone' => 'America/New_York'],
-            'es' => ['country' => 'ES', 'timezone' => 'Europe/Madrid'],
-            'fr' => ['country' => 'FR', 'timezone' => 'Europe/Paris'],
-            'hi' => ['country' => 'IN', 'timezone' => 'Asia/Kolkata'],
-            'ja' => ['country' => 'JP', 'timezone' => 'Asia/Tokyo'],
-            'ko' => ['country' => 'KR', 'timezone' => 'Asia/Seoul'],
-            'pt' => ['country' => 'PT', 'timezone' => 'Europe/Lisbon'],
-            'ru' => ['country' => 'RU', 'timezone' => 'Europe/Moscow'],
-            'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
-            'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
-        ];
-
         $mappedValues = $languageMap[$languageCode] ?? null;
         if (is_array($mappedValues)) {
             if ($country === '') {
@@ -220,10 +223,20 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
         }
     }
 
+    $resolvedLanguageCode = $languageCode !== '' ? $languageCode : 'en';
+    $resolvedCountry = $country !== '' ? $country : 'US';
+    $resolvedTimezone = $timezone !== '' ? $timezone : 'America/New_York';
+
+    if ($resolvedCountry === 'US' && $resolvedTimezone === 'America/New_York' && isset($languageMap[$resolvedLanguageCode])) {
+        $mappedValues = $languageMap[$resolvedLanguageCode];
+        $resolvedCountry = (string) ($mappedValues['country'] ?? $resolvedCountry);
+        $resolvedTimezone = (string) ($mappedValues['timezone'] ?? $resolvedTimezone);
+    }
+
     return [
-        'lang' => $languageCode !== '' ? $languageCode : 'ja',
-        'country' => $country !== '' ? $country : 'JP',
-        'timezone' => $timezone !== '' ? $timezone : 'Asia/Tokyo',
+        'lang' => $resolvedLanguageCode,
+        'country' => $resolvedCountry,
+        'timezone' => $resolvedTimezone,
     ];
 }
 
