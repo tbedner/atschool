@@ -74,6 +74,22 @@ $checkoutStripeLocaleMap = [
 	'zh_tw' => 'zh',
 ];
 $selectedStripeCheckoutLocale = $checkoutStripeLocaleMap[$selectedCheckoutLanguage] ?? 'en';
+$checkoutCurrencyMap = [
+	'ar' => 'aed',
+	'bg' => 'bgn',
+	'de' => 'eur',
+	'en' => 'aud',
+	'es' => 'eur',
+	'fr' => 'eur',
+	'hi' => 'inr',
+	'ja' => 'jpy',
+	'ko' => 'krw',
+	'pt' => 'eur',
+	'ru' => 'rub',
+	'zh_cn' => 'cny',
+	'zh_tw' => 'twd',
+];
+$selectedCheckoutCurrency = $checkoutCurrencyMap[$selectedCheckoutLanguage] ?? strtolower((string) $courseCurrency);
 
 if ($selectedCheckoutCountry === '') {
 	$mappedValues = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
@@ -91,7 +107,7 @@ $cancelUrl = rtrim($siteBaseUrl, '/') . '/index.php?canceled=1';
 try {
 	$lineItem = [
 		'price_data' => [
-			'currency' => strtolower((string) $courseCurrency),
+			'currency' => $selectedCheckoutCurrency,
 			'product_data' => [
 				'name' => $courseDisplayName,
 			],
