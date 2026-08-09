@@ -30,3 +30,10 @@ $courseCurrency = 'jpy';
 $checkoutModeOne = 'payment';
 $checkoutModeTwo = 'subscription';
 $endpointSecret = $env['ENDPOINTSECRET'];
+
+// Email configuration.
+$emailFromAddress = 'support@at-school-portal.com';
+$emailFromName = '@School Support';
+$emailUser = $env['EMAILUSER'];
+$emailPassword = $env['EMAILPASSWORD'];
+$emailHost = 'mail.at-school-portal.com';
