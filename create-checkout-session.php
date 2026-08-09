@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/stripe/init.php';
 require_once __DIR__ . '/secrets.php';
+include(__DIR__ . '/lang.php');
 
 use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
@@ -79,6 +80,7 @@ try {
 		FILE_APPEND | LOCK_EX
 	);
 
+	$selectedCheckoutLanguage = isset($lang) && is_string($lang) && $lang !== '' ? $lang : 'en';
 	$sessionParams = [
 		'mode' => $checkoutMode,
 		'managed_payments' => [
@@ -91,6 +93,7 @@ try {
 			'moodle_course_id' => (string) ($checkoutCourseIds[0] ?? (int) $moodleCourseId),
 			'moodle_course_ids' => implode(',', $checkoutCourseIds),
 			'checkout_mode' => $checkoutMode,
+			'moodle_user_lang' => $selectedCheckoutLanguage,
 		],
 	];
 

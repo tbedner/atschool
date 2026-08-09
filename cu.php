@@ -137,6 +137,67 @@ function splitName(string $fullName): array {
     return [$first, $last];
 }
 
+function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array {
+    $languageCode = strtolower(trim($languageCode));
+    $country = '';
+    $timezone = '';
+
+    $metadataValue = function ($name) use ($metadata): string {
+        if (is_object($metadata) && isset($metadata->{$name})) {
+            return trim((string) $metadata->{$name});
+        }
+
+        if (is_array($metadata) && isset($metadata[$name])) {
+            return trim((string) $metadata[$name]);
+        }
+
+        return '';
+    };
+
+    $country = $metadataValue('moodle_user_country');
+    $timezone = $metadataValue('moodle_user_timezone');
+
+    if ($country === '' || $timezone === '') {
+        $languageCodeFromMetadata = $metadataValue('moodle_user_lang');
+        if ($languageCodeFromMetadata !== '') {
+            $languageCode = strtolower(trim($languageCodeFromMetadata));
+        }
+    }
+
+    if ($country === '' || $timezone === '') {
+        $languageMap = [
+            'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
+            'bg' => ['country' => 'BG', 'timezone' => 'Europe/Sofia'],
+            'de' => ['country' => 'DE', 'timezone' => 'Europe/Berlin'],
+            'en' => ['country' => 'US', 'timezone' => 'America/New_York'],
+            'es' => ['country' => 'ES', 'timezone' => 'Europe/Madrid'],
+            'fr' => ['country' => 'FR', 'timezone' => 'Europe/Paris'],
+            'hi' => ['country' => 'IN', 'timezone' => 'Asia/Kolkata'],
+            'ja' => ['country' => 'JP', 'timezone' => 'Asia/Tokyo'],
+            'ko' => ['country' => 'KR', 'timezone' => 'Asia/Seoul'],
+            'pt' => ['country' => 'PT', 'timezone' => 'Europe/Lisbon'],
+            'ru' => ['country' => 'RU', 'timezone' => 'Europe/Moscow'],
+            'zh_cn' => ['country' => 'CN', 'timezone' => 'Asia/Shanghai'],
+            'zh_tw' => ['country' => 'TW', 'timezone' => 'Asia/Taipei'],
+        ];
+
+        $mappedValues = $languageMap[$languageCode] ?? null;
+        if (is_array($mappedValues)) {
+            if ($country === '') {
+                $country = (string) ($mappedValues['country'] ?? '');
+            }
+            if ($timezone === '') {
+                $timezone = (string) ($mappedValues['timezone'] ?? '');
+            }
+        }
+    }
+
+    return [
+        'country' => $country !== '' ? $country : 'JP',
+        'timezone' => $timezone !== '' ? $timezone : 'Asia/Tokyo',
+    ];
+}
+
 function resolveMoodleCheckoutMode($metadata, string $defaultMode): string {
     $candidateModes = [];
 
@@ -342,6 +403,7 @@ $newEmail = trim($newEmail);
 $metadata = $checkoutSession->metadata ?? null;
 $checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
 $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+$moodleUserLocaleSettings = resolveMoodleUserLocaleSettings($metadata, $lang ?? 'en');
 
 $checkoutDebugPayload = [
     'source' => 'cu.php',
@@ -378,9 +440,9 @@ $user1 = [
     'lastname' => $newLastname,
     'email' => $newEmail,
     'auth' => 'manual',
-    'country' => 'JP',
-    'timezone' => 'Asia/Tokyo',
-    'lang' => 'ja',
+    'country' => $moodleUserLocaleSettings['country'],
+    'timezone' => $moodleUserLocaleSettings['timezone'],
+    'lang' => $lang,
 ];
 
 $createUserParams = ['users' => [$user1]];
@@ -437,9 +499,9 @@ if ($userId !== null) {
         'firstname' => $newFirstname,
         'lastname' => $newLastname,
         'email' => $newEmail,
-        'country' => 'JP',
-        'timezone' => 'Asia/Tokyo',
-        'lang' => 'ja',
+        'country' => $moodleUserLocaleSettings['country'],
+        'timezone' => $moodleUserLocaleSettings['timezone'],
+        'lang' => $lang,
     ]]]);
 
     if (!empty($updateUserResult['curl_error'])) {
