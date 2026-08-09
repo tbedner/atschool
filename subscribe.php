@@ -18,14 +18,34 @@ include('menu.php');
 <?php
 require_once __DIR__ . '/secrets.php';
 
-$currency = strtolower((string) $courseCurrency);
-if ($currency === 'jpy') {
-	$amountDisplay = '¥' . number_format((int) $courseAmountTwo);
-} else {
-	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountTwo) / 100, 2);
+function buildLocalizedSubscribePriceDisplay(int $amountCents, string $courseCurrency, string $language): string {
+	$normalizedLanguage = strtolower(trim($language));
+	$amount = max(0, (int) round($amountCents / 100));
+
+	$currencyConfig = [
+		'ar' => ['symbol' => 'د.إ', 'currency' => 'AED'],
+		'bg' => ['symbol' => 'лв', 'currency' => 'BGN'],
+		'de' => ['symbol' => '€', 'currency' => 'EUR'],
+		'en' => ['symbol' => 'A$', 'currency' => 'AUD'],
+		'es' => ['symbol' => '€', 'currency' => 'EUR'],
+		'fr' => ['symbol' => '€', 'currency' => 'EUR'],
+		'hi' => ['symbol' => '₹', 'currency' => 'INR'],
+		'ja' => ['symbol' => '¥', 'currency' => 'JPY'],
+		'ko' => ['symbol' => '₩', 'currency' => 'KRW'],
+		'pt' => ['symbol' => '€', 'currency' => 'EUR'],
+		'ru' => ['symbol' => '₽', 'currency' => 'RUB'],
+		'zh_cn' => ['symbol' => '¥', 'currency' => 'CNY'],
+		'zh_tw' => ['symbol' => 'NT$', 'currency' => 'TWD'],
+	];
+
+	$selectedCurrency = $currencyConfig[$normalizedLanguage] ?? $currencyConfig['en'];
+	$formattedAmount = number_format($amount, 0, '.', ',');
+
+	return $selectedCurrency['symbol'] . $formattedAmount;
 }
 
-$subscribePriceDisplay = $translations['subscribe_price_display'] ?? ($amountDisplay . ' / month');
+$selectedPriceLanguage = strtolower(trim((string) ($lang ?? 'en')));
+$subscribePriceDisplay = buildLocalizedSubscribePriceDisplay((int) $courseAmountTwo, (string) $courseCurrency, $selectedPriceLanguage) . ' / ' . ($translations['subscribe_price_period'] ?? 'month');
 
 $subscribeBadge = $translations['subscribe_badge'] ?? 'Monthly Subscription';
 $subscribeHeadline = $translations['subscribe_page_title'] ?? 'Continuous Growth: The Monthly Mission Pass';
