@@ -227,6 +227,38 @@ function resolveMoodleUserLocaleSettings($metadata, string $languageCode): array
     ];
 }
 
+function resolveStripeSessionId(): string {
+    $candidateKeys = ['session_id', 'session', 'checkout_session_id', 'id'];
+
+    foreach ($candidateKeys as $candidateKey) {
+        $value = $_GET[$candidateKey] ?? ($_POST[$candidateKey] ?? '');
+        if (is_scalar($value)) {
+            $trimmedValue = trim((string) $value);
+            if ($trimmedValue !== '') {
+                return $trimmedValue;
+            }
+        }
+    }
+
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+    if ($requestUri !== '') {
+        $queryString = parse_url($requestUri, PHP_URL_QUERY) ?: '';
+        if ($queryString !== '') {
+            parse_str($queryString, $queryParams);
+            foreach ($candidateKeys as $candidateKey) {
+                if (isset($queryParams[$candidateKey]) && is_scalar($queryParams[$candidateKey])) {
+                    $trimmedValue = trim((string) $queryParams[$candidateKey]);
+                    if ($trimmedValue !== '') {
+                        return $trimmedValue;
+                    }
+                }
+            }
+        }
+    }
+
+    return '';
+}
+
 function resolveMoodleCheckoutMode($metadata, string $defaultMode): string {
     $candidateModes = [];
 
@@ -387,7 +419,7 @@ $domainName = $moodleDomainName;
 $restFormat = $moodleRestFormat;
 $newPassword = generateMoodlePassword(12);
 
-$sessionId = trim((string) ($_GET['session_id'] ?? ''));
+$sessionId = resolveStripeSessionId();
 if ($sessionId === '') {
     echo 'Error: Missing Stripe Checkout session_id.';
     exit;
@@ -398,6 +430,7 @@ Stripe::setApiKey($stripeSecretKey);
 try {
     $checkoutSession = Session::retrieve($sessionId);
 } catch (\Throwable $e) {
+    error_log('Stripe Checkout session retrieval failed for session_id=' . $sessionId . ': ' . $e->getMessage());
     echo 'Error3: Unable to load Stripe Checkout session.';
     exit;
 }
