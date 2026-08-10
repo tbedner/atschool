@@ -169,6 +169,6 @@ return [
     'onecoin_reason_3_text' => 'Terminez votre session live de 15 minutes et appliquez votre paiement de €5 comme crédit intégral pour votre premier mois de l’abonnement mensuel complet \\!',
     'onecoin_cta_primary' => 'Obtenez la Mission 1 pour 500 ¥ maintenant',
     'onecoin_cta_microcopy' => 'Paiement unique de 500 ¥. Accès instantané à l’achat, sans frais récurrents automatiques.',
-    'subscribe_price_display' => '5 € / mois',,
+    'subscribe_price_display' => '5 € / mois',
     'subscribe_price_period' => 'mois',
 ];

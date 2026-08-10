@@ -169,6 +169,6 @@ return [
     'onecoin_reason_3_text' => 'Schließe deine 15-Minuten-Live-Sitzung ab und wende deine €5-Zahlung als vollen Kredit auf den ersten Monat des kompletten Monatsabos an\\!',
     'onecoin_cta_primary' => 'Hol dir Mission 1 jetzt für €5',
     'onecoin_cta_microcopy' => 'Einmalige Zahlung von €5. Sofortiger Zugang nach dem Checkout ohne automatische wiederkehrende Gebühren.',
-    'subscribe_price_display' => '5 € / Monat',,
+    'subscribe_price_display' => '5 € / Monat',
     'subscribe_price_period' => 'Monat',
 ];

@@ -169,6 +169,6 @@ return [
     'onecoin_reason_3_text' => '15분 라이브 세션을 마치고 ₩5,000 결제를 풀 Monthly Subscription 첫 달 크레딧으로 적용하세요\\!',
     'onecoin_cta_primary' => '지금 Mission 1을 ₩5,000에 받으세요',
     'onecoin_cta_microcopy' => '₩5,000 일회성 결제입니다. 결제 후 즉시 접근 가능하며 자동 반복 결제는 없습니다.',
-    'subscribe_price_display' => '₩5,000 / 월',,
+    'subscribe_price_display' => '₩5,000 / 월',
     'subscribe_price_period' => '월',
 ];

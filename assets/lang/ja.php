@@ -181,6 +181,6 @@ return [
     'onecoin_reason_3_text' => '15分のライブセッションを完了し、¥500の支払いをフルマンスの月額プランの最初の1か月分のクレジットとして適用しましょう。',
     'onecoin_cta_primary' => '今すぐMission 1を¥500で手に入れる',
     'onecoin_cta_microcopy' => '¥500の一回払い。チェックアウト後すぐにアクセスでき、自動継続課金はありません。',
-    'subscribe_price_display' => '¥500 / 月',,
+    'subscribe_price_display' => '¥500 / 月',
     'subscribe_price_period' => '月',
 ];
