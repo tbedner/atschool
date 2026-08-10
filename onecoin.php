@@ -48,7 +48,10 @@ function buildLocalizedOnecoinPriceDisplay(int $referenceAmount, string $languag
 }
 
 $selectedPriceLanguage = strtolower(trim((string) ($lang ?? 'en')));
-$onecoinPriceDisplay = buildLocalizedOnecoinPriceDisplay((int) $courseAmountOne, $selectedPriceLanguage);
+// Use the subscription exchange-rate table as the basis for the one-coin display,
+// with the one-coin reference amount aligned to the subscription pricing scale.
+$onecoinReferenceAmount = 5;
+$onecoinPriceDisplay = buildLocalizedOnecoinPriceDisplay($onecoinReferenceAmount, $selectedPriceLanguage);
 
 $offerBadge = strtr($translations['onecoin_badge'] ?? 'Try Mission 1 for Just {price}', ['{price}' => $onecoinPriceDisplay]);
 $offerHeadline = $translations['onecoin_title'] ?? 'Scared of Sudden English Conversation? Practice with AI First, Then Test Your Skills in a 15-Minute Live Session!';
