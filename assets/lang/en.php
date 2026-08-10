@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => 'Pay seamlessly in seconds via PayPay, Apple Pay, or Google Pay.',
     'onecoin_reason_3_title' => 'Special Bonus',
     'onecoin_reason_3_text' => 'Complete your 15-minute live session and apply your A$5 payment as a full credit toward your first month of the full Monthly Subscription!',
-    'onecoin_cta_primary' => 'Get Mission 1 for A$5 Now',
-    'onecoin_cta_microcopy' => 'One-time payment of A$5. Instant access upon checkout with no automatic recurring charges.',
+    'onecoin_cta_primary' => 'Get Mission 1 for {price} Now',
+    'onecoin_cta_microcopy' => 'One-time payment of {price}. Instant access upon checkout with no automatic recurring charges.',
     'subscribe_price_display' => 'A$5 / month',
     'subscribe_price_period' => 'month',
 ];

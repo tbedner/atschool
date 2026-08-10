@@ -18,14 +18,37 @@ include('menu.php');
 <?php
 require_once __DIR__ . '/secrets.php';
 
-$currency = strtolower((string) $courseCurrency);
-if (($lang ?? '') === 'ja') {
-	$amountDisplay = '¥' . number_format((int) $courseAmountOne);
-} elseif ($currency === 'jpy') {
-	$amountDisplay = 'A$' . number_format(((int) $courseAmountOne) / 100, 0);
-} else {
-	$amountDisplay = strtoupper($currency) . ' ' . number_format(((int) $courseAmountOne) / 100, 2);
+function getOnecoinCurrencyConfigForLanguage(string $language): array {
+	$currencyConfig = [
+		'ar' => ['symbol' => 'د.إ', 'currency' => 'aed'],
+		'bg' => ['symbol' => 'лв', 'currency' => 'bgn'],
+		'de' => ['symbol' => '€', 'currency' => 'eur'],
+		'en' => ['symbol' => 'A$', 'currency' => 'aud'],
+		'es' => ['symbol' => '€', 'currency' => 'eur'],
+		'fr' => ['symbol' => '€', 'currency' => 'eur'],
+		'hi' => ['symbol' => '₹', 'currency' => 'inr'],
+		'ja' => ['symbol' => '¥', 'currency' => 'jpy'],
+		'ko' => ['symbol' => '₩', 'currency' => 'krw'],
+		'pt' => ['symbol' => '€', 'currency' => 'eur'],
+		'ru' => ['symbol' => '₽', 'currency' => 'rub'],
+		'zh_cn' => ['symbol' => '¥', 'currency' => 'cny'],
+		'zh_tw' => ['symbol' => 'NT$', 'currency' => 'twd'],
+	];
+
+	$normalizedLanguage = strtolower(trim($language));
+	return $currencyConfig[$normalizedLanguage] ?? $currencyConfig['en'];
 }
+
+function buildLocalizedOnecoinPriceDisplay(int $referenceAmount, string $language): string {
+	$selectedCurrency = getOnecoinCurrencyConfigForLanguage($language);
+	$pricing = getSubscriptionPriceForCurrency($selectedCurrency['currency'], $referenceAmount);
+	$formattedAmount = number_format($pricing['display_amount'], 0, '.', ',');
+
+	return $selectedCurrency['symbol'] . $formattedAmount;
+}
+
+$selectedPriceLanguage = strtolower(trim((string) ($lang ?? 'en')));
+$onecoinPriceDisplay = buildLocalizedOnecoinPriceDisplay((int) $courseAmountOne, $selectedPriceLanguage);
 
 $offerBadge = $translations['onecoin_badge'] ?? 'Try Mission 1 for Just A$5';
 $offerHeadline = $translations['onecoin_title'] ?? 'Scared of Sudden English Conversation? Practice with AI First, Then Test Your Skills in a 15-Minute Live Session!';
@@ -33,8 +56,8 @@ $offerSubhead = $translations['onecoin_subhead'] ?? 'Master your first real-worl
 $offerBenefitsTitle = $translations['onecoin_benefits_title'] ?? 'What You Get for A$5';
 $offerStepsTitle = $translations['onecoin_steps_title'] ?? 'How It Works (The 3-Step Flow)';
 $offerReasonsTitle = $translations['onecoin_reasons_title'] ?? 'Why Start with the One-Coin Offer?';
-$offerCta = $translations['onecoin_cta_primary'] ?? 'Get Mission 1 for A$5 Now';
-$offerMicrocopy = $translations['onecoin_cta_microcopy'] ?? 'One-time payment of A$5. Instant access upon checkout with no automatic recurring charges.';
+$offerCta = strtr($translations['onecoin_cta_primary'] ?? 'Get Mission 1 for {price} Now', ['{price}' => $onecoinPriceDisplay]);
+$offerMicrocopy = strtr($translations['onecoin_cta_microcopy'] ?? 'One-time payment of {price}. Instant access upon checkout with no automatic recurring charges.', ['{price}' => $onecoinPriceDisplay]);
 
 $selectedCheckoutLanguage = strtolower(trim((string) ($lang ?? 'en')));
 $checkoutLocaleMap = [
@@ -60,7 +83,7 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 			<p class="eyebrow"><?php echo htmlspecialchars($offerBadge, ENT_QUOTES, 'UTF-8'); ?></p>
 			<h1><?php echo htmlspecialchars($offerHeadline, ENT_QUOTES, 'UTF-8'); ?></h1>
 			<p class="lead"><?php echo htmlspecialchars($offerSubhead, ENT_QUOTES, 'UTF-8'); ?></p>
-			<div class="subscribe-price"><?php echo htmlspecialchars($amountDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
+			<div class="subscribe-price"><?php echo htmlspecialchars($onecoinPriceDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
 		</div>
 
 		<div class="subscribe-grid">

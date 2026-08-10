@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => 'Оплачивайте за несколько секунд через PayPay, Apple Pay или Google Pay.',
     'onecoin_reason_3_title' => 'Особый бонус',
     'onecoin_reason_3_text' => 'Завершите свою 15-минутную live-сессию и примените оплату в ₽5 как полный кредит на первый месяц полного ежемесячного подписного плана\\!',
-    'onecoin_cta_primary' => 'Получите Mission 1 за ₽5 прямо сейчас',
-    'onecoin_cta_microcopy' => 'Разовый платеж в ₽5. Мгновенный доступ после оплаты без автоматических повторяющихся списаний.',
+    'onecoin_cta_primary' => 'Получите Mission 1 за {price} прямо сейчас',
+    'onecoin_cta_microcopy' => 'Разовый платеж в {price}. Мгновенный доступ после оплаты без автоматических повторяющихся списаний.',
     'subscribe_price_display' => '5 ₽ / месяц',
     'subscribe_price_period' => 'месяц',
 ];

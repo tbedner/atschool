@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => 'Pague em segundos via PayPay, Apple Pay ou Google Pay.',
     'onecoin_reason_3_title' => 'Bônus especial',
     'onecoin_reason_3_text' => 'Complete sua sessão ao vivo de 15 minutos e aplique seu pagamento de €5 como crédito total para o primeiro mês da assinatura mensal completa\\!',
-    'onecoin_cta_primary' => 'Obtenha a Missão 1 por €5 agora',
-    'onecoin_cta_microcopy' => 'Pagamento único de €5. Acesso instantâneo após o checkout, sem cobranças recorrentes automáticas.',
+    'onecoin_cta_primary' => 'Obtenha a Missão 1 por {price} agora',
+    'onecoin_cta_microcopy' => 'Pagamento único de {price}. Acesso instantâneo após o checkout, sem cobranças recorrentes automáticas.',
     'subscribe_price_display' => '5 € / mês',
     'subscribe_price_period' => 'mês',
 ];

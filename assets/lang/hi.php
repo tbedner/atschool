@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => 'PayPay, Apple Pay या Google Pay के माध्यम से सेकंडों में आसानी से भुगतान करें।',
     'onecoin_reason_3_title' => 'विशेष बोनस',
     'onecoin_reason_3_text' => 'अपना 15-मिनट का लाइव सत्र पूरा करें और अपनी ₹5 भुगतान को पूर्ण Monthly Subscription के पहले महीने के लिए पूरा क्रेडिट के रूप में लागू करें\\!',
-    'onecoin_cta_primary' => 'अभी मिशन 1 को ₹5 में प्राप्त करें',
-    'onecoin_cta_microcopy' => '₹5 की एक बार की भुगतान। चेकआउट के तुरंत बाद तात्कालिक पहुँच, बिना किसी स्वचालित आवर्ती शुल्क के।',
+    'onecoin_cta_primary' => 'अभी मिशन 1 को {price} में प्राप्त करें',
+    'onecoin_cta_microcopy' => '{price} की एक बार की भुगतान। चेकआउट के तुरंत बाद तात्कालिक पहुँच, बिना किसी स्वचालित आवर्ती शुल्क के।',
     'subscribe_price_display' => '₹5 / महीने',
     'subscribe_price_period' => 'माह',
 ];

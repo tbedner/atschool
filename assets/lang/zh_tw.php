@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => '透過 PayPay、Apple Pay 或 Google Pay 在幾秒鐘內完成付款。',
     'onecoin_reason_3_title' => '特別獎勵',
     'onecoin_reason_3_text' => '完成你的15分鐘即時會話，並把 NT$5 的付款作為你首個完整月度訂閱第一個月的全額信用。',
-    'onecoin_cta_primary' => '立即以 NT$5 獲得 Mission 1',
-    'onecoin_cta_microcopy' => 'NT$5 一次性付款。結帳後即可立即存取，無自動續費。',
+    'onecoin_cta_primary' => '立即以 {price} 獲得 Mission 1',
+    'onecoin_cta_microcopy' => '{price} 一次性付款。結帳後即可立即存取，無自動續費。',
     'subscribe_price_display' => 'NT$5 / 月',
     'subscribe_price_period' => '月',
 ];

@@ -168,8 +168,8 @@ return [
     'onecoin_reason_2_text' => 'ادفع بسهولة خلال ثوانٍ عبر PayPay أو Apple Pay أو Google Pay.',
     'onecoin_reason_3_title' => 'مكافأة خاصة',
     'onecoin_reason_3_text' => 'أكمل جلستك المباشرة لمدة 15 دقيقة وطبق دفعتك البالغة ر.س 5 كرصيد كامل تجاه أول شهر من الاشتراك الشهري الكامل\\!',
-    'onecoin_cta_primary' => 'احصل على المهمة 1 مقابل ر.س 5 الآن',
-    'onecoin_cta_microcopy' => 'دفعة لمرة واحدة بقيمة ر.س 5. وصول فوري عند الدفع دون أي رسوم متكررة أوتوماتيكية.',
+    'onecoin_cta_primary' => 'احصل على المهمة 1 مقابل {price} الآن',
+    'onecoin_cta_microcopy' => 'دفعة لمرة واحدة بقيمة {price}. وصول فوري عند الدفع دون أي رسوم متكررة أوتوماتيكية.',
     'subscribe_price_display' => '5 ر.س / شهر',
     'subscribe_price_period' => 'شهر',
 ];
