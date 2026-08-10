@@ -34,7 +34,7 @@ $checkoutModeTwo = 'subscription';
 $subscriptionReferenceAmount = 100;
 $subscriptionExchangeRates = [
 	'aed' => 0.6,
-	'aud' => 1.3,
+	'aud' => 1.0,
 	'bgn' => 0.6,
 	'cny' => 6.5,
 	'eur' => 0.6,
@@ -58,9 +58,14 @@ function getSubscriptionPriceForCurrency(string $currency, int $referenceAmount 
 
 	$normalizedCurrency = normalizeSubscriptionCurrencyCode($currency);
 	$rate = $subscriptionExchangeRates[$normalizedCurrency] ?? 1.0;
-	$displayAmount = (int) round(($referenceAmount * $rate) / 10) * 10;
-	if ($displayAmount < 10) {
-		$displayAmount = 10;
+	$rawAmount = $referenceAmount * $rate;
+	if ($referenceAmount < 10) {
+		$displayAmount = max(1, (int) round($rawAmount));
+	} else {
+		$displayAmount = (int) round(($rawAmount / 10)) * 10;
+		if ($displayAmount < 10) {
+			$displayAmount = 10;
+		}
 	}
 
 	$minorUnitAmount = in_array($normalizedCurrency, $subscriptionZeroDecimalCurrencies, true) ? $displayAmount : $displayAmount * 100;
