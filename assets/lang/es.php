@@ -169,5 +169,6 @@ return [
     'onecoin_reason_3_text' => 'Completa tu sesión en vivo de 15 minutos y aplica tu pago de €5 como crédito completo para el primer mes de la suscripción mensual completa.',
     'onecoin_cta_primary' => 'Consigue la Misión 1 por €5 ahora',
     'onecoin_cta_microcopy' => 'Pago único de €5. Acceso instantáneo al finalizar el pago, sin cargos recurrentes automáticos.',
-    'subscribe_price_display' => '5 € / mes',
+    'subscribe_price_display' => '5 € / mes',,
+    'subscribe_price_period' => 'mes',
 ];

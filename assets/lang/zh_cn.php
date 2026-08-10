@@ -169,5 +169,6 @@ return [
     'onecoin_reason_3_text' => '完成你的15分钟直播会话，并把 ¥5 的付款作为你首个完整月度订阅第一个月的全额信用。',
     'onecoin_cta_primary' => '立即以 ¥5 获得 Mission 1',
     'onecoin_cta_microcopy' => '¥5 一次性付款。结账后即可立即访问，无自动续费。',
-    'subscribe_price_display' => '¥5 / 月',
+    'subscribe_price_display' => '¥5 / 月',,
+    'subscribe_price_period' => '月',
 ];
