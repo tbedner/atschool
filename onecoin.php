@@ -50,14 +50,15 @@ function buildLocalizedOnecoinPriceDisplay(int $referenceAmount, string $languag
 $selectedPriceLanguage = strtolower(trim((string) ($lang ?? 'en')));
 $onecoinPriceDisplay = buildLocalizedOnecoinPriceDisplay((int) $courseAmountOne, $selectedPriceLanguage);
 
-$offerBadge = $translations['onecoin_badge'] ?? 'Try Mission 1 for Just A$5';
+$offerBadge = strtr($translations['onecoin_badge'] ?? 'Try Mission 1 for Just {price}', ['{price}' => $onecoinPriceDisplay]);
 $offerHeadline = $translations['onecoin_title'] ?? 'Scared of Sudden English Conversation? Practice with AI First, Then Test Your Skills in a 15-Minute Live Session!';
 $offerSubhead = $translations['onecoin_subhead'] ?? 'Master your first real-world English scenario with zero pressure. Get full access to our AI voice chatbot, Moodle interactive quizzes, and a 15-minute live "Boss Battle" call with a native instructor—all for one coin.';
-$offerBenefitsTitle = $translations['onecoin_benefits_title'] ?? 'What You Get for A$5';
+$offerBenefitsTitle = strtr($translations['onecoin_benefits_title'] ?? 'What You Get for {price}', ['{price}' => $onecoinPriceDisplay]);
 $offerStepsTitle = $translations['onecoin_steps_title'] ?? 'How It Works (The 3-Step Flow)';
 $offerReasonsTitle = $translations['onecoin_reasons_title'] ?? 'Why Start with the One-Coin Offer?';
 $offerCta = strtr($translations['onecoin_cta_primary'] ?? 'Get Mission 1 for {price} Now', ['{price}' => $onecoinPriceDisplay]);
 $offerMicrocopy = strtr($translations['onecoin_cta_microcopy'] ?? 'One-time payment of {price}. Instant access upon checkout with no automatic recurring charges.', ['{price}' => $onecoinPriceDisplay]);
+$offerReason3Text = strtr($translations['onecoin_reason_3_text'] ?? 'Complete your 15-minute live session and apply your {price} payment as a full credit toward your first month of the full Monthly Subscription!', ['{price}' => $onecoinPriceDisplay]);
 
 $selectedCheckoutLanguage = strtolower(trim((string) ($lang ?? 'en')));
 $checkoutLocaleMap = [
@@ -134,7 +135,7 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 					</li>
 					<li>
 						<strong><?php echo htmlspecialchars($translations['onecoin_reason_3_title'] ?? 'Special Bonus', ENT_QUOTES, 'UTF-8'); ?></strong>
-						<p><?php echo htmlspecialchars($translations['onecoin_reason_3_text'] ?? 'Complete your 15-minute live session and apply your ¥500 payment as a full credit toward your first month of the full Monthly Subscription!', ENT_QUOTES, 'UTF-8'); ?></p>
+						<p><?php echo htmlspecialchars($offerReason3Text, ENT_QUOTES, 'UTF-8'); ?></p>
 					</li>
 				</ul>
 
