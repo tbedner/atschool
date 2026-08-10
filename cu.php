@@ -663,8 +663,10 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
     
     $mail->isHTML(true);                                  //Set email format to HTML
     $mail->Subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';
-    $mail->Body    = $message;
-    $mail->AltBody = strip_tags($message);
+
+    $plainMessage = preg_replace('/\R/', "\r\n", $message);
+    $mail->Body = nl2br(htmlspecialchars($plainMessage, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+    $mail->AltBody = $plainMessage;
 
     $mail->send();
     
