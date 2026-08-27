@@ -359,6 +359,13 @@ switch ($event->type) {
         $checkoutMode = 'payment';
     }
 
+    foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'line_click_id'] as $campaignField) {
+        $campaignValue = trim((string) ($metadata->{$campaignField} ?? ''));
+        if ($campaignValue !== '') {
+            $capture[$campaignField] = $campaignValue;
+        }
+    }
+
     $courseIds = [];
     if (!empty($metadata->moodle_course_ids)) {
         $courseIds = preg_split('/[\s,]+/', (string) $metadata->moodle_course_ids) ?: [];

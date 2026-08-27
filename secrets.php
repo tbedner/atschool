@@ -31,6 +31,7 @@ $checkoutModeOne = 'payment';
 $checkoutModeTwo = 'subscription';
 // Approximate manual exchange-rate table for localized subscription pricing.
 // These values are intentionally simple and rounded, and should be reviewed periodically as rates change.
+$onecoinReferenceAmount = 5;
 $subscriptionReferenceAmount = 100;
 $subscriptionExchangeRates = [
 	'aed' => 0.6,

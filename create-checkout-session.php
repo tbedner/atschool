@@ -1,15 +1,25 @@
 <?php
 require_once __DIR__ . '/stripe/init.php';
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/campaign-tracking.php';
 include(__DIR__ . '/lang.php');
+
+$campaignMetadata = [];
+foreach (CAMPAIGN_TRACKING_FIELDS as $campaignField) {
+	$campaignValue = trim((string) ($_REQUEST[$campaignField] ?? ''));
+	if ($campaignValue !== '') {
+		$campaignMetadata[$campaignField] = substr(preg_replace('/[^\w\-.]/', '', $campaignValue), 0, 100);
+	}
+}
 
 use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
 
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+// GET is allowed so ad platforms (e.g. LINE) can deep-link straight to checkout.
+if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'POST'], true)) {
 	http_response_code(405);
-	echo 'Use POST to create a Stripe Checkout session.';
+	echo 'Use GET or POST to create a Stripe Checkout session.';
 	exit;
 }
 
@@ -21,26 +31,19 @@ if (!is_string($stripeSecretKey) || trim($stripeSecretKey) === '') {
 	exit;
 }
 
-$checkoutMode = strtolower(trim((string) ($_POST['mode'] ?? 'payment')));
+$checkoutMode = strtolower(trim((string) ($_REQUEST['mode'] ?? 'payment')));
 if (!in_array($checkoutMode, ['payment', 'subscription'], true)) {
 	$checkoutMode = 'payment';
 }
 
-$requestedPrice = trim((string) ($_POST['price'] ?? ''));
-if (is_numeric($requestedPrice) && (int) $requestedPrice >= 0) {
-	$unitAmountCents = (int) $requestedPrice;
-} else {
-	$unitAmountCents = (int) $courseAmountCents;
-}
-
-$selectedCheckoutLanguage = isset($_POST['moodle_user_lang']) && is_string($_POST['moodle_user_lang']) && trim((string) $_POST['moodle_user_lang']) !== ''
-	? strtolower(trim((string) $_POST['moodle_user_lang']))
+$selectedCheckoutLanguage = isset($_REQUEST['moodle_user_lang']) && is_string($_REQUEST['moodle_user_lang']) && trim((string) $_REQUEST['moodle_user_lang']) !== ''
+	? strtolower(trim((string) $_REQUEST['moodle_user_lang']))
 	: (isset($lang) && is_string($lang) && $lang !== '' ? strtolower(trim((string) $lang)) : 'en');
-$selectedCheckoutCountry = isset($_POST['moodle_user_country']) && is_string($_POST['moodle_user_country']) && trim((string) $_POST['moodle_user_country']) !== ''
-	? trim((string) $_POST['moodle_user_country'])
+$selectedCheckoutCountry = isset($_REQUEST['moodle_user_country']) && is_string($_REQUEST['moodle_user_country']) && trim((string) $_REQUEST['moodle_user_country']) !== ''
+	? trim((string) $_REQUEST['moodle_user_country'])
 	: '';
-$selectedCheckoutTimezone = isset($_POST['moodle_user_timezone']) && is_string($_POST['moodle_user_timezone']) && trim((string) $_POST['moodle_user_timezone']) !== ''
-	? trim((string) $_POST['moodle_user_timezone'])
+$selectedCheckoutTimezone = isset($_REQUEST['moodle_user_timezone']) && is_string($_REQUEST['moodle_user_timezone']) && trim((string) $_REQUEST['moodle_user_timezone']) !== ''
+	? trim((string) $_REQUEST['moodle_user_timezone'])
 	: '';
 
 $checkoutLocaleMap = [
@@ -90,6 +93,10 @@ $checkoutCurrencyMap = [
 	'zh_tw' => 'twd',
 ];
 $selectedCheckoutCurrency = $checkoutCurrencyMap[$selectedCheckoutLanguage] ?? strtolower((string) $courseCurrency);
+
+// Price is never accepted from the request; it always comes from the hardcoded reference amounts in secrets.php.
+$priceReferenceAmount = ($checkoutMode === 'subscription') ? (int) $subscriptionReferenceAmount : (int) $onecoinReferenceAmount;
+$unitAmountCents = (int) getSubscriptionPriceForCurrency($selectedCheckoutCurrency, $priceReferenceAmount)['minor_unit_amount'];
 
 if ($selectedCheckoutCountry === '') {
 	$mappedValues = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
@@ -164,7 +171,7 @@ try {
 			'moodle_user_lang' => $selectedCheckoutLanguage,
 			'moodle_user_country' => $selectedCheckoutCountry,
 			'moodle_user_timezone' => $selectedCheckoutTimezone,
-		],
+		] + $campaignMetadata,
 	];
 
 	if ($checkoutMode === 'payment') {

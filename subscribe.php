@@ -17,6 +17,9 @@ include('menu.php');
 							
 <?php
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/campaign-tracking.php';
+
+$campaignTracking = capture_campaign_tracking_params();
 
 function getSubscribeCurrencyConfigForLanguage(string $language): array {
 	$currencyConfig = [
@@ -127,10 +130,10 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
-					<input type="hidden" name="price" value="<?php echo (int) $checkoutMinorUnitPrice; ?>">
 					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
-					<input type="hidden" name="moodle_user_country" value="<?php echo htmlspecialchars($checkoutLocaleSettings['country'], ENT_QUOTES, 'UTF-8'); ?>">
-					<input type="hidden" name="moodle_user_timezone" value="<?php echo htmlspecialchars($checkoutLocaleSettings['timezone'], ENT_QUOTES, 'UTF-8'); ?>">
+<?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
+					<input type="hidden" name="<?php echo htmlspecialchars($campaignField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($campaignValue, ENT_QUOTES, 'UTF-8'); ?>">
+<?php endforeach; ?>
 					<button type="submit"><?php echo htmlspecialchars($translations['checkout_subscribe_button'] ?? 'Subscribe and Enroll', ENT_QUOTES, 'UTF-8'); ?></button>
 				</form>
 				<p class="microcopy"><?php echo htmlspecialchars($subscribeMicrocopy, ENT_QUOTES, 'UTF-8'); ?></p>
