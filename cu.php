@@ -397,7 +397,7 @@ function extractMoodleUserIds(array $decodedResponse): array {
     return $ids;
 }
 
-function findMoodleUserId(string $domainName, string $token, string $restFormat, string $email, string $username): ?int {
+function findMoodleUserId(string $domainName, string $token, string $restFormat, string $email, string $username, array &$diagnostics = []): ?int {
     foreach ([['email', $email], ['username', $username]] as [$field, $value]) {
         if ($value === '') {
             continue;
@@ -418,6 +418,12 @@ function findMoodleUserId(string $domainName, string $token, string $restFormat,
             return $userId;
         }
 
+        if (!empty($result['curl_error'])) {
+            $diagnostics[] = $field . ' lookup connection error: ' . $result['curl_error'];
+        } elseif (is_array($result['decoded']) && isset($result['decoded']['exception'])) {
+            $diagnostics[] = format_moodle_error($result['decoded'], 'core_user_get_users_by_field');
+        }
+
         $result = moodle_rest_request($domainName, [
             'wstoken' => $token,
             'wsfunction' => 'core_user_get_users',
@@ -431,6 +437,12 @@ function findMoodleUserId(string $domainName, string $token, string $restFormat,
             if ($userId !== null) {
                 return $userId;
             }
+        } elseif (!empty($result['curl_error'])) {
+            $diagnostics[] = $field . ' fallback connection error: ' . $result['curl_error'];
+        }
+
+        if (is_array($result['decoded'] ?? null) && isset($result['decoded']['exception'])) {
+            $diagnostics[] = format_moodle_error($result['decoded'], 'core_user_get_users');
         }
     }
 
@@ -577,8 +589,9 @@ $user1 = [
 ];
 
 $userId = null;
+$userLookupDiagnostics = [];
 
-$userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername);
+$userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername, $userLookupDiagnostics);
 
 if ($userId === null) {
     $createUserParams = ['users' => [$user1]];
@@ -594,14 +607,17 @@ if ($userId === null) {
     }
 
     if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
-        $userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername);
+        $userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername, $userLookupDiagnostics);
     } else {
         $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
     }
 }
 
 if ($userId === null) {
-    error_log('Unable to resolve Moodle user for enrollment; continuing with login for checkout email ' . $newEmail);
+    $lookupDetail = $userLookupDiagnostics !== [] ? implode(' | ', array_unique($userLookupDiagnostics)) : 'No matching user was returned.';
+    error_log('Unable to resolve Moodle user for enrollment: ' . $lookupDetail);
+    echo 'Error6: Unable to resolve the Moodle user for enrollment. ' . htmlspecialchars($lookupDetail, ENT_QUOTES, 'UTF-8');
+    exit;
 }
 
 if ($userId !== null) {
