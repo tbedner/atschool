@@ -5,7 +5,9 @@ require_once __DIR__ . '/database.php';
 
 $token = trim((string) ($_GET['token'] ?? ''));
 if ($token === '' || !preg_match('/^[a-f0-9]{64}$/', $token)) {
-    $message = 'Enter the email address used for your subscription to receive a secure account link.';
+    $message = isset($_GET['account_link']) && $_GET['account_link'] === 'sent'
+        ? 'If an account exists for that email address, a secure link has been sent.'
+        : 'Enter the email address used for your subscription to receive a secure account link.';
     $showForm = true;
 } else {
     try {

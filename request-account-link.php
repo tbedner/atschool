@@ -51,4 +51,5 @@ try {
     error_log('Account link request failed: ' . $exception->getMessage());
 }
 
-echo 'If an account exists for that email address, a secure link has been sent.';
+header('Location: myaccount.php?account_link=sent', true, 303);
+exit;
