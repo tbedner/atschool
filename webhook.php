@@ -9,6 +9,23 @@ require_once __DIR__ . '/database.php';
 
 $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
+function get_stripe_subscription_period_end($subscription): int {
+    $periodEnd = (int) ($subscription->current_period_end ?? 0);
+    if ($periodEnd > 0) {
+        return $periodEnd;
+    }
+
+    $items = $subscription->items->data ?? [];
+    foreach ($items as $item) {
+        $periodEnd = (int) ($item->current_period_end ?? 0);
+        if ($periodEnd > 0) {
+            return $periodEnd;
+        }
+    }
+
+    return 0;
+}
+
 function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null, ?int $moodleUserId = null, int $currentMission = 0): void {
     if ($email === '' || $customerId === '') {
         return;
@@ -107,7 +124,7 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
         $database = get_account_database();
         try {
             $subscriptionObject = $stripe->subscriptions->retrieve($subscriptionId, []);
-            $periodEnd = isset($subscriptionObject->current_period_end) ? (int) $subscriptionObject->current_period_end : 0;
+            $periodEnd = get_stripe_subscription_period_end($subscriptionObject);
         } catch (Throwable $exception) {
             error_log('Unable to retrieve renewal subscription ' . $subscriptionId . ': ' . $exception->getMessage());
             return;
@@ -578,7 +595,7 @@ switch ($event->type) {
     if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
         try {
             $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
-            $subscriptionPeriodEnd = (int) ($subscription->current_period_end ?? 0);
+            $subscriptionPeriodEnd = get_stripe_subscription_period_end($subscription);
             $subscriptionStatus = (string) ($subscription->status ?? '');
             error_log('[atschool-checkout] initial subscription=' . (string) $session->subscription . ' customer=' . (string) ($session->customer ?? '') . ' period_end=' . $subscriptionPeriodEnd . ' status=' . $subscriptionStatus);
         } catch (Throwable $exception) {
@@ -672,7 +689,7 @@ switch ($event->type) {
     $subscription = $event->data->object;
         update_stripe_period_end(
                 (string) ($subscription->id ?? ''),
-                (int) ($subscription->current_period_end ?? 0),
+                get_stripe_subscription_period_end($subscription),
             (string) ($subscription->status ?? ''),
             (string) ($subscription->customer ?? '')
         );
@@ -685,7 +702,7 @@ switch ($event->type) {
                 $subscriptionCustomer,
                 (string) ($subscription->id ?? ''),
                 (string) ($subscription->status ?? ''),
-                (int) ($subscription->current_period_end ?? 0)
+                get_stripe_subscription_period_end($subscription)
             );
         } catch (Throwable $exception) {
             error_log('Unable to update Stripe account subscription: ' . $exception->getMessage());

@@ -397,6 +397,23 @@ function extractMoodleUserIds(array $decodedResponse): array {
     return $ids;
 }
 
+function getStripeSubscriptionPeriodEnd($subscription): int {
+    $periodEnd = (int) ($subscription->current_period_end ?? 0);
+    if ($periodEnd > 0) {
+        return $periodEnd;
+    }
+
+    $items = $subscription->items->data ?? [];
+    foreach ($items as $item) {
+        $periodEnd = (int) ($item->current_period_end ?? 0);
+        if ($periodEnd > 0) {
+            return $periodEnd;
+        }
+    }
+
+    return 0;
+}
+
 function findMoodleUserId(string $domainName, string $token, string $restFormat, string $email, string $username, array &$diagnostics = []): ?int {
     foreach ([['email', $email], ['username', $username]] as [$field, $value]) {
         if ($value === '') {
@@ -540,7 +557,7 @@ $enrollmentEndTime = 0;
 if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) {
     try {
         $subscription = \Stripe\Subscription::retrieve((string) $checkoutSession->subscription, []);
-        $enrollmentEndTime = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
+        $enrollmentEndTime = getStripeSubscriptionPeriodEnd($subscription);
     } catch (\Throwable $exception) {
         error_log('Unable to retrieve subscription period for enrollment: ' . $exception->getMessage());
     }
