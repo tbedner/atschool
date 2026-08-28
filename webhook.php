@@ -35,8 +35,8 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
     }
 }
 
-function update_stripe_period_end(string $subscriptionId, int $periodEnd, string $status = ''): void {
-    if ($subscriptionId === '' || $periodEnd <= 0) {
+function update_stripe_period_end(string $subscriptionId, int $periodEnd, string $status = '', string $customerId = ''): void {
+    if ($periodEnd <= 0 || ($subscriptionId === '' && $customerId === '')) {
         return;
     }
 
@@ -46,14 +46,18 @@ function update_stripe_period_end(string $subscriptionId, int $periodEnd, string
             'UPDATE stripe_accounts
              SET current_period_end = :period_end,
                  subscription_status = CASE WHEN :status_check <> \'\' THEN :status_value ELSE subscription_status END
-             WHERE stripe_subscription_id = :subscription_id'
+               WHERE stripe_subscription_id = :subscription_id OR stripe_customer_id = :customer_id'
         );
         $statement->execute([
             'period_end' => gmdate('Y-m-d H:i:s', $periodEnd),
             'status_check' => $status,
             'status_value' => $status,
-            'subscription_id' => $subscriptionId,
+            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : '__missing_subscription_id__',
+            'customer_id' => $customerId !== '' ? $customerId : '__missing_customer_id__',
         ]);
+        if ($statement->rowCount() === 0) {
+            error_log('No stripe_accounts row matched subscription ' . $subscriptionId . ' or customer ' . $customerId . ' while updating period end.');
+        }
     } catch (Throwable $exception) {
         error_log('Unable to update Stripe subscription period end: ' . $exception->getMessage());
     }
@@ -104,7 +108,12 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
             return;
         }
 
-        update_stripe_period_end($subscriptionId, $periodEnd, (string) ($subscriptionObject->status ?? ''));
+        update_stripe_period_end(
+            $subscriptionId,
+            $periodEnd,
+            (string) ($subscriptionObject->status ?? ''),
+            (string) ($subscriptionObject->customer ?? '')
+        );
 
         $statement = $database->prepare('SELECT id, moodle_user_id, current_mission FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
         $statement->execute(['subscription_id' => $subscriptionId]);
@@ -549,6 +558,7 @@ switch ($event->type) {
             $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
             $subscriptionPeriodEnd = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
             $subscriptionStatus = (string) ($subscription->status ?? '');
+            error_log('[atschool-checkout] initial subscription=' . (string) $session->subscription . ' customer=' . (string) ($session->customer ?? '') . ' period_end=' . $subscriptionPeriodEnd . ' status=' . $subscriptionStatus);
         } catch (Throwable $exception) {
             error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
         }
@@ -641,7 +651,8 @@ switch ($event->type) {
         update_stripe_period_end(
                 (string) ($subscription->id ?? ''),
                 isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0,
-                (string) ($subscription->status ?? '')
+            (string) ($subscription->status ?? ''),
+            (string) ($subscription->customer ?? '')
         );
     $subscriptionCustomer = (string) ($subscription->customer ?? '');
     if ($subscriptionCustomer !== '') {
