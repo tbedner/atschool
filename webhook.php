@@ -14,6 +14,10 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
         return;
     }
 
+    if ($periodEnd !== null && $periodEnd <= 0) {
+        $periodEnd = null;
+    }
+
     try {
         $database = get_account_database();
         $statement = $database->prepare(
