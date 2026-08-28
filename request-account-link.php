@@ -28,7 +28,7 @@ try {
         $statement->execute(['email' => $email, 'token_hash' => hash('sha256', $rawToken)]);
 
         $mail = new PHPMailer(true);
-        $mail->CharSet = 'UTF-8';
+        $mail->CharSet = "UTF-8";
         $mail->isSMTP();
         $mail->Host = $emailHost;
         $mail->SMTPAuth = true;
@@ -36,13 +36,15 @@ try {
         $mail->Password = $emailPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
+
         $mail->setFrom($emailFromAddress, $emailFromName);
-        $mail->addAddress($email);
+        $mail->addAddress($email, $email);
+
         $link = rtrim($siteBaseUrl, '/') . '/myaccount.php?token=' . rawurlencode($rawToken);
         $mail->Subject = 'Your @School account link';
+        $mail->isHTML(true);
         $mail->Body = 'Use this secure link to manage your @School subscription. It expires in 30 minutes:<br><br><a href="' . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . '">Manage my account</a>';
         $mail->AltBody = "Manage your @School subscription: {$link}\nThis link expires in 30 minutes.";
-        $mail->isHTML(true);
         $mail->send();
     }
 } catch (Throwable $exception) {

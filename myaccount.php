@@ -41,20 +41,41 @@ if ($token === '' || !preg_match('/^[a-f0-9]{64}$/', $token)) {
     }
 }
 ?>
-<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My Account</title></head>
-<body>
-<main>
-    <h1>My Account</h1>
-    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-    <?php if ($showForm): ?>
-    <form method="post" action="request-account-link.php">
-        <label for="email">Email address</label>
-        <input id="email" name="email" type="email" required autocomplete="email">
-        <button type="submit">Email me an account link</button>
-    </form>
-    <?php endif; ?>
-</main>
-</body>
+<!DOCTYPE HTML>
+<html>
+<?php
+include('head.php');
+?>
+    <body class="is-preload">
+        <div id="wrapper">
+
+<?php
+include('header.php');
+include('menu.php');
+?>
+            <div id="main">
+                <div class="inner">
+                    <h1>My Account</h1>
+                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+<?php if ($showForm): ?>
+                    <form method="post" action="request-account-link.php">
+                        <div class="fields">
+                            <div class="field">
+                                <label for="email">Email address</label>
+                                <input id="email" name="email" type="email" required autocomplete="email">
+                            </div>
+                        </div>
+                        <ul class="actions">
+                            <li><input type="submit" value="Email me an account link" class="primary"></li>
+                        </ul>
+                    </form>
+<?php endif; ?>
+                </div>
+            </div>
+
+<?php
+include('contact_footer.php');
+?>
+        </div>
+    </body>
 </html>
