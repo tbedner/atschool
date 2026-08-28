@@ -516,19 +516,13 @@ switch ($event->type) {
         $checkoutMode = 'payment';
     }
 
-    if ($checkoutMode === 'subscription' && !empty($session->customer)) {
-        save_stripe_account(
-            trim((string) $email),
-            (string) $session->customer,
-            (string) ($session->subscription ?? '')
-        );
-    }
-
     $subscriptionPeriodEnd = 0;
+    $subscriptionStatus = '';
     if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
         try {
             $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
             $subscriptionPeriodEnd = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
+            $subscriptionStatus = (string) ($subscription->status ?? '');
         } catch (Throwable $exception) {
             error_log('Unable to retrieve initial subscription period: ' . $exception->getMessage());
         }
@@ -587,7 +581,7 @@ switch ($event->type) {
                 trim((string) $email),
                 (string) $session->customer,
                 (string) $session->subscription,
-                'active',
+                $subscriptionStatus !== '' ? $subscriptionStatus : 'active',
                 $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
                 (int) $provisioningResult['user_id'],
                 1
