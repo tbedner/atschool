@@ -481,6 +481,15 @@ $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCours
 $enrollmentEndTime = $checkoutMode === 'payment' ? time() + (14 * 24 * 60 * 60) : 0;
 $moodleUserLocaleSettings = resolveMoodleUserLocaleSettings($metadata, $lang ?? 'en');
 
+$translations = include __DIR__ . '/assets/lang/en.php';
+$localizedLanguageFile = __DIR__ . '/assets/lang/' . $moodleUserLocaleSettings['lang'] . '.php';
+if ($moodleUserLocaleSettings['lang'] !== 'en' && file_exists($localizedLanguageFile)) {
+    $localizedTranslations = include $localizedLanguageFile;
+    if (is_array($localizedTranslations)) {
+        $translations = array_replace($translations, $localizedTranslations);
+    }
+}
+
 $checkoutDebugPayload = [
     'source' => 'cu.php',
     'mode' => $checkoutMode,
