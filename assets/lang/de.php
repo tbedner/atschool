@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>Unser Ansatz hilft dir, erst privat Vertrauen aufzubauen, damit jede Live-Sitzung eher wie ein Sieg als wie eine Prüfung wirkt.</p>',
     'welcome_email_subject' => 'Willkommen im @School-Portal',
     'welcome_email_message' => "Hallo {first_name},\n\nDein Konto wurde erfolgreich erstellt.\n\nHier sind deine Zugangsdaten:\nBenutzername: {username}\nPasswort: {password}\n\nDu kannst dich über den folgenden Link anmelden:\n{login_url}\n\nBitte ändere dein Passwort nach dem ersten Login.\n\nMit freundlichen Grüßen,\n@School-Team",
+    'onecoin_enrollment_notice' => 'Onecoin-Angebot: Deine Kursanmeldung ist 14 Tage gültig, bis zum {end_date}.',
     'checkout_secure_payment' => 'Sichere Zahlung über Stripe Checkout',
     'checkout_buy_button' => 'Kaufen und anmelden',
     'checkout_subscribe_button' => 'Abonnieren und anmelden',

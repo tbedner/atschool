@@ -132,6 +132,7 @@ return [
     'compare_courseblurb_p3' => '<p>私たちのアプローチは、まずプライベートで自信をつけ、毎回のライブセッションをテストではなく勝利として感じられるようにします。</p>',
     'welcome_email_subject' => '@Schoolポータルへようこそ',
     'welcome_email_message' => "{first_name}さん、\n\nアカウントが作成されました。\n\nログインの詳細は次の通りです。\n\nユーザー名: {username}\nパスワード: {password}\n\n次のリンクからログインできます。\n{login_url}\n\n初回ログイン後にパスワードを変更してください。\n\nよろしくお願いいたします。\n@Schoolチーム",
+    'onecoin_enrollment_notice' => 'Onecoinオファー：コースの利用期間は14日間です。終了日は{end_date}です。',
     'checkout_secure_payment' => 'Stripe Checkoutによる安全な決済',
     'checkout_buy_button' => '購入して登録する',
     'checkout_subscribe_button' => 'サブスクして登録する',

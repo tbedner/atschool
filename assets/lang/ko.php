@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>저희 방식은 먼저 비공개로 자신감을 쌓게 도와 주기 때문에, 매 라이브 세션이 시험보다 승리처럼 느껴집니다.</p>',
     'welcome_email_subject' => '@School 포털에 오신 것을 환영합니다',
     'welcome_email_message' => "안녕하세요 {first_name}님,\n\n계정이 성공적으로 생성되었습니다.\n\n로그인 정보는 다음과 같습니다:\n사용자 이름: {username}\n비밀번호: {password}\n\n다음 링크로 로그인할 수 있습니다:\n{login_url}\n\n처음 로그인한 후에는 비밀번호를 변경해 주세요.\n\n감사합니다.\n@School 팀",
+    'onecoin_enrollment_notice' => 'Onecoin 혜택: 코스 등록 기간은 14일이며, 종료일은 {end_date}입니다.',
     'checkout_secure_payment' => 'Stripe Checkout로 안전하게 결제',
     'checkout_buy_button' => '구매하고 등록하기',
     'checkout_subscribe_button' => '구독하고 등록하기',

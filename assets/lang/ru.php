@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>Наш подход помогает сначала выстроить уверенность в приватной среде, поэтому каждая живая сессия ощущается как победа, а не как тест.</p>',
     'welcome_email_subject' => 'Добро пожаловать в портал @School',
     'welcome_email_message' => "Здравствуйте {first_name},\n\nВаш аккаунт успешно создан.\n\nВот ваши данные для входа:\nИмя пользователя: {username}\nПароль: {password}\n\nВы можете войти по следующей ссылке:\n{login_url}\n\nПожалуйста, измените пароль после первого входа.\n\nС уважением,\nКоманда @School",
+    'onecoin_enrollment_notice' => 'Предложение Onecoin: ваша запись на курс действительна 14 дней, до {end_date}.',
     'checkout_secure_payment' => 'Безопасная оплата через Stripe Checkout',
     'checkout_buy_button' => 'Купить и записаться',
     'checkout_subscribe_button' => 'Подписаться и записаться',

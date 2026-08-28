@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>我们的方式先帮助你在私人环境中建立自信，因此每一次实时课程都更像胜利，而不是考试。</p>',
     'welcome_email_subject' => '欢迎来到@School门户',
     'welcome_email_message' => "您好 {first_name}，\n\n您的账户已成功创建。\n\n以下是您的登录信息：\n用户名：{username}\n密码：{password}\n\n您可以通过以下链接登录：\n{login_url}\n\n请在首次登录后更改密码。\n\n此致，\n@School团队",
+    'onecoin_enrollment_notice' => 'Onecoin优惠：您的课程注册有效期为14天，截止日期为{end_date}。',
     'checkout_secure_payment' => '通过 Stripe Checkout 完成安全支付',
     'checkout_buy_button' => '购买并注册',
     'checkout_subscribe_button' => '订阅并注册',

@@ -478,6 +478,7 @@ $newEmail = trim($newEmail);
 $metadata = $checkoutSession->metadata ?? null;
 $checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
 $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+$enrollmentEndTime = $checkoutMode === 'payment' ? time() + (14 * 24 * 60 * 60) : 0;
 $moodleUserLocaleSettings = resolveMoodleUserLocaleSettings($metadata, $lang ?? 'en');
 
 $checkoutDebugPayload = [
@@ -594,6 +595,8 @@ if ($userId !== null) {
             'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
             'enrolments[0][userid]' => $userId,
             'enrolments[0][courseid]' => (int) $courseId,
+            'enrolments[0][timestart]' => time(),
+            'enrolments[0][timeend]' => $enrollmentEndTime,
         ]);
 
         if (!empty($enrolResult['curl_error'])) {
@@ -660,6 +663,21 @@ if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl
         '{password}' => $newPassword,
         '{login_url}' => 'https://www.at-school-portal.com/moodle/?lang=' . $moodleUserLocaleSettings['lang'],
     ]);
+
+    if ($checkoutMode === 'payment') {
+        try {
+            $userTimezone = new DateTimeZone($moodleUserLocaleSettings['timezone']);
+        } catch (\Exception $e) {
+            $userTimezone = new DateTimeZone('UTC');
+        }
+
+        $enrollmentEndDate = (new DateTimeImmutable('now', $userTimezone))
+            ->modify('+14 days')
+            ->format('F j, Y');
+        $message .= "\n\n" . strtr($translations['onecoin_enrollment_notice'] ?? 'Onecoin offer: Your course enrollment is valid for 14 days, until {end_date}.', [
+            '{end_date}' => $enrollmentEndDate,
+        ]);
+    }
     
     $mail->isHTML(true);                                  //Set email format to HTML
     $mail->Subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';

@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>Our approach helps you build confidence privately first so every live session feels like a victory rather than a test.</p>',
     'welcome_email_subject' => 'Welcome to the @School Portal',
     'welcome_email_message' => "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team",
+    'onecoin_enrollment_notice' => 'Onecoin offer: Your course enrollment is valid for 14 days, until {end_date}.',
     'checkout_secure_payment' => 'Secure payment powered by Stripe Checkout',
     'checkout_buy_button' => 'Buy and Enroll',
     'checkout_subscribe_button' => 'Subscribe and Enroll',

@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>يُساعدك نهجنا على بناء الثقة أولًا في الخصوصية، حتى تصبح كل جلسة مباشرة فوزًا بدلًا من اختبار.</p>',
     'welcome_email_subject' => 'مرحبًا بك في بوابة @School',
     'welcome_email_message' => "مرحبًا {first_name},\n\nتم إنشاء حسابك بنجاح.\n\nإليك تفاصيل تسجيل الدخول:\nاسم المستخدم: {username}\nكلمة المرور: {password}\n\nيمكنك تسجيل الدخول باستخدام هذا الرابط:\n{login_url}\n\nيرجى تغيير كلمة المرور بعد تسجيل الدخول لأول مرة.\n\nمع أطيب التحيات،\nفريق @School",
+    'onecoin_enrollment_notice' => 'عرض Onecoin: تسجيلك في الدورة صالح لمدة 14 يومًا، حتى {end_date}.',
     'checkout_secure_payment' => 'دفع آمن مدعوم بواسطة Stripe Checkout',
     'checkout_buy_button' => 'اشترِ وانضم',
     'checkout_subscribe_button' => 'اشترك وانضم',

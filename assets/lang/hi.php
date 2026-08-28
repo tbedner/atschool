@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>हमारा दृष्टिकोण आपको पहले निजी तौर पर आत्मविश्वास बनाने में मदद करता है, ताकि हर लाइव सत्र परीक्षा की बजाय जीत जैसा महसूस हो।</p>',
     'welcome_email_subject' => '@School पोर्टल में आपका स्वागत है',
     'welcome_email_message' => "नमस्ते {first_name},\n\nआपका खाता सफलतापूर्वक बना दिया गया है।\n\nयहाँ आपकी लॉगिन जानकारी है:\nउपयोगकर्ता नाम: {username}\nपासवर्ड: {password}\n\nआप इस लिंक से लॉग इन कर सकते हैं:\n{login_url}\n\nकृपया पहली बार लॉग इन करने के बाद अपना पासवर्ड बदल दें।\n\nसादर,\n@School टीम",
+    'onecoin_enrollment_notice' => 'Onecoin ऑफ़र: आपके कोर्स का नामांकन 14 दिनों के लिए मान्य है, जिसकी अंतिम तिथि {end_date} है।',
     'checkout_secure_payment' => 'Stripe Checkout के माध्यम से सुरक्षित भुगतान',
     'checkout_buy_button' => 'खरीदें और नामांकन लें',
     'checkout_subscribe_button' => 'सब्सक्राइब करें और नामांकन लें',

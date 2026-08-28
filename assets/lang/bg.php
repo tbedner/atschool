@@ -120,6 +120,7 @@ return [
     'compare_courseblurb_p3' => '<p>Нашият подход ви помага да изградите увереност първо в лична среда, така че всяка жива сесия да се усеща като победа, а не като изпит.</p>',
     'welcome_email_subject' => 'Добре дошли в портала на @School',
     'welcome_email_message' => "Здравейте {first_name},\n\nВашият акаунт беше създаден успешно.\n\nЕто вашите данни за вход:\nПотребителско име: {username}\nПарола: {password}\n\nМожете да влезете чрез следния линк:\n{login_url}\n\nМоля, сменете паролата си след първото влизане.\n\nС уважение,\nЕкипът на @School",
+    'onecoin_enrollment_notice' => 'Оферта Onecoin: записването ви в курса е валидно 14 дни, до {end_date}.',
     'checkout_secure_payment' => 'Сигурно плащане чрез Stripe Checkout',
     'checkout_buy_button' => 'Купи и се запиши',
     'checkout_subscribe_button' => 'Абонирай се и се запиши',
