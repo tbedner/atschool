@@ -524,7 +524,17 @@ switch ($event->type) {
             $subscriptionPeriodEnd = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
             $subscriptionStatus = (string) ($subscription->status ?? '');
         } catch (Throwable $exception) {
-            error_log('Unable to retrieve initial subscription period: ' . $exception->getMessage());
+            error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
+        }
+
+        if (!empty($session->customer)) {
+            save_stripe_account(
+                trim((string) $email),
+                (string) $session->customer,
+                (string) $session->subscription,
+                $subscriptionStatus,
+                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null
+            );
         }
     }
 
