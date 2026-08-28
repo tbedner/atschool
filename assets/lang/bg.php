@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Моля, въведете валиден имейл адрес.',
     'account_email_label' => 'Имейл адрес',
     'account_link_button' => 'Изпрати ми връзка към акаунта',
+    'account_pause_notice' => 'Ако искате да поставите абонамента си на пауза, моля, пишете ни на {support_email}.',
     'account_post_required' => 'Изисква се POST заявка.',
     'account_link_email_subject' => 'Връзка към вашия акаунт в @School',
     'account_link_email_body' => 'Използвайте тази защитена връзка, за да управлявате абонамента си за @School. Тя изтича след 30 минути:<br><br><a href="{link}">Управление на акаунта</a>',

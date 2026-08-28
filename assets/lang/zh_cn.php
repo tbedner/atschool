@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => '请输入有效的电子邮件地址。',
     'account_email_label' => '电子邮件地址',
     'account_link_button' => '通过电子邮件发送账户链接',
+    'account_pause_notice' => '如果您希望暂停订阅，请发送邮件至 {support_email}。',
     'account_post_required' => '需要使用 POST 请求。',
     'account_link_email_subject' => '您的 @School 账户链接',
     'account_link_email_body' => '使用此安全链接管理您的 @School 订阅。链接将在 30 分钟后失效：<br><br><a href="{link}">管理我的账户</a>',

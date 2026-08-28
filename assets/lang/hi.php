@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'कृपया मान्य ईमेल पता दर्ज करें।',
     'account_email_label' => 'ईमेल पता',
     'account_link_button' => 'मुझे खाता लिंक ईमेल करें',
+    'account_pause_notice' => 'यदि आप अपना सब्सक्रिप्शन रोकना चाहते हैं, तो कृपया हमें {support_email} पर ईमेल करें।',
     'account_post_required' => 'POST अनुरोध आवश्यक है।',
     'account_link_email_subject' => 'आपका @School खाता लिंक',
     'account_link_email_body' => 'अपने @School सब्सक्रिप्शन को प्रबंधित करने के लिए इस सुरक्षित लिंक का उपयोग करें। यह 30 मिनट में समाप्त हो जाएगा:<br><br><a href="{link}">मेरा खाता प्रबंधित करें</a>',

@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => '請輸入有效的電子郵件地址。',
     'account_email_label' => '電子郵件地址',
     'account_link_button' => '透過電子郵件傳送帳戶連結',
+    'account_pause_notice' => '如果您希望暫停訂閱，請寄送電子郵件至 {support_email}。',
     'account_post_required' => '需要使用 POST 請求。',
     'account_link_email_subject' => '您的 @School 帳戶連結',
     'account_link_email_body' => '使用此安全連結管理您的 @School 訂閱。連結將在 30 分鐘後失效：<br><br><a href="{link}">管理我的帳戶</a>',

@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Veuillez saisir une adresse e-mail valide.',
     'account_email_label' => 'Adresse e-mail',
     'account_link_button' => 'M’envoyer un lien vers mon compte',
+    'account_pause_notice' => 'Si vous souhaitez suspendre votre abonnement, veuillez nous écrire à l’adresse {support_email}.',
     'account_post_required' => 'Une requête POST est requise.',
     'account_link_email_subject' => 'Votre lien de compte @School',
     'account_link_email_body' => 'Utilisez ce lien sécurisé pour gérer votre abonnement @School. Il expire dans 30 minutes :<br><br><a href="{link}">Gérer mon compte</a>',

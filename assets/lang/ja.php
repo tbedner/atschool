@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => '有効なメールアドレスを入力してください。',
     'account_email_label' => 'メールアドレス',
     'account_link_button' => 'アカウントリンクをメールで受け取る',
+    'account_pause_notice' => 'サブスクリプションを一時停止したい場合は、{support_email}までメールでご連絡ください。',
     'account_post_required' => 'POSTリクエストが必要です。',
     'account_link_email_subject' => '@Schoolアカウントリンク',
     'account_link_email_body' => 'この安全なリンクから@Schoolサブスクリプションを管理できます。リンクの有効期限は30分です。<br><br><a href="{link}">マイアカウントを管理</a>',

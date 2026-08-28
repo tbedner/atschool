@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Introduce una dirección de correo electrónico válida.',
     'account_email_label' => 'Dirección de correo electrónico',
     'account_link_button' => 'Enviarme un enlace a mi cuenta',
+    'account_pause_notice' => 'Si quieres pausar tu suscripción, escríbenos a {support_email}.',
     'account_post_required' => 'Se requiere una solicitud POST.',
     'account_link_email_subject' => 'Tu enlace de cuenta de @School',
     'account_link_email_body' => 'Usa este enlace seguro para administrar tu suscripción de @School. Caduca en 30 minutos:<br><br><a href="{link}">Administrar mi cuenta</a>',

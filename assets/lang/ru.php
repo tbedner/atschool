@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Введите действительный адрес электронной почты.',
     'account_email_label' => 'Адрес электронной почты',
     'account_link_button' => 'Отправить мне ссылку на аккаунт',
+    'account_pause_notice' => 'Если вы хотите приостановить подписку, напишите нам на адрес {support_email}.',
     'account_post_required' => 'Требуется POST-запрос.',
     'account_link_email_subject' => 'Ссылка на ваш аккаунт @School',
     'account_link_email_body' => 'Используйте эту защищённую ссылку для управления подпиской @School. Срок действия ссылки — 30 минут:<br><br><a href="{link}">Управление аккаунтом</a>',

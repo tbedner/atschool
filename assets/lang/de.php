@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Bitte gib eine gültige E-Mail-Adresse ein.',
     'account_email_label' => 'E-Mail-Adresse',
     'account_link_button' => 'Kontolink per E-Mail senden',
+    'account_pause_notice' => 'Wenn du dein Abonnement pausieren möchtest, schreibe uns bitte an {support_email}.',
     'account_post_required' => 'POST erforderlich.',
     'account_link_email_subject' => 'Dein @School-Kontolink',
     'account_link_email_body' => 'Mit diesem sicheren Link kannst du dein @School-Abonnement verwalten. Er ist 30 Minuten gültig:<br><br><a href="{link}">Mein Konto verwalten</a>',

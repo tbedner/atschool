@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Please enter a valid email address.',
     'account_email_label' => 'Email address',
     'account_link_button' => 'Email me an account link',
+    'account_pause_notice' => 'If you would like to pause your subscription, please email us at {support_email}.',
     'account_post_required' => 'POST required.',
     'account_link_email_subject' => 'Your @School account link',
     'account_link_email_body' => 'Use this secure link to manage your @School subscription. It expires in 30 minutes:<br><br><a href="{link}">Manage my account</a>',

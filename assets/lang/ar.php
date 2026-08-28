@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'يرجى إدخال عنوان بريد إلكتروني صالح.',
     'account_email_label' => 'عنوان البريد الإلكتروني',
     'account_link_button' => 'إرسال رابط الحساب إليّ',
+    'account_pause_notice' => 'إذا كنت ترغب في إيقاف اشتراكك مؤقتًا، يُرجى مراسلتنا عبر {support_email}.',
     'account_post_required' => 'مطلوب طلب POST.',
     'account_link_email_subject' => 'رابط حسابك في @School',
     'account_link_email_body' => 'استخدم هذا الرابط الآمن لإدارة اشتراكك في @School. تنتهي صلاحيته خلال 30 دقيقة:<br><br><a href="{link}">إدارة حسابي</a>',

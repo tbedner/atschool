@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => 'Introduza um endereço de e-mail válido.',
     'account_email_label' => 'Endereço de e-mail',
     'account_link_button' => 'Enviar-me um link da conta',
+    'account_pause_notice' => 'Se quiser pausar a sua subscrição, envie-nos um e-mail para {support_email}.',
     'account_post_required' => 'É necessário um pedido POST.',
     'account_link_email_subject' => 'O seu link da conta @School',
     'account_link_email_body' => 'Use este link seguro para gerir a sua subscrição @School. Expira em 30 minutos:<br><br><a href="{link}">Gerir a minha conta</a>',

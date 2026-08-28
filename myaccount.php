@@ -83,6 +83,9 @@ include('menu.php');
                         </ul>
                     </form>
 <?php endif; ?>
+                    <p><?php echo strtr($translations['account_pause_notice'] ?? 'If you would like to pause your subscription, please email us at {support_email}.', [
+                        '{support_email}' => '<a href="mailto:support@at-school-portal.com">support@at-school-portal.com</a>',
+                    ]); ?></p>
                 </div>
             </div>
 

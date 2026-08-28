@@ -16,6 +16,7 @@ return [
     'account_invalid_email' => '유효한 이메일 주소를 입력해 주세요.',
     'account_email_label' => '이메일 주소',
     'account_link_button' => '계정 링크를 이메일로 받기',
+    'account_pause_notice' => '구독을 일시 중지하려면 {support_email}로 이메일을 보내 주세요.',
     'account_post_required' => 'POST 요청이 필요합니다.',
     'account_link_email_subject' => '@School 계정 링크',
     'account_link_email_body' => '이 안전한 링크를 사용하여 @School 구독을 관리하세요. 링크는 30분 후 만료됩니다:<br><br><a href="{link}">내 계정 관리</a>',
