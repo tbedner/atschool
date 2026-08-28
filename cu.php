@@ -530,34 +530,48 @@ $user1 = [
     'lang' => $moodleUserLocaleSettings['lang'],
 ];
 
-$createUserParams = ['users' => [$user1]];
-$createUserResult = moodle_rest_request($domainName, [
-    'wstoken' => $token,
-    'wsfunction' => 'core_user_create_users',
-    'moodlewsrestformat' => $restFormat,
-] + $createUserParams);
-
 $userId = null;
 
-if (!empty($createUserResult['curl_error'])) {
-    fail_with_request_error($createUserResult, 'Error5:', 'User creation');
-    exit;
+$existingUserResult = moodle_rest_request($domainName, [
+    'wstoken' => $token,
+    'wsfunction' => 'core_user_get_users_by_field',
+    'moodlewsrestformat' => $restFormat,
+    'field' => 'email',
+    'values[0]' => $newEmail,
+]);
+
+if (empty($existingUserResult['curl_error'])) {
+    $userId = extractMoodleUserId($existingUserResult['decoded'] ?? []);
 }
 
-if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
-    $lookupResult = moodle_rest_request($domainName, [
+if ($userId === null) {
+    $createUserParams = ['users' => [$user1]];
+    $createUserResult = moodle_rest_request($domainName, [
         'wstoken' => $token,
-        'wsfunction' => 'core_user_get_users_by_field',
+        'wsfunction' => 'core_user_create_users',
         'moodlewsrestformat' => $restFormat,
-        'field' => 'email',
-        'values[0]' => $newEmail,
-    ]);
+    ] + $createUserParams);
 
-    if (empty($lookupResult['curl_error'])) {
-        $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
+    if (!empty($createUserResult['curl_error'])) {
+        fail_with_request_error($createUserResult, 'Error5:', 'User creation');
+        exit;
     }
-} else {
-    $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
+
+    if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
+        $lookupResult = moodle_rest_request($domainName, [
+            'wstoken' => $token,
+            'wsfunction' => 'core_user_get_users_by_field',
+            'moodlewsrestformat' => $restFormat,
+            'field' => 'email',
+            'values[0]' => $newEmail,
+        ]);
+
+        if (empty($lookupResult['curl_error'])) {
+            $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
+        }
+    } else {
+        $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
+    }
 }
 
 if ($userId === null && $newUsername !== '') {
@@ -606,6 +620,7 @@ if ($userId !== null) {
             'enrolments[0][courseid]' => (int) $courseId,
             'enrolments[0][timestart]' => time(),
             'enrolments[0][timeend]' => $enrollmentEndTime,
+            'enrolments[0][suspend]' => 0,
         ]);
 
         if (!empty($enrolResult['curl_error'])) {
