@@ -30,8 +30,9 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
             'moodle_user_id' => $moodleUserId,
             'current_mission' => $currentMission,
         ]);
+        error_log('[atschool-account] saved email=' . strtolower(trim($email)) . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ' period_end=' . ($periodEnd !== null ? gmdate('c', $periodEnd) : 'NULL') . ' rows=' . $statement->rowCount());
     } catch (Throwable $exception) {
-        error_log('Unable to save Stripe account: ' . $exception->getMessage());
+        error_log('Unable to save Stripe account email=' . $email . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ': ' . $exception->getMessage());
     }
 }
 
@@ -118,6 +119,23 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
         $statement = $database->prepare('SELECT id, moodle_user_id, current_mission FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
         $statement->execute(['subscription_id' => $subscriptionId]);
         $account = $statement->fetch();
+
+        if (!$account && !empty($subscriptionObject->customer)) {
+            try {
+                $customer = $stripe->customers->retrieve((string) $subscriptionObject->customer, []);
+                save_stripe_account(
+                    (string) ($customer->email ?? ''),
+                    (string) $subscriptionObject->customer,
+                    $subscriptionId,
+                    (string) ($subscriptionObject->status ?? ''),
+                    $periodEnd > 0 ? $periodEnd : null
+                );
+                $statement->execute(['subscription_id' => $subscriptionId]);
+                $account = $statement->fetch();
+            } catch (Throwable $exception) {
+                error_log('Unable to rebuild Stripe account for renewal ' . $subscriptionId . ': ' . $exception->getMessage());
+            }
+        }
 
         if (!$account || empty($account['moodle_user_id'])) {
             error_log('No tracked Moodle account found for subscription renewal ' . $subscriptionId);
@@ -556,7 +574,7 @@ switch ($event->type) {
     if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
         try {
             $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
-            $subscriptionPeriodEnd = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
+            $subscriptionPeriodEnd = (int) ($subscription->current_period_end ?? 0);
             $subscriptionStatus = (string) ($subscription->status ?? '');
             error_log('[atschool-checkout] initial subscription=' . (string) $session->subscription . ' customer=' . (string) ($session->customer ?? '') . ' period_end=' . $subscriptionPeriodEnd . ' status=' . $subscriptionStatus);
         } catch (Throwable $exception) {
@@ -650,7 +668,7 @@ switch ($event->type) {
     $subscription = $event->data->object;
         update_stripe_period_end(
                 (string) ($subscription->id ?? ''),
-                isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0,
+                (int) ($subscription->current_period_end ?? 0),
             (string) ($subscription->status ?? ''),
             (string) ($subscription->customer ?? '')
         );
@@ -663,7 +681,7 @@ switch ($event->type) {
                 $subscriptionCustomer,
                 (string) ($subscription->id ?? ''),
                 (string) ($subscription->status ?? ''),
-                isset($subscription->current_period_end) ? (int) $subscription->current_period_end : null
+                (int) ($subscription->current_period_end ?? 0)
             );
         } catch (Throwable $exception) {
             error_log('Unable to update Stripe account subscription: ' . $exception->getMessage());
