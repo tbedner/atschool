@@ -391,6 +391,33 @@ function extractMoodleUserIds(array $decodedResponse): array {
     return $ids;
 }
 
+function findMoodleUserId(string $domainName, string $token, string $restFormat, string $email, string $username): ?int {
+    foreach ([['email', $email], ['username', $username]] as [$field, $value]) {
+        if ($value === '') {
+            continue;
+        }
+
+        $result = moodle_rest_request($domainName, [
+            'wstoken' => $token,
+            'wsfunction' => 'core_user_get_users_by_field',
+            'moodlewsrestformat' => $restFormat,
+            'field' => $field,
+            'values[0]' => $value,
+        ]);
+
+        if (!empty($result['curl_error'])) {
+            continue;
+        }
+
+        $userId = extractMoodleUserId($result['decoded'] ?? []);
+        if ($userId !== null) {
+            return $userId;
+        }
+    }
+
+    return null;
+}
+
 function resolveMoodleLoginRedirectUrl(string $loginUrl, string $moodleBaseUrl): string {
     $loginUrl = trim($loginUrl);
     if ($loginUrl === '') {
@@ -532,17 +559,7 @@ $user1 = [
 
 $userId = null;
 
-$existingUserResult = moodle_rest_request($domainName, [
-    'wstoken' => $token,
-    'wsfunction' => 'core_user_get_users_by_field',
-    'moodlewsrestformat' => $restFormat,
-    'field' => 'email',
-    'values[0]' => $newEmail,
-]);
-
-if (empty($existingUserResult['curl_error'])) {
-    $userId = extractMoodleUserId($existingUserResult['decoded'] ?? []);
-}
+$userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername);
 
 if ($userId === null) {
     $createUserParams = ['users' => [$user1]];
@@ -574,18 +591,10 @@ if ($userId === null) {
     }
 }
 
-if ($userId === null && $newUsername !== '') {
-    $usernameLookupResult = moodle_rest_request($domainName, [
-        'wstoken' => $token,
-        'wsfunction' => 'core_user_get_users_by_field',
-        'moodlewsrestformat' => $restFormat,
-        'field' => 'username',
-        'values[0]' => $newUsername,
-    ]);
-
-    if (empty($usernameLookupResult['curl_error'])) {
-        $userId = extractMoodleUserId($usernameLookupResult['decoded'] ?? []);
-    }
+if ($userId === null) {
+    error_log('Unable to resolve Moodle user for checkout email ' . $newEmail);
+    echo 'Error6: Unable to resolve the Moodle user for enrollment.';
+    exit;
 }
 
 if ($userId !== null) {
