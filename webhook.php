@@ -5,8 +5,33 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
   require_once __DIR__ . '/stripe/init.php';
 }
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/database.php';
 
 $stripe = new \Stripe\StripeClient($stripeSecretKey);
+
+function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null): void {
+    if ($email === '' || $customerId === '') {
+        return;
+    }
+
+    try {
+        $database = get_account_database();
+        $statement = $database->prepare(
+            'INSERT INTO stripe_accounts (email, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end)
+             VALUES (:email, :customer_id, :subscription_id, :status, :period_end)
+             ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = VALUES(stripe_subscription_id), subscription_status = VALUES(subscription_status), current_period_end = VALUES(current_period_end)'
+        );
+        $statement->execute([
+            'email' => strtolower(trim($email)),
+            'customer_id' => $customerId,
+            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : null,
+            'status' => $status !== '' ? $status : null,
+            'period_end' => $periodEnd !== null ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
+        ]);
+    } catch (Throwable $exception) {
+        error_log('Unable to save Stripe account: ' . $exception->getMessage());
+    }
+}
 
 function moodle_rest_request(string $domainName, array $params): array {
     $ch = curl_init($domainName . '/webservice/rest/server.php');
@@ -362,6 +387,14 @@ switch ($event->type) {
         $checkoutMode = 'payment';
     }
 
+    if ($checkoutMode === 'subscription' && !empty($session->customer)) {
+        save_stripe_account(
+            trim((string) $email),
+            (string) $session->customer,
+            (string) ($session->subscription ?? '')
+        );
+    }
+
     foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'line_click_id'] as $campaignField) {
         $campaignValue = trim((string) ($metadata->{$campaignField} ?? ''));
         if ($campaignValue !== '') {
@@ -424,6 +457,21 @@ switch ($event->type) {
   case 'customer.subscription.updated':
   case 'customer.subscription.deleted':
     $subscription = $event->data->object;
+    $subscriptionCustomer = (string) ($subscription->customer ?? '');
+    if ($subscriptionCustomer !== '') {
+        try {
+            $customer = $stripe->customers->retrieve($subscriptionCustomer, []);
+            save_stripe_account(
+                (string) ($customer->email ?? ''),
+                $subscriptionCustomer,
+                (string) ($subscription->id ?? ''),
+                (string) ($subscription->status ?? ''),
+                isset($subscription->current_period_end) ? (int) $subscription->current_period_end : null
+            );
+        } catch (Throwable $exception) {
+            error_log('Unable to update Stripe account subscription: ' . $exception->getMessage());
+        }
+    }
     error_log('Stripe subscription event ' . (string) $event->type . ': status=' . (string) ($subscription->status ?? 'unknown') . ', customer=' . (string) ($subscription->customer ?? ''));
     break;
   case 'invoice.paid':

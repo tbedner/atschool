@@ -12,6 +12,7 @@ $menu_items = array(
     $translations['faq_nav'] => 'faq.php',
     $translations['subscribe_nav'] => 'subscribe.php',
     $translations['onecoin_nav'] => 'onecoin.php',
+    $translations['account_nav'] ?? 'My Account' => 'myaccount.php',
     $translations['portal_nav'] => 'moodle/?lang='.$lang,
 );
 foreach($menu_items as $item => $value) {
