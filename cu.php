@@ -368,6 +368,12 @@ function extractMoodleUserId(array $decodedResponse): ?int {
         }
     }
 
+    foreach ($decodedResponse as $user) {
+        if (is_object($user) && isset($user->id) && is_numeric($user->id)) {
+            return (int) $user->id;
+        }
+    }
+
     return null;
 }
 
@@ -405,13 +411,26 @@ function findMoodleUserId(string $domainName, string $token, string $restFormat,
             'values[0]' => $value,
         ]);
 
-        if (!empty($result['curl_error'])) {
-            continue;
-        }
-
-        $userId = extractMoodleUserId($result['decoded'] ?? []);
+        $userId = empty($result['curl_error'])
+            ? extractMoodleUserId($result['decoded'] ?? [])
+            : null;
         if ($userId !== null) {
             return $userId;
+        }
+
+        $result = moodle_rest_request($domainName, [
+            'wstoken' => $token,
+            'wsfunction' => 'core_user_get_users',
+            'moodlewsrestformat' => $restFormat,
+            'criteria[0][key]' => $field,
+            'criteria[0][value]' => $value,
+        ]);
+
+        if (empty($result['curl_error'])) {
+            $userId = extractMoodleUserId($result['decoded'] ?? []);
+            if ($userId !== null) {
+                return $userId;
+            }
         }
     }
 
@@ -575,26 +594,14 @@ if ($userId === null) {
     }
 
     if (is_array($createUserResult['decoded']) && isset($createUserResult['decoded']['exception'])) {
-        $lookupResult = moodle_rest_request($domainName, [
-            'wstoken' => $token,
-            'wsfunction' => 'core_user_get_users_by_field',
-            'moodlewsrestformat' => $restFormat,
-            'field' => 'email',
-            'values[0]' => $newEmail,
-        ]);
-
-        if (empty($lookupResult['curl_error'])) {
-            $userId = extractMoodleUserId($lookupResult['decoded'] ?? []);
-        }
+        $userId = findMoodleUserId($domainName, $token, $restFormat, $newEmail, $newUsername);
     } else {
         $userId = extractMoodleUserId($createUserResult['decoded'] ?? []);
     }
 }
 
 if ($userId === null) {
-    error_log('Unable to resolve Moodle user for checkout email ' . $newEmail);
-    echo 'Error6: Unable to resolve the Moodle user for enrollment.';
-    exit;
+    error_log('Unable to resolve Moodle user for enrollment; continuing with login for checkout email ' . $newEmail);
 }
 
 if ($userId !== null) {
