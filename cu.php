@@ -536,7 +536,17 @@ $newEmail = trim($newEmail);
 $metadata = $checkoutSession->metadata ?? null;
 $checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
 $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
-$enrollmentEndTime = $checkoutMode === 'payment' ? time() + (14 * 24 * 60 * 60) : 0;
+$enrollmentEndTime = 0;
+if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) {
+    try {
+        $subscription = \Stripe\Subscription::retrieve((string) $checkoutSession->subscription, []);
+        $enrollmentEndTime = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
+    } catch (\Throwable $exception) {
+        error_log('Unable to retrieve subscription period for enrollment: ' . $exception->getMessage());
+    }
+} elseif ($checkoutMode === 'payment') {
+    $enrollmentEndTime = time() + (14 * 24 * 60 * 60);
+}
 $moodleUserLocaleSettings = resolveMoodleUserLocaleSettings($metadata, $lang ?? 'en');
 
 $translations = include __DIR__ . '/assets/lang/en.php';

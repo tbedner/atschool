@@ -19,7 +19,22 @@ $moodleRestFormat = 'json';
 
 // Enrollment target.
 $moodleCourseId = 24;
-$moodleSubscriptionCourseIds = [26, 27];
+$moodleSubscriptionMissionCourseIds = [
+	26,  // Mission 1
+	101, // Mission 2 placeholder
+	102, // Mission 3 placeholder
+	103, // Mission 4 placeholder
+	104, // Mission 5 placeholder
+	105, // Mission 6 placeholder
+	106, // Mission 7 placeholder
+	107, // Mission 8 placeholder
+	108, // Mission 9 placeholder
+	109, // Mission 10 placeholder
+	110, // Mission 11 placeholder
+	111, // Mission 12 placeholder
+];
+$moodleSubscriptionSupportCourseId = 27;
+$moodleSubscriptionCourseIds = [$moodleSubscriptionMissionCourseIds[0], $moodleSubscriptionSupportCourseId];
 $moodleStudentRoleId = 5;
 
 // Checkout configuration.

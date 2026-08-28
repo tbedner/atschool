@@ -131,7 +131,12 @@ try {
 	}
 
 	$checkoutCourseIds = ($checkoutMode === 'subscription')
-		? array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds)))
+		? array_values(array_unique(array_filter([
+			(int) ($moodleSubscriptionMissionCourseIds[0] ?? $moodleCourseId),
+			(int) $moodleSubscriptionSupportCourseId,
+		], static function ($courseId): bool {
+			return $courseId > 0;
+		}))
 		: [(int) $moodleCourseId];
 
 	$checkoutCourseIds = array_values(array_filter($checkoutCourseIds, static function ($courseId): bool {

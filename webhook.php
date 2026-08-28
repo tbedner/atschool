@@ -9,7 +9,7 @@ require_once __DIR__ . '/database.php';
 
 $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
-function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null): void {
+function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null, ?int $moodleUserId = null, int $currentMission = 0): void {
     if ($email === '' || $customerId === '') {
         return;
     }
@@ -17,9 +17,9 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
     try {
         $database = get_account_database();
         $statement = $database->prepare(
-            'INSERT INTO stripe_accounts (email, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end)
-             VALUES (:email, :customer_id, :subscription_id, :status, :period_end)
-             ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = VALUES(stripe_subscription_id), subscription_status = VALUES(subscription_status), current_period_end = VALUES(current_period_end)'
+            'INSERT INTO stripe_accounts (email, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end, moodle_user_id, current_mission)
+             VALUES (:email, :customer_id, :subscription_id, :status, :period_end, :moodle_user_id, :current_mission)
+             ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = COALESCE(VALUES(stripe_subscription_id), stripe_subscription_id), subscription_status = COALESCE(VALUES(subscription_status), subscription_status), current_period_end = COALESCE(VALUES(current_period_end), current_period_end), moodle_user_id = COALESCE(VALUES(moodle_user_id), moodle_user_id), current_mission = IF(VALUES(current_mission) > 0, VALUES(current_mission), current_mission)'
         );
         $statement->execute([
             'email' => strtolower(trim($email)),
@@ -27,9 +27,135 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
             'subscription_id' => $subscriptionId !== '' ? $subscriptionId : null,
             'status' => $status !== '' ? $status : null,
             'period_end' => $periodEnd !== null ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
+            'moodle_user_id' => $moodleUserId,
+            'current_mission' => $currentMission,
         ]);
     } catch (Throwable $exception) {
         error_log('Unable to save Stripe account: ' . $exception->getMessage());
+    }
+}
+
+function enroll_moodle_course(string $domainName, string $token, string $restFormat, int $userId, int $courseId, int $timeEnd = 0): array {
+    $result = moodle_rest_request($domainName, [
+        'wstoken' => $token,
+        'wsfunction' => 'enrol_manual_enrol_users',
+        'moodlewsrestformat' => $restFormat,
+    ] + [
+        'enrolments[0][roleid]' => $GLOBALS['moodleStudentRoleId'],
+        'enrolments[0][userid]' => $userId,
+        'enrolments[0][courseid]' => $courseId,
+        'enrolments[0][timestart]' => time(),
+        'enrolments[0][timeend]' => $timeEnd,
+        'enrolments[0][suspend]' => 0,
+    ]);
+
+    if (!empty($result['curl_error'])) {
+        return ['success' => false, 'detail' => $result['curl_error']];
+    }
+
+    if (is_array($result['decoded']) && isset($result['decoded']['exception'])) {
+        return ['success' => false, 'detail' => json_encode($result['decoded'])];
+    }
+
+    return ['success' => true];
+}
+
+function advance_subscription_mission($event, \Stripe\StripeClient $stripe): void {
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleSubscriptionMissionCourseIds, $moodleSubscriptionSupportCourseId;
+
+    $subscription = $event->data->object;
+    $eventId = (string) ($event->id ?? '');
+    $subscriptionId = (string) ($subscription->subscription ?? $subscription->id ?? '');
+    if ($subscriptionId === '') {
+        return;
+    }
+
+    try {
+        $database = get_account_database();
+        try {
+            $subscriptionObject = $stripe->subscriptions->retrieve($subscriptionId, []);
+            $periodEnd = isset($subscriptionObject->current_period_end) ? (int) $subscriptionObject->current_period_end : 0;
+        } catch (Throwable $exception) {
+            error_log('Unable to retrieve renewal subscription ' . $subscriptionId . ': ' . $exception->getMessage());
+            return;
+        }
+
+        $statement = $database->prepare('SELECT id, moodle_user_id, current_mission FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
+        $statement->execute(['subscription_id' => $subscriptionId]);
+        $account = $statement->fetch();
+
+        if (!$account || empty($account['moodle_user_id'])) {
+            error_log('No tracked Moodle account found for subscription renewal ' . $subscriptionId);
+            return;
+        }
+
+        $nextMission = (int) $account['current_mission'] + 1;
+        $nextCourseId = (int) ($moodleSubscriptionMissionCourseIds[$nextMission - 1] ?? 0);
+        if ($nextCourseId <= 0 && $moodleSubscriptionSupportCourseId <= 0) {
+            error_log('No configured next mission or support course for subscription ' . $subscriptionId);
+            return;
+        }
+
+        if ($eventId !== '') {
+            $statement = $database->prepare('INSERT IGNORE INTO stripe_processed_events (event_id, event_type) VALUES (:event_id, :event_type)');
+            $statement->execute(['event_id' => $eventId, 'event_type' => 'invoice.paid']);
+            if ($statement->rowCount() !== 1) {
+                return;
+            }
+        }
+
+        if ($moodleSubscriptionSupportCourseId > 0 && $periodEnd > 0) {
+            $supportEnrollmentResult = enroll_moodle_course(
+                $moodleDomainName,
+                $moodleWebserviceToken,
+                $moodleRestFormat,
+                (int) $account['moodle_user_id'],
+                (int) $moodleSubscriptionSupportCourseId,
+                $periodEnd
+            );
+            if (!($supportEnrollmentResult['success'] ?? false)) {
+                if ($eventId !== '') {
+                    $database->prepare('DELETE FROM stripe_processed_events WHERE event_id = :event_id')->execute(['event_id' => $eventId]);
+                }
+                error_log('Unable to extend support course for subscription ' . $subscriptionId . ': ' . ($supportEnrollmentResult['detail'] ?? 'unknown error'));
+                return;
+            }
+        }
+
+        if ($nextCourseId > 0) {
+            $enrollmentResult = enroll_moodle_course(
+                $moodleDomainName,
+                $moodleWebserviceToken,
+                $moodleRestFormat,
+                (int) $account['moodle_user_id'],
+                $nextCourseId,
+                $periodEnd
+            );
+            if (!($enrollmentResult['success'] ?? false)) {
+                if ($eventId !== '') {
+                    $database->prepare('DELETE FROM stripe_processed_events WHERE event_id = :event_id')->execute(['event_id' => $eventId]);
+                }
+                error_log('Unable to enroll mission ' . $nextMission . ' for subscription ' . $subscriptionId . ': ' . ($enrollmentResult['detail'] ?? 'unknown error'));
+                return;
+            }
+        }
+
+        $statement = $database->prepare('UPDATE stripe_accounts SET current_mission = :current_mission, current_period_end = :period_end WHERE id = :id');
+        $statement->execute([
+            'current_mission' => $nextMission,
+            'period_end' => $periodEnd > 0 ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
+            'id' => $account['id'],
+        ]);
+        error_log('Advanced subscription ' . $subscriptionId . ' to mission ' . $nextMission . ($nextCourseId > 0 ? ' course ' . $nextCourseId : ' with no further mission configured'));
+    } catch (Throwable $exception) {
+        if ($eventId !== '') {
+            try {
+                get_account_database()->prepare('DELETE FROM stripe_processed_events WHERE event_id = :event_id')->execute(['event_id' => $eventId]);
+            } catch (Throwable $cleanupException) {
+                error_log('Unable to release failed subscription event: ' . $cleanupException->getMessage());
+            }
+        }
+        error_log('Subscription mission advancement failed: ' . $exception->getMessage());
     }
 }
 
@@ -213,7 +339,10 @@ function provision_moodle_user_from_session(array $sessionData): array {
 
     $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
     $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
-    $enrollmentEndTime = $checkoutMode === 'payment' ? time() + (14 * 24 * 60 * 60) : 0;
+    $enrollmentEndTime = (int) ($sessionData['enrollment_end_time'] ?? 0);
+    if ($enrollmentEndTime <= 0 && $checkoutMode === 'payment') {
+        $enrollmentEndTime = time() + (14 * 24 * 60 * 60);
+    }
 
     $updateUserResult = moodle_rest_request($moodleDomainName, [
         'wstoken' => $moodleWebserviceToken,
@@ -395,6 +524,16 @@ switch ($event->type) {
         );
     }
 
+    $subscriptionPeriodEnd = 0;
+    if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
+        try {
+            $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
+            $subscriptionPeriodEnd = isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0;
+        } catch (Throwable $exception) {
+            error_log('Unable to retrieve initial subscription period: ' . $exception->getMessage());
+        }
+    }
+
     foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'line_click_id'] as $campaignField) {
         $campaignValue = trim((string) ($metadata->{$campaignField} ?? ''));
         if ($campaignValue !== '') {
@@ -437,11 +576,23 @@ switch ($event->type) {
         'moodle_user_lang' => (string) ($metadata->moodle_user_lang ?? ''),
         'moodle_user_country' => (string) ($metadata->moodle_user_country ?? ''),
         'moodle_user_timezone' => (string) ($metadata->moodle_user_timezone ?? ''),
+        'enrollment_end_time' => $subscriptionPeriodEnd,
     ]);
 
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
+        if ($checkoutMode === 'subscription' && !empty($session->customer) && !empty($session->subscription)) {
+            save_stripe_account(
+                trim((string) $email),
+                (string) $session->customer,
+                (string) $session->subscription,
+                'active',
+                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
+                (int) $provisioningResult['user_id'],
+                1
+            );
+        }
     } else {
         $capture['provisioning_error'] = $provisioningResult['reason'] ?? 'unknown';
         $capture['provisioning_detail'] = $provisioningResult['detail'] ?? null;
@@ -476,6 +627,7 @@ switch ($event->type) {
     break;
   case 'invoice.paid':
     $invoice = $event->data->object;
+        advance_subscription_mission($event, $stripe);
     error_log('Stripe invoice paid: invoice=' . (string) ($invoice->id ?? '') . ', subscription=' . (string) ($invoice->subscription ?? ''));
     break;
   default:
