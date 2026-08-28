@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => '월간 미션 패스',
     'onecoin_nav' => '원 코인 오퍼',
     'portal_nav' => '학생 포털 로그인',
+    'account_nav' => '내 계정',
     'title' => '@School에 오신 것을 환영합니다',
     'home_title' => '스트레스 없이 자신 있게 영어 배우기',
     'home_p1' => 'AI 음성 파트너와 비공개로 대화 연습을 하고, 인터랙티브 과제를 완료하며, 실제 강사와 라이브 미션을 시작해 보세요.',

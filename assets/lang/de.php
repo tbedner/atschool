@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => 'Monatliches Missionsabo',
     'onecoin_nav' => 'Angebot für ein Coin',
     'portal_nav' => 'Studentenportal-Login',
+    'account_nav' => 'Mein Konto',
     'title' => 'Willkommen bei @School',
     'home_title' => 'Englisch mit Vertrauen lernen – ohne Stress',
     'home_p1' => 'Übe Gespräche privat mit einem KI-Sprachassistenten, löse interaktive Challenges und starte Live-Missionen mit echten Lehrkräften.',

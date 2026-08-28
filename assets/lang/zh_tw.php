@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => '每月任務通行證',
     'onecoin_nav' => '一枚硬幣優惠',
     'portal_nav' => '學生入口登入',
+    'account_nav' => '我的帳戶',
     'title' => '歡迎來到 @School',
     'home_title' => '輕鬆自信地學習英語',
     'home_p1' => '與AI語音夥伴進行私下對話練習，完成互動挑戰，並與真實導師開始即時任務。',

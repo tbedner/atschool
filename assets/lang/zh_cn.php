@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => '每月任务通行证',
     'onecoin_nav' => '一枚硬币优惠',
     'portal_nav' => '学生门户登录',
+    'account_nav' => '我的账户',
     'title' => '欢迎来到 @School',
     'home_title' => '轻松自信地学习英语',
     'home_p1' => '与AI语音伙伴进行私下对话练习，完成互动挑战，并与真实导师开始实时任务。',

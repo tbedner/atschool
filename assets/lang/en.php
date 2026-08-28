@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => 'Monthly Mission Pass',
     'onecoin_nav' => 'One Coin Offer',
     'portal_nav' => '@School Portal Login',
+    'account_nav' => 'My Account',
     'title' => 'Welcome to @School',
     'home_title' => 'Master Real-World Speaking Without the Anxiety',
     'home_p1' => 'Practice privately with our 24/7 AI Voice Chatbot, complete interactive challenges, and clear 1-on-1 live missions with real instructors.',

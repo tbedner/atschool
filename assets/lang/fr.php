@@ -8,6 +8,7 @@ return [
     'subscribe_nav' => 'Pass mensuel de missions',
     'onecoin_nav' => 'Offre d’une pièce',
     'portal_nav' => 'Connexion au portail étudiant',
+    'account_nav' => 'Mon compte',
     'title' => 'Bienvenue sur @School',
     'home_title' => 'Apprenez l’anglais avec confiance, sans stress',
     'home_p1' => 'Pratiquez les conversations en privé avec un partenaire vocal IA, terminez des défis interactifs et commencez des missions en direct avec de vrais instructeurs.',
