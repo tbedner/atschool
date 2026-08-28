@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/secrets.php';
 require_once __DIR__ . '/database.php';
+include('lang.php');
 require __DIR__ . '/PHPMailer.php';
 require __DIR__ . '/SMTP.php';
 
@@ -8,12 +9,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     http_response_code(405);
-    exit('POST required.');
+    exit($translations['account_post_required'] ?? 'POST required.');
 }
 
 $email = strtolower(trim((string) ($_POST['email'] ?? '')));
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    exit('Please enter a valid email address.');
+    header('Location: myaccount.php?account_link=invalid_email', true, 303);
+    exit;
 }
 
 try {
@@ -41,10 +43,14 @@ try {
         $mail->addAddress($email, $email);
 
         $link = rtrim($siteBaseUrl, '/') . '/myaccount.php?token=' . rawurlencode($rawToken);
-        $mail->Subject = 'Your @School account link';
+        $mail->Subject = $translations['account_link_email_subject'] ?? 'Your @School account link';
         $mail->isHTML(true);
-        $mail->Body = 'Use this secure link to manage your @School subscription. It expires in 30 minutes:<br><br><a href="' . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . '">Manage my account</a>';
-        $mail->AltBody = "Manage your @School subscription: {$link}\nThis link expires in 30 minutes.";
+        $mail->Body = strtr($translations['account_link_email_body'] ?? 'Use this secure link to manage your @School subscription. It expires in 30 minutes:<br><br><a href="{link}">Manage my account</a>', [
+            '{link}' => htmlspecialchars($link, ENT_QUOTES, 'UTF-8'),
+        ]);
+        $mail->AltBody = strtr($translations['account_link_email_alt_body'] ?? "Manage your @School subscription: {link}\nThis link expires in 30 minutes.", [
+            '{link}' => $link,
+        ]);
         $mail->send();
     }
 } catch (Throwable $exception) {

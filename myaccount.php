@@ -2,13 +2,19 @@
 require_once __DIR__ . '/stripe/init.php';
 require_once __DIR__ . '/secrets.php';
 require_once __DIR__ . '/database.php';
+include('lang.php');
 
 $token = trim((string) ($_GET['token'] ?? ''));
 $accountLinkSent = isset($_GET['account_link']) && $_GET['account_link'] === 'sent';
+$accountLinkInvalidEmail = isset($_GET['account_link']) && $_GET['account_link'] === 'invalid_email';
 if ($token === '' || !preg_match('/^[a-f0-9]{64}$/', $token)) {
-    $message = $accountLinkSent
-        ? 'If an account exists for that email address, a secure link has been sent.'
-        : 'Enter the email address used for your subscription to receive a secure account link.';
+    if ($accountLinkSent) {
+        $message = $translations['account_link_sent'] ?? 'If an account exists for that email address, a secure link has been sent.';
+    } elseif ($accountLinkInvalidEmail) {
+        $message = $translations['account_invalid_email'] ?? 'Please enter a valid email address.';
+    } else {
+        $message = $translations['account_link_prompt'] ?? 'Enter the email address used for your subscription to receive a secure account link.';
+    }
     $showForm = true;
 } else {
     try {
@@ -39,7 +45,7 @@ if ($token === '' || !preg_match('/^[a-f0-9]{64}$/', $token)) {
         exit;
     } catch (Throwable $exception) {
         error_log('Account portal error: ' . $exception->getMessage());
-        $message = 'This account link is invalid, expired, or unavailable. Please request a new link.';
+            $message = $translations['account_link_error'] ?? 'This account link is invalid, expired, or unavailable. Please request a new link.';
         $showForm = true;
     }
 }
@@ -58,7 +64,7 @@ include('menu.php');
 ?>
             <div id="main">
                 <div class="inner">
-                    <h1>My Account</h1>
+                    <h1><?php echo htmlspecialchars($translations['account_title'] ?? 'My Account', ENT_QUOTES, 'UTF-8'); ?></h1>
 <?php if ($accountLinkSent): ?>
                     <div class="alert alert-success" role="alert"><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php else: ?>
@@ -68,12 +74,12 @@ include('menu.php');
                     <form method="post" action="request-account-link.php">
                         <div class="fields">
                             <div class="field">
-                                <label for="email">Email address</label>
+                                <label for="email"><?php echo htmlspecialchars($translations['account_email_label'] ?? 'Email address', ENT_QUOTES, 'UTF-8'); ?></label>
                                 <input id="email" name="email" type="email" required autocomplete="email">
                             </div>
                         </div>
                         <ul class="actions">
-                            <li><input type="submit" value="Email me an account link" class="primary"></li>
+                            <li><input type="submit" value="<?php echo htmlspecialchars($translations['account_link_button'] ?? 'Email me an account link', ENT_QUOTES, 'UTF-8'); ?>" class="primary"></li>
                         </ul>
                     </form>
 <?php endif; ?>
