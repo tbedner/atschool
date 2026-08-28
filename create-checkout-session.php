@@ -136,7 +136,7 @@ try {
 			(int) $moodleSubscriptionSupportCourseId,
 		], static function ($courseId): bool {
 			return $courseId > 0;
-		}))
+		})))
 		: [(int) $moodleCourseId];
 
 	$checkoutCourseIds = array_values(array_filter($checkoutCourseIds, static function ($courseId): bool {
