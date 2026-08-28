@@ -188,6 +188,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
 
     $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
     $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+    $enrollmentEndTime = $checkoutMode === 'payment' ? time() + (14 * 24 * 60 * 60) : 0;
 
     $updateUserResult = moodle_rest_request($moodleDomainName, [
         'wstoken' => $moodleWebserviceToken,
@@ -218,6 +219,8 @@ function provision_moodle_user_from_session(array $sessionData): array {
             'enrolments[0][roleid]' => $moodleStudentRoleId,
             'enrolments[0][userid]' => $userId,
             'enrolments[0][courseid]' => $courseId,
+            'enrolments[0][timestart]' => time(),
+            'enrolments[0][timeend]' => $enrollmentEndTime,
         ]);
 
         if (!empty($enrolResult['curl_error'])) {
