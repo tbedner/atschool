@@ -35,6 +35,30 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
     }
 }
 
+function update_stripe_period_end(string $subscriptionId, int $periodEnd, string $status = ''): void {
+    if ($subscriptionId === '' || $periodEnd <= 0) {
+        return;
+    }
+
+    try {
+        $database = get_account_database();
+        $statement = $database->prepare(
+            'UPDATE stripe_accounts
+             SET current_period_end = :period_end,
+                 subscription_status = CASE WHEN :status_check <> \'\' THEN :status_value ELSE subscription_status END
+             WHERE stripe_subscription_id = :subscription_id'
+        );
+        $statement->execute([
+            'period_end' => gmdate('Y-m-d H:i:s', $periodEnd),
+            'status_check' => $status,
+            'status_value' => $status,
+            'subscription_id' => $subscriptionId,
+        ]);
+    } catch (Throwable $exception) {
+        error_log('Unable to update Stripe subscription period end: ' . $exception->getMessage());
+    }
+}
+
 function enroll_moodle_course(string $domainName, string $token, string $restFormat, int $userId, int $courseId, int $timeEnd = 0): array {
     $result = moodle_rest_request($domainName, [
         'wstoken' => $token,
@@ -79,6 +103,8 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
             error_log('Unable to retrieve renewal subscription ' . $subscriptionId . ': ' . $exception->getMessage());
             return;
         }
+
+        update_stripe_period_end($subscriptionId, $periodEnd, (string) ($subscriptionObject->status ?? ''));
 
         $statement = $database->prepare('SELECT id, moodle_user_id, current_mission FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
         $statement->execute(['subscription_id' => $subscriptionId]);
@@ -262,7 +288,7 @@ function resolve_moodle_course_ids_from_session_data(array $sessionData, string 
 }
 
 function provision_moodle_user_from_session(array $sessionData): array {
-    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleStudentRoleId;
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleSubscriptionCourseIds, $moodleStudentRoleId;
 
     $email = trim((string) ($sessionData['email'] ?? ''));
     if ($email === '') {
@@ -612,6 +638,11 @@ switch ($event->type) {
   case 'customer.subscription.updated':
   case 'customer.subscription.deleted':
     $subscription = $event->data->object;
+        update_stripe_period_end(
+                (string) ($subscription->id ?? ''),
+                isset($subscription->current_period_end) ? (int) $subscription->current_period_end : 0,
+                (string) ($subscription->status ?? '')
+        );
     $subscriptionCustomer = (string) ($subscription->customer ?? '');
     if ($subscriptionCustomer !== '') {
         try {
