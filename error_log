@@ -5002,3 +5002,170 @@ Stack trace:
 [05-Aug-2026 06:28:32 Asia/Tokyo] PHP Warning:  Undefined variable $email in /home/tdbedner/public_html/cu.php on line 249
 [05-Aug-2026 06:55:04 Asia/Tokyo] PHP Warning:  Undefined variable $name in /home/tdbedner/public_html/cu.php on line 250
 [05-Aug-2026 06:55:04 Asia/Tokyo] PHP Warning:  Undefined variable $email in /home/tdbedner/public_html/cu.php on line 250
+[29-Aug-2026 08:30:28 Asia/Tokyo] [atschool-account] saved email=tdavidbedner+sub@gmail.com customer=cus_V9ssWbQPSeSipC subscription=sub_1U9Z6s16lkBl9fqpYs2aoElp period_end=2026-09-28T23:22:56+00:00 rows=0
+[29-Aug-2026 08:30:28 Asia/Tokyo] Stripe subscription event customer.subscription.created: status=active, customer=cus_V9ssWbQPSeSipC
+[29-Aug-2026 08:31:52 Asia/Tokyo] [atschool-checkout] {"source":"create-checkout-session","mode":"subscription","selected_course_ids":[26,27],"subscription_config_ids":[26,27]}
+[29-Aug-2026 08:31:52 Asia/Tokyo] [atschool-checkout] {"source":"create-checkout-session","mode":"subscription","selected_course_ids":[26,27],"subscription_config_ids":[26,27]}
+[29-Aug-2026 08:32:38 Asia/Tokyo] Received event type: customer.created
+[29-Aug-2026 08:32:38 Asia/Tokyo] Received event type: customer.updated
+[29-Aug-2026 08:32:38 Asia/Tokyo] No stripe_accounts row matched subscription sub_1U9ZGC16lkBl9fqpIefjecRr or customer cus_V9t2x0f7uHzAIg while updating period end.
+[29-Aug-2026 08:32:38 Asia/Tokyo] [atschool-account] saved email=tdavidbedner+sub@gmail.com customer=cus_V9t2x0f7uHzAIg subscription=sub_1U9ZGC16lkBl9fqpIefjecRr period_end=2026-09-28T23:32:34+00:00 rows=1
+[29-Aug-2026 08:32:38 Asia/Tokyo] Stripe subscription event customer.subscription.created: status=active, customer=cus_V9t2x0f7uHzAIg
+[29-Aug-2026 08:32:38 Asia/Tokyo] [atschool-checkout] initial subscription=sub_1U9ZGC16lkBl9fqpIefjecRr customer=cus_V9t2x0f7uHzAIg period_end=1790638354 status=active
+[29-Aug-2026 08:32:38 Asia/Tokyo] [atschool-account] saved email=tdavidbedner+sub@gmail.com customer=cus_V9t2x0f7uHzAIg subscription=sub_1U9ZGC16lkBl9fqpIefjecRr period_end=2026-09-28T23:32:34+00:00 rows=0
+[29-Aug-2026 08:32:38 Asia/Tokyo] [atschool-checkout] {"source":"webhook.php","mode":"subscription","resolved_course_ids":[26,27],"subscription_config_ids":[26,27],"session_id":"cs_test_a15ryYvXEDbqBhLeLNEfyK9VfZ3DT2CUTB1ANiFO5fI7OIe0tNrQolrOpf","metadata":{"checkout_mode":"subscription","moodle_course_id":"26","moodle_course_ids":"26,27"}}
+[29-Aug-2026 08:32:39 Asia/Tokyo] [atschool-account] saved email=tdavidbedner+sub@gmail.com customer=cus_V9t2x0f7uHzAIg subscription=sub_1U9ZGC16lkBl9fqpIefjecRr period_end=2026-09-28T23:32:34+00:00 rows=2
+[29-Aug-2026 08:32:41 Asia/Tokyo] [atschool-checkout] {"source":"cu.php","mode":"subscription","resolved_course_ids":[26,27],"subscription_config_ids":[26,27],"session_id":"cs_test_a15ryYvXEDbqBhLeLNEfyK9VfZ3DT2CUTB1ANiFO5fI7OIe0tNrQolrOpf","metadata":{"checkout_mode":"subscription","moodle_course_id":"26","moodle_course_ids":"26,27"}}
+[29-Aug-2026 11:44:07 Asia/Tokyo] Received event type: checkout.session.expired
+[29-Aug-2026 16:21:28 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 16:21:28 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:12 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:24 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:24 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:24 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:24 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:21:25 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:59:22 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:59:22 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:59:22 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 20:59:22 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/subscribe.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[29-Aug-2026 21:30:09 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[29-Aug-2026 21:30:09 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[29-Aug-2026 21:30:09 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[29-Aug-2026 21:30:09 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[29-Aug-2026 21:30:09 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "pathway" in /home/tdbedner/public_html/email.php on line 3
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "name" in /home/tdbedner/public_html/email.php on line 4
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "email" in /home/tdbedner/public_html/email.php on line 5
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "subject" in /home/tdbedner/public_html/email.php on line 6
+[29-Aug-2026 21:30:10 Asia/Tokyo] PHP Warning:  Undefined array key "message" in /home/tdbedner/public_html/email.php on line 7
+[30-Aug-2026 03:58:38 Asia/Tokyo] PHP Warning:  Undefined variable $supported_languages in /home/tdbedner/public_html/lang.php on line 57
+[30-Aug-2026 03:58:38 Asia/Tokyo] PHP Fatal error:  Uncaught TypeError: in_array(): Argument #2 ($haystack) must be of type array, null given in /home/tdbedner/public_html/lang.php:57
+Stack trace:
+#0 /home/tdbedner/public_html/lang.php(57): in_array()
+#1 /home/tdbedner/public_html/head.php(2): include('...')
+#2 /home/tdbedner/public_html/onecoin.php(4): include('...')
+#3 {main}
+  thrown in /home/tdbedner/public_html/lang.php on line 57
+[30-Aug-2026 07:49:07 Asia/Tokyo] Received event type: checkout.session.expired
+[30-Aug-2026 08:10:40 Asia/Tokyo] Received event type: checkout.session.expired
+[30-Aug-2026 08:21:55 Asia/Tokyo] Received event type: checkout.session.expired
+[30-Aug-2026 08:31:52 Asia/Tokyo] Received event type: checkout.session.expired
