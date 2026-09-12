@@ -160,9 +160,9 @@ if (!in_array($selectedOnecoinLevel, $cefrLevels, true)) {
 <?php endforeach; ?>
 						</select>
 <?php if ($selectedCheckoutLanguage === 'ja'): ?>
-						<span class="level-help-tooltip">
+						<div class="level-help-tooltip">
 							<button type="button" class="level-help-trigger" aria-label="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>">?</button>
-							<span class="level-help-popover" role="tooltip">
+							<div class="level-help-popover" role="tooltip">
 								<strong><?php echo htmlspecialchars($translations['level_help_title'], ENT_QUOTES, 'UTF-8'); ?></strong>
 								<table>
 									<thead><tr><th><?php echo htmlspecialchars($translations['level_help_cefr'], ENT_QUOTES, 'UTF-8'); ?></th><th><?php echo htmlspecialchars($translations['level_help_toeic'], ENT_QUOTES, 'UTF-8'); ?></th></tr></thead>
@@ -175,8 +175,8 @@ if (!in_array($selectedOnecoinLevel, $cefrLevels, true)) {
 										<tr><td>C2</td><td>990</td></tr>
 									</tbody>
 								</table>
-							</span>
-						</span>
+							</div>
+						</div>
 <?php endif; ?>
 					</div>
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
