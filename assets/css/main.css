@@ -231,14 +231,19 @@ body {
 .level-help-tooltip {
 	position: relative;
 	display: inline-flex;
+	flex: 0 0 18px;
+	height: 18px;
 }
 
-.level-help-trigger {
+.subscribe-form .level-help-trigger {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 18px;
 	height: 18px;
+	min-width: 18px;
+	max-width: 18px;
+	margin: 0;
 	padding: 0;
 	border: 1px solid #94a3b8;
 	border-radius: 50%;
@@ -249,7 +254,7 @@ body {
 	cursor: pointer;
 }
 
-.level-help-trigger:hover {
+.subscribe-form .level-help-trigger:hover {
 	background: #f1f5f9;
 }
 
