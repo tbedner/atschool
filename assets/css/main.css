@@ -209,14 +209,16 @@ body {
 
 .subscribe-form {
 	margin-top: 20px;
+	overflow: visible !important;
 }
 
 .level-select-row {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	margin-bottom: 20px;
+	overflow: visible;
 }
 
 .level-select-row label {
@@ -234,6 +236,7 @@ body {
 	flex: 0 0 26px;
 	height: 26px;
 	width: 26px;
+	overflow: visible;
 	vertical-align: middle;
 }
 
@@ -276,7 +279,8 @@ body {
 .level-help-popover {
 	position: absolute;
 	top: 100%;
-	right: 0;
+	left: 0;
+	right: auto;
 	z-index: 20;
 	display: block;
 	width: 280px;
@@ -290,6 +294,11 @@ body {
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 120ms ease;
+}
+
+.subscribe-grid,
+.subscribe-panel {
+	overflow: visible;
 }
 
 .level-help-tooltip:hover .level-help-popover,
