@@ -172,7 +172,6 @@ return [
     'subscribe_cta_microcopy' => '登録すると、AI音声チャットボットと今月の注目ミッションにすぐアクセスできます。',
     'level_help_title' => 'CEFRとTOEICスコアの目安',
     'level_help_label' => 'レベルの目安を見る',
-    'level_help_close' => '閉じる',
     'level_help_cefr' => 'CEFRレベル',
     'level_help_toeic' => 'TOEICスコア',
     'onecoin_badge' => 'Mission 1をたった{price}で体験',
