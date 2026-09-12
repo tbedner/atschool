@@ -177,7 +177,7 @@ if (!in_array($selectedOnecoinLevel, $cefrLevels, true)) {
 								<tr><td>C2</td><td>990</td></tr>
 							</tbody>
 						</table>
-						<form method="dialog"><button type="submit" class="level-help-close"><?php echo htmlspecialchars($translations['level_help_close'], ENT_QUOTES, 'UTF-8'); ?></button></form>
+						<button type="button" class="level-help-close" data-level-help-close="onecoin-level-help" aria-label="<?php echo htmlspecialchars($translations['level_help_close'], ENT_QUOTES, 'UTF-8'); ?>">&times;</button>
 					</dialog>
 <?php endif; ?>
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
@@ -204,6 +204,12 @@ include('contact_footer.php');
 			trigger.addEventListener('click', function () {
 				var dialog = document.getElementById(trigger.getAttribute('data-level-help-open'));
 				if (dialog) dialog.showModal();
+			});
+		});
+		document.querySelectorAll('[data-level-help-close]').forEach(function (trigger) {
+			trigger.addEventListener('click', function () {
+				var dialog = document.getElementById(trigger.getAttribute('data-level-help-close'));
+				if (dialog) dialog.close();
 			});
 		});
 	</script>

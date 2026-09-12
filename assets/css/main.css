@@ -232,13 +232,14 @@ body {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 24px;
-	height: 24px;
+	width: 20px;
+	height: 20px;
 	padding: 0;
 	border: 1px solid #94a3b8;
 	border-radius: 50%;
 	background: #fff;
 	color: #334155;
+	font-size: 12px;
 	font-weight: 700;
 	cursor: pointer;
 }
@@ -248,6 +249,7 @@ body {
 }
 
 .level-help-modal {
+	position: relative;
 	width: min(420px, calc(100% - 32px));
 	max-height: calc(100vh - 32px);
 	padding: 24px;
@@ -291,15 +293,28 @@ body {
 }
 
 .level-help-modal .level-help-close {
-	width: auto;
-	height: auto;
-	margin-top: 18px;
-	padding: 8px 16px;
-	border: 1px solid #cbd5e1;
-	border-radius: 6px;
-	background: #f8fafc;
-	color: #334155;
-	font-size: 14px;
+	position: absolute;
+	top: 8px;
+	right: 10px;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #64748b;
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.level-help-modal .level-help-close:hover {
+	color: #0f172a;
+}
+
+.subscribe-form > button[type="submit"] {
+	background: #0f172a;
+	color: #fff;
 }
 
 .subscribe-form button {
