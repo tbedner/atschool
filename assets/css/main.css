@@ -279,7 +279,7 @@ body {
 .level-help-popover {
 	position: absolute;
 	top: 100%;
-	left: 0;
+	left: -250px;
 	right: auto;
 	z-index: 20;
 	display: block;
