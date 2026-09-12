@@ -344,8 +344,34 @@ function resolve_moodle_course_ids_from_session_data(array $sessionData, string 
     })));
 }
 
+function enroll_moodle_course_for_checkout(int $userId, int $courseId, int $enrollmentEndTime): array {
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleStudentRoleId;
+
+    $enrolResult = moodle_rest_request($moodleDomainName, [
+        'wstoken' => $moodleWebserviceToken,
+        'wsfunction' => 'enrol_manual_enrol_users',
+        'moodlewsrestformat' => $moodleRestFormat,
+    ] + [
+        'enrolments[0][roleid]' => $moodleStudentRoleId,
+        'enrolments[0][userid]' => $userId,
+        'enrolments[0][courseid]' => $courseId,
+        'enrolments[0][timestart]' => time(),
+        'enrolments[0][timeend]' => $enrollmentEndTime,
+    ]);
+
+    if (!empty($enrolResult['curl_error'])) {
+        return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
+    }
+
+    if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+        return ['success' => false, 'reason' => 'enrol-exception', 'detail' => $enrolResult['decoded']];
+    }
+
+    return ['success' => true];
+}
+
 function provision_moodle_user_from_session(array $sessionData): array {
-    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleSubscriptionCourseIds, $moodleStudentRoleId, $moodleCourseIdByLevel, $moodleSubscriptionMissionCourseIdsByLevel, $moodleSubscriptionSupportCourseId, $cefrLevels, $defaultCefrLevel;
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleSubscriptionCourseIds, $moodleCourseIdByLevel, $moodleSubscriptionMissionCourseIdsByLevel, $moodleSubscriptionSupportCourseId, $cefrLevels, $defaultCefrLevel;
 
     $email = trim((string) ($sessionData['email'] ?? ''));
     if ($email === '') {
@@ -456,26 +482,29 @@ function provision_moodle_user_from_session(array $sessionData): array {
         error_log('Moodle user update failed for user ' . $userId . ': ' . json_encode($updateUserResult['decoded']));
     }
 
-    foreach ($courseIds as $courseId) {
-        $enrolResult = moodle_rest_request($moodleDomainName, [
-            'wstoken' => $moodleWebserviceToken,
-            'wsfunction' => 'enrol_manual_enrol_users',
-            'moodlewsrestformat' => $moodleRestFormat,
-        ] + [
-            'enrolments[0][roleid]' => $moodleStudentRoleId,
-            'enrolments[0][userid]' => $userId,
-            'enrolments[0][courseid]' => $courseId,
-            'enrolments[0][timestart]' => time(),
-            'enrolments[0][timeend]' => $enrollmentEndTime,
-        ]);
-
-        if (!empty($enrolResult['curl_error'])) {
-            return ['success' => false, 'reason' => 'enrol-curl-error', 'detail' => $enrolResult['curl_error']];
+    foreach ($courseIds as $courseIndex => $courseId) {
+        $enrolResult = enroll_moodle_course_for_checkout($userId, (int) $courseId, $enrollmentEndTime);
+        if ($enrolResult['success'] ?? false) {
+            continue;
         }
 
-        if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-            return ['success' => false, 'reason' => 'enrol-exception', 'detail' => $enrolResult['decoded']];
+        $detail = $enrolResult['detail'] ?? 'unknown error';
+        if ($checkoutMode === 'subscription') {
+            error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . (is_string($detail) ? $detail : json_encode($detail));
+            continue;
         }
+
+        $levelA1CourseId = (int) ($moodleCourseIdByLevel['A1'] ?? $moodleCourseId);
+        if ($levelA1CourseId > 0 && $levelA1CourseId !== (int) $courseId) {
+            $fallbackResult = enroll_moodle_course_for_checkout($userId, $levelA1CourseId, $enrollmentEndTime);
+            if ($fallbackResult['success'] ?? false) {
+                error_log('Fell back to A1 course ' . $levelA1CourseId . ' for one-coin user ' . $userId . ' after course ' . (int) $courseId . ' failed.');
+                continue;
+            }
+            $detail = $fallbackResult['detail'] ?? $detail;
+        }
+
+        return ['success' => false, 'reason' => $enrolResult['reason'] ?? 'enrol-failed', 'detail' => $detail];
     }
 
     return [
