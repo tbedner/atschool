@@ -136,12 +136,33 @@ if (!in_array($selectedSubscribeLevel, $cefrLevels, true)) {
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
-					<label for="subscribe-level"><?php echo htmlspecialchars($translations['subscribe_level_label'] ?? 'Choose Your Level', ENT_QUOTES, 'UTF-8'); ?></label>
-					<select id="subscribe-level" name="level">
+					<div class="level-select-row">
+						<label for="subscribe-level"><?php echo htmlspecialchars($translations['subscribe_level_label'] ?? 'Choose Your Level', ENT_QUOTES, 'UTF-8'); ?></label>
+						<select id="subscribe-level" name="level">
 <?php foreach ($cefrLevels as $cefrLevelOption): ?>
-						<option value="<?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?>"<?php echo $cefrLevelOption === $selectedSubscribeLevel ? ' selected' : ''; ?>><?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?></option>
+							<option value="<?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?>"<?php echo $cefrLevelOption === $selectedSubscribeLevel ? ' selected' : ''; ?>><?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?></option>
 <?php endforeach; ?>
-					</select>
+						</select>
+<?php if ($selectedCheckoutLanguage === 'ja'): ?>
+						<details class="level-help">
+							<summary aria-label="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>">?</summary>
+							<div class="level-help-popover">
+								<h3><?php echo htmlspecialchars($translations['level_help_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+								<table>
+									<thead><tr><th><?php echo htmlspecialchars($translations['level_help_cefr'], ENT_QUOTES, 'UTF-8'); ?></th><th><?php echo htmlspecialchars($translations['level_help_toeic'], ENT_QUOTES, 'UTF-8'); ?></th></tr></thead>
+									<tbody>
+										<tr><td>A1</td><td>120</td></tr>
+										<tr><td>A2</td><td>225</td></tr>
+										<tr><td>B1</td><td>550</td></tr>
+										<tr><td>B2</td><td>785</td></tr>
+										<tr><td>C1</td><td>945</td></tr>
+										<tr><td>C2</td><td>990</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</details>
+<?php endif; ?>
+					</div>
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
 					<input type="hidden" name="<?php echo htmlspecialchars($campaignField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($campaignValue, ENT_QUOTES, 'UTF-8'); ?>">
 <?php endforeach; ?>
