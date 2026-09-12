@@ -81,6 +81,11 @@ $checkoutLocaleMap = [
 	'zh_tw' => ['lang' => 'zh_tw', 'country' => 'TW', 'timezone' => 'Asia/Taipei'],
 ];
 $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $checkoutLocaleMap['en'];
+
+$selectedSubscribeLevel = strtoupper(trim((string) ($_GET['level'] ?? '')));
+if (!in_array($selectedSubscribeLevel, $cefrLevels, true)) {
+	$selectedSubscribeLevel = $defaultCefrLevel;
+}
 ?>
 <main class="page">
 	<section class="card subscribe-card">
@@ -131,6 +136,12 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeTwo, ENT_QUOTES, 'UTF-8'); ?>">
 					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
+					<label for="subscribe-level"><?php echo htmlspecialchars($translations['subscribe_level_label'] ?? 'Choose Your Level', ENT_QUOTES, 'UTF-8'); ?></label>
+					<select id="subscribe-level" name="level">
+<?php foreach ($cefrLevels as $cefrLevelOption): ?>
+						<option value="<?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?>"<?php echo $cefrLevelOption === $selectedSubscribeLevel ? ' selected' : ''; ?>><?php echo htmlspecialchars($cefrLevelOption, ENT_QUOTES, 'UTF-8'); ?></option>
+<?php endforeach; ?>
+					</select>
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
 					<input type="hidden" name="<?php echo htmlspecialchars($campaignField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($campaignValue, ENT_QUOTES, 'UTF-8'); ?>">
 <?php endforeach; ?>

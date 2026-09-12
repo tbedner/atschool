@@ -146,6 +146,7 @@ $checkoutLocaleSettings = $checkoutLocaleMap[$selectedCheckoutLanguage] ?? $chec
 
 				<form class="subscribe-form" method="post" action="create-checkout-session.php">
 					<input type="hidden" name="mode" value="<?php echo htmlspecialchars($checkoutModeOne, ENT_QUOTES, 'UTF-8'); ?>">
+					<input type="hidden" name="level" value="A1">
 					<input type="hidden" name="moodle_user_lang" value="<?php echo htmlspecialchars($checkoutLocaleSettings['lang'], ENT_QUOTES, 'UTF-8'); ?>">
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
 					<input type="hidden" name="<?php echo htmlspecialchars($campaignField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($campaignValue, ENT_QUOTES, 'UTF-8'); ?>">
