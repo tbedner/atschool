@@ -160,25 +160,26 @@ if (!in_array($selectedOnecoinLevel, $cefrLevels, true)) {
 <?php endforeach; ?>
 						</select>
 <?php if ($selectedCheckoutLanguage === 'ja'): ?>
-						<details class="level-help">
-							<summary aria-label="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>">?</summary>
-							<div class="level-help-popover">
-								<h3><?php echo htmlspecialchars($translations['level_help_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
-								<table>
-									<thead><tr><th><?php echo htmlspecialchars($translations['level_help_cefr'], ENT_QUOTES, 'UTF-8'); ?></th><th><?php echo htmlspecialchars($translations['level_help_toeic'], ENT_QUOTES, 'UTF-8'); ?></th></tr></thead>
-									<tbody>
-										<tr><td>A1</td><td>120</td></tr>
-										<tr><td>A2</td><td>225</td></tr>
-										<tr><td>B1</td><td>550</td></tr>
-										<tr><td>B2</td><td>785</td></tr>
-										<tr><td>C1</td><td>945</td></tr>
-										<tr><td>C2</td><td>990</td></tr>
-									</tbody>
-								</table>
-							</div>
-						</details>
+						<button type="button" class="level-help-trigger" data-level-help-open="onecoin-level-help" aria-label="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>" title="<?php echo htmlspecialchars($translations['level_help_label'], ENT_QUOTES, 'UTF-8'); ?>">?</button>
 <?php endif; ?>
 					</div>
+<?php if ($selectedCheckoutLanguage === 'ja'): ?>
+					<dialog id="onecoin-level-help" class="level-help-modal" aria-labelledby="onecoin-level-help-title">
+						<h3 id="onecoin-level-help-title"><?php echo htmlspecialchars($translations['level_help_title'], ENT_QUOTES, 'UTF-8'); ?></h3>
+						<table>
+							<thead><tr><th><?php echo htmlspecialchars($translations['level_help_cefr'], ENT_QUOTES, 'UTF-8'); ?></th><th><?php echo htmlspecialchars($translations['level_help_toeic'], ENT_QUOTES, 'UTF-8'); ?></th></tr></thead>
+							<tbody>
+								<tr><td>A1</td><td>120</td></tr>
+								<tr><td>A2</td><td>225</td></tr>
+								<tr><td>B1</td><td>550</td></tr>
+								<tr><td>B2</td><td>785</td></tr>
+								<tr><td>C1</td><td>945</td></tr>
+								<tr><td>C2</td><td>990</td></tr>
+							</tbody>
+						</table>
+						<form method="dialog"><button type="submit" class="level-help-close"><?php echo htmlspecialchars($translations['level_help_close'], ENT_QUOTES, 'UTF-8'); ?></button></form>
+					</dialog>
+<?php endif; ?>
 <?php foreach ($campaignTracking as $campaignField => $campaignValue): ?>
 					<input type="hidden" name="<?php echo htmlspecialchars($campaignField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($campaignValue, ENT_QUOTES, 'UTF-8'); ?>">
 <?php endforeach; ?>
@@ -197,5 +198,15 @@ if (!in_array($selectedOnecoinLevel, $cefrLevels, true)) {
 <?php
 include('contact_footer.php');
 ?>
+<?php if ($selectedCheckoutLanguage === 'ja'): ?>
+	<script>
+		document.querySelectorAll('[data-level-help-open]').forEach(function (trigger) {
+			trigger.addEventListener('click', function () {
+				var dialog = document.getElementById(trigger.getAttribute('data-level-help-open'));
+				if (dialog) dialog.showModal();
+			});
+		});
+	</script>
+<?php endif; ?>
 	</body>
 </html>
