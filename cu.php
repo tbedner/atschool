@@ -552,7 +552,16 @@ $newEmail = trim($newEmail);
 
 $metadata = $checkoutSession->metadata ?? null;
 $checkoutMode = resolveMoodleCheckoutMode($metadata, strtolower((string) ($checkoutSession->mode ?? 'payment')));
-$courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+$checkoutLevel = strtoupper(trim((string) ($metadata->level ?? '')));
+if (!in_array($checkoutLevel, (array) $cefrLevels, true)) {
+    $checkoutLevel = $defaultCefrLevel ?? 'A1';
+}
+$levelDefaultCourseId = (int) ($moodleCourseIdByLevel[$checkoutLevel] ?? $moodleCourseId);
+$levelMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? [];
+$levelSubscriptionCourseIds = $levelMissionCourseIds !== []
+    ? [$levelMissionCourseIds[0], $moodleSubscriptionSupportCourseId]
+    : $moodleSubscriptionCourseIds;
+$courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, $levelDefaultCourseId, (array) $levelSubscriptionCourseIds);
 $enrollmentEndTime = 0;
 if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) {
     try {
@@ -683,14 +692,47 @@ if ($userId !== null) {
         ]);
 
         if (!empty($enrolResult['curl_error'])) {
-            fail_with_request_error($enrolResult, 'Error8:', 'Enrollment');
-            exit;
+            $enrollmentFailed = true;
+        } elseif (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+            $enrollmentFailed = true;
+        } else {
+            $enrollmentFailed = false;
         }
 
-        if (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
-            fail_with_request_error($enrolResult, 'Error9:', 'Enrollment');
-            exit;
+        if (!$enrollmentFailed) {
+            continue;
         }
+
+        if ($checkoutMode === 'subscription') {
+            error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . format_moodle_error($enrolResult['decoded'] ?? [], 'Enrollment'));
+            continue;
+        }
+
+        $a1CourseId = (int) ($moodleCourseIdByLevel['A1'] ?? $moodleCourseId);
+        if ($a1CourseId > 0 && $a1CourseId !== (int) $courseId) {
+            $fallbackResult = moodle_rest_request($domainName, [
+                'wstoken' => $token,
+                'wsfunction' => 'enrol_manual_enrol_users',
+                'moodlewsrestformat' => $restFormat,
+            ] + [
+                'enrolments[0][roleid]' => (int) $moodleStudentRoleId,
+                'enrolments[0][userid]' => $userId,
+                'enrolments[0][courseid]' => $a1CourseId,
+                'enrolments[0][timestart]' => time(),
+                'enrolments[0][timeend]' => $enrollmentEndTime,
+                'enrolments[0][suspend]' => 0,
+            ]);
+
+            if (empty($fallbackResult['curl_error']) && !(is_array($fallbackResult['decoded']) && isset($fallbackResult['decoded']['exception']))) {
+                error_log('Fell back to A1 course ' . $a1CourseId . ' for one-coin user ' . $userId . ' after course ' . (int) $courseId . ' failed.');
+                continue;
+            }
+
+            $enrolResult = $fallbackResult;
+        }
+
+        fail_with_request_error($enrolResult, !empty($enrolResult['curl_error']) ? 'Error8:' : 'Error9:', 'Enrollment');
+        exit;
     }
 }
 
