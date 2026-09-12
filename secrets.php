@@ -18,21 +18,36 @@ $moodleWebserviceToken = $env['TOKEN'];
 $moodleRestFormat = 'json';
 
 // Enrollment target.
-$moodleCourseId = 24;
-$moodleSubscriptionMissionCourseIds = [
-	26,  // Mission 1
-	101, // Mission 2 placeholder
-	102, // Mission 3 placeholder
-	103, // Mission 4 placeholder
-	104, // Mission 5 placeholder
-	105, // Mission 6 placeholder
-	106, // Mission 7 placeholder
-	107, // Mission 8 placeholder
-	108, // Mission 9 placeholder
-	109, // Mission 10 placeholder
-	110, // Mission 11 placeholder
-	111, // Mission 12 placeholder
+// CEFR levels supported for enrollment. The first entry is the default when none is requested.
+$cefrLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+$defaultCefrLevel = 'A1';
+
+// One-time "payment" course per CEFR level.
+$moodleCourseIdByLevel = [
+	'A1' => 24,
+	'A2' => 200, // TODO: replace with real Moodle course id
+	'B1' => 201, // TODO: replace with real Moodle course id
+	'B2' => 202, // TODO: replace with real Moodle course id
+	'C1' => 203, // TODO: replace with real Moodle course id
+	'C2' => 204, // TODO: replace with real Moodle course id
 ];
+
+// 12-mission subscription course sequence per CEFR level.
+$moodleSubscriptionMissionCourseIdsByLevel = [
+	'A1' => [26, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111],
+	// TODO: replace all of the below with real Moodle course ids
+	'A2' => [210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221],
+	'B1' => [230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241],
+	'B2' => [250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261],
+	'C1' => [270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281],
+	'C2' => [290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301],
+];
+
+// Backwards-compatible defaults (kept in sync with the A1 level above).
+$moodleCourseId = $moodleCourseIdByLevel[$defaultCefrLevel];
+$moodleSubscriptionMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$defaultCefrLevel];
+
+// Support course is shared across all levels for the duration of the subscription.
 $moodleSubscriptionSupportCourseId = 27;
 $moodleSubscriptionCourseIds = [$moodleSubscriptionMissionCourseIds[0], $moodleSubscriptionSupportCourseId];
 $moodleStudentRoleId = 5;

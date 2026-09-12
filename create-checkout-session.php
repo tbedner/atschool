@@ -36,6 +36,13 @@ if (!in_array($checkoutMode, ['payment', 'subscription'], true)) {
 	$checkoutMode = 'payment';
 }
 
+$selectedCefrLevel = strtoupper(trim((string) ($_REQUEST['level'] ?? '')));
+if (!in_array($selectedCefrLevel, $cefrLevels, true)) {
+	$selectedCefrLevel = $defaultCefrLevel;
+}
+$levelMoodleCourseId = (int) ($moodleCourseIdByLevel[$selectedCefrLevel] ?? $moodleCourseId);
+$levelSubscriptionMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$selectedCefrLevel] ?? $moodleSubscriptionMissionCourseIds;
+
 $selectedCheckoutLanguage = isset($_REQUEST['moodle_user_lang']) && is_string($_REQUEST['moodle_user_lang']) && trim((string) $_REQUEST['moodle_user_lang']) !== ''
 	? strtolower(trim((string) $_REQUEST['moodle_user_lang']))
 	: (isset($lang) && is_string($lang) && $lang !== '' ? strtolower(trim((string) $lang)) : 'en');
@@ -132,26 +139,27 @@ try {
 
 	$checkoutCourseIds = ($checkoutMode === 'subscription')
 		? array_values(array_unique(array_filter([
-			(int) ($moodleSubscriptionMissionCourseIds[0] ?? $moodleCourseId),
+			(int) ($levelSubscriptionMissionCourseIds[0] ?? $levelMoodleCourseId),
 			(int) $moodleSubscriptionSupportCourseId,
 		], static function ($courseId): bool {
 			return $courseId > 0;
 		})))
-		: [(int) $moodleCourseId];
+		: [$levelMoodleCourseId];
 
 	$checkoutCourseIds = array_values(array_filter($checkoutCourseIds, static function ($courseId): bool {
 		return (int) $courseId > 0;
 	}));
 
 	if ($checkoutCourseIds === []) {
-		$checkoutCourseIds = [(int) $moodleCourseId];
+		$checkoutCourseIds = [$levelMoodleCourseId];
 	}
 
 	$checkoutDebugPayload = [
 		'source' => 'create-checkout-session',
 		'mode' => $checkoutMode,
+		'level' => $selectedCefrLevel,
 		'selected_course_ids' => $checkoutCourseIds,
-		'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
+		'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $levelSubscriptionMissionCourseIds))),
 	];
 	error_log('[atschool-checkout] ' . json_encode($checkoutDebugPayload));
 	@file_put_contents(
@@ -170,9 +178,10 @@ try {
 		'cancel_url' => $cancelUrl,
 		'line_items' => [$lineItem],
 		'metadata' => [
-			'moodle_course_id' => (string) ($checkoutCourseIds[0] ?? (int) $moodleCourseId),
+			'moodle_course_id' => (string) ($checkoutCourseIds[0] ?? $levelMoodleCourseId),
 			'moodle_course_ids' => implode(',', $checkoutCourseIds),
 			'checkout_mode' => $checkoutMode,
+			'level' => $selectedCefrLevel,
 			'moodle_user_lang' => $selectedCheckoutLanguage,
 			'moodle_user_country' => $selectedCheckoutCountry,
 			'moodle_user_timezone' => $selectedCheckoutTimezone,

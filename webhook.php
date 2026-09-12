@@ -26,7 +26,7 @@ function get_stripe_subscription_period_end($subscription): int {
     return 0;
 }
 
-function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null, ?int $moodleUserId = null, int $currentMission = 0): void {
+function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null, ?int $moodleUserId = null, int $currentMission = 0, string $level = ''): void {
     if ($email === '' || $customerId === '') {
         return;
     }
@@ -35,12 +35,17 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
         $periodEnd = null;
     }
 
+    global $cefrLevels, $defaultCefrLevel;
+    if ($level !== '' && !in_array($level, (array) $cefrLevels, true)) {
+        $level = '';
+    }
+
     try {
         $database = get_account_database();
         $statement = $database->prepare(
-            'INSERT INTO stripe_accounts (email, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end, moodle_user_id, current_mission)
-             VALUES (:email, :customer_id, :subscription_id, :status, :period_end, :moodle_user_id, :current_mission)
-             ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = COALESCE(VALUES(stripe_subscription_id), stripe_subscription_id), subscription_status = COALESCE(VALUES(subscription_status), subscription_status), current_period_end = COALESCE(VALUES(current_period_end), current_period_end), moodle_user_id = COALESCE(VALUES(moodle_user_id), moodle_user_id), current_mission = IF(VALUES(current_mission) > 0, VALUES(current_mission), current_mission)'
+            'INSERT INTO stripe_accounts (email, stripe_customer_id, stripe_subscription_id, subscription_status, current_period_end, moodle_user_id, current_mission, level)
+             VALUES (:email, :customer_id, :subscription_id, :status, :period_end, :moodle_user_id, :current_mission, :level)
+             ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = COALESCE(VALUES(stripe_subscription_id), stripe_subscription_id), subscription_status = COALESCE(VALUES(subscription_status), subscription_status), current_period_end = COALESCE(VALUES(current_period_end), current_period_end), moodle_user_id = COALESCE(VALUES(moodle_user_id), moodle_user_id), current_mission = IF(VALUES(current_mission) > 0, VALUES(current_mission), current_mission), level = IF(VALUES(level) <> \'\', VALUES(level), level)'
         );
         $statement->execute([
             'email' => strtolower(trim($email)),
@@ -50,6 +55,7 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
             'period_end' => $periodEnd !== null ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
             'moodle_user_id' => $moodleUserId,
             'current_mission' => $currentMission,
+            'level' => $level !== '' ? $level : ($defaultCefrLevel ?? 'A1'),
         ]);
         error_log('[atschool-account] saved email=' . strtolower(trim($email)) . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ' period_end=' . ($periodEnd !== null ? gmdate('c', $periodEnd) : 'NULL') . ' rows=' . $statement->rowCount());
     } catch (Throwable $exception) {
@@ -111,7 +117,7 @@ function enroll_moodle_course(string $domainName, string $token, string $restFor
 }
 
 function advance_subscription_mission($event, \Stripe\StripeClient $stripe): void {
-    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleSubscriptionMissionCourseIds, $moodleSubscriptionSupportCourseId;
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleSubscriptionMissionCourseIdsByLevel, $moodleSubscriptionMissionCourseIds, $moodleSubscriptionSupportCourseId, $defaultCefrLevel;
 
     $subscription = $event->data->object;
     $eventId = (string) ($event->id ?? '');
@@ -137,7 +143,7 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
             (string) ($subscriptionObject->customer ?? '')
         );
 
-        $statement = $database->prepare('SELECT id, moodle_user_id, current_mission FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
+        $statement = $database->prepare('SELECT id, moodle_user_id, current_mission, level FROM stripe_accounts WHERE stripe_subscription_id = :subscription_id LIMIT 1');
         $statement->execute(['subscription_id' => $subscriptionId]);
         $account = $statement->fetch();
 
@@ -163,8 +169,11 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
             return;
         }
 
+        $accountLevel = (string) ($account['level'] ?? '');
+        $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$accountLevel] ?? $moodleSubscriptionMissionCourseIds;
+
         $nextMission = (int) $account['current_mission'] + 1;
-        $nextCourseId = (int) ($moodleSubscriptionMissionCourseIds[$nextMission - 1] ?? 0);
+        $nextCourseId = (int) ($missionCourseIds[$nextMission - 1] ?? 0);
         if ($nextCourseId <= 0 && $moodleSubscriptionSupportCourseId <= 0) {
             error_log('No configured next mission or support course for subscription ' . $subscriptionId);
             return;
@@ -336,7 +345,7 @@ function resolve_moodle_course_ids_from_session_data(array $sessionData, string 
 }
 
 function provision_moodle_user_from_session(array $sessionData): array {
-    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleSubscriptionCourseIds, $moodleStudentRoleId;
+    global $moodleDomainName, $moodleWebserviceToken, $moodleRestFormat, $moodleCourseId, $moodleSubscriptionCourseIds, $moodleStudentRoleId, $moodleCourseIdByLevel, $moodleSubscriptionMissionCourseIdsByLevel, $moodleSubscriptionSupportCourseId, $cefrLevels, $defaultCefrLevel;
 
     $email = trim((string) ($sessionData['email'] ?? ''));
     if ($email === '') {
@@ -412,7 +421,16 @@ function provision_moodle_user_from_session(array $sessionData): array {
     }
 
     $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
-    $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, (int) $moodleCourseId, (array) $moodleSubscriptionCourseIds);
+    $level = strtoupper(trim((string) ($sessionData['level'] ?? '')));
+    if (!in_array($level, (array) $cefrLevels, true)) {
+        $level = $defaultCefrLevel ?? 'A1';
+    }
+    $levelDefaultCourseId = (int) ($moodleCourseIdByLevel[$level] ?? $moodleCourseId);
+    $levelMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$level] ?? [];
+    $levelSubscriptionCourseIds = $levelMissionCourseIds !== []
+        ? [$levelMissionCourseIds[0], $moodleSubscriptionSupportCourseId]
+        : $moodleSubscriptionCourseIds;
+    $courseIds = resolve_moodle_course_ids_from_session_data($sessionData, $checkoutMode, $levelDefaultCourseId, (array) $levelSubscriptionCourseIds);
     $enrollmentEndTime = (int) ($sessionData['enrollment_end_time'] ?? 0);
     if ($enrollmentEndTime <= 0 && $checkoutMode === 'payment') {
         $enrollmentEndTime = time() + (14 * 24 * 60 * 60);
@@ -590,6 +608,11 @@ switch ($event->type) {
         $checkoutMode = 'payment';
     }
 
+    $checkoutLevel = strtoupper(trim((string) ($metadata->level ?? '')));
+    if (!in_array($checkoutLevel, (array) $cefrLevels, true)) {
+        $checkoutLevel = $defaultCefrLevel ?? 'A1';
+    }
+
     $subscriptionPeriodEnd = 0;
     $subscriptionStatus = '';
     if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
@@ -608,7 +631,10 @@ switch ($event->type) {
                 (string) $session->customer,
                 (string) $session->subscription,
                 $subscriptionStatus,
-                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null
+                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
+                null,
+                0,
+                $checkoutLevel
             );
         }
     }
@@ -631,6 +657,7 @@ switch ($event->type) {
     $checkoutDebugPayload = [
         'source' => 'webhook.php',
         'mode' => $checkoutMode,
+        'level' => $checkoutLevel,
         'resolved_course_ids' => $resolvedCourseIds,
         'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
         'session_id' => (string) $session->id,
@@ -652,6 +679,7 @@ switch ($event->type) {
         'full_name' => (string) ($fullName ?? ''),
         'course_ids' => $resolvedCourseIds,
         'checkout_mode' => $checkoutMode,
+        'level' => $checkoutLevel,
         'moodle_user_lang' => (string) ($metadata->moodle_user_lang ?? ''),
         'moodle_user_country' => (string) ($metadata->moodle_user_country ?? ''),
         'moodle_user_timezone' => (string) ($metadata->moodle_user_timezone ?? ''),
@@ -669,7 +697,8 @@ switch ($event->type) {
                 $subscriptionStatus !== '' ? $subscriptionStatus : 'active',
                 $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
                 (int) $provisioningResult['user_id'],
-                1
+                1,
+                $checkoutLevel
             );
         }
     } else {
