@@ -404,6 +404,7 @@ function url_get_variable_options($config) {
         'serverurl'       => get_string('serverurl', 'url'),
         'currenttime'     => get_string('time'),
         'lang'            => get_string('language'),
+        'securitytoken'   => 'Security Token (Chatbot)',
     );
     if (!empty($config->secretphrase)) {
         $options[get_string('miscellaneous')]['encryptedcode'] = get_string('encryptedcode');
@@ -452,6 +453,12 @@ function url_get_variable_values($url, $cm, $course, $config) {
     $site = get_site();
 
     $coursecontext = context_course::instance($course->id);
+    
+    $secret = '6htxydippP68De5kABurbNQfSAgxqtzGkDxsgaAWW'; // Match with Heroku CHATBOT_SECRET_KEY
+    $username = isloggedin() ? $USER->username : 'guest';
+    $time_window = floor(time() / 7200); // 2-hour rolling window
+    $token = hash_hmac('sha256', "{$username}:" . current_language() . ":{$time_window}", $secret);
+
 
     $values = array (
         'courseid'        => $course->id,
@@ -464,6 +471,7 @@ function url_get_variable_values($url, $cm, $course, $config) {
         'sitename'        => format_string($site->fullname, true, array('context' => $coursecontext)),
         'serverurl'       => $CFG->wwwroot,
         'currenttime'     => time(),
+        'securitytoken'   => $token,
         'urlinstance'     => $url->id,
         'urlcmid'         => $cm->id,
         'urlname'         => format_string($url->name, true, array('context' => $coursecontext)),
