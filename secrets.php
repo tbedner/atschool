@@ -25,7 +25,7 @@ $defaultCefrLevel = 'A1';
 // One-time "payment" course per CEFR level.
 $moodleCourseIdByLevel = [
 	'A1' => 24,
-	'A2' => 200, // TODO: replace with real Moodle course id
+	'A2' => 30, // TODO: replace with real Moodle course id
 	'B1' => 201, // TODO: replace with real Moodle course id
 	'B2' => 202, // TODO: replace with real Moodle course id
 	'C1' => 203, // TODO: replace with real Moodle course id
