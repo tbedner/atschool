@@ -382,6 +382,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
     [$firstName, $lastName] = split_name_parts($fullName);
     $newUsername = get_moodle_username_from_email($email);
     $newPassword = generate_moodle_password(12);
+    $existingUserId = (int) ($sessionData['existing_user_id'] ?? 0);
 
     $lang = strtolower(trim((string) ($sessionData['moodle_user_lang'] ?? 'en')));
     if ($lang === '') {
@@ -415,6 +416,9 @@ function provision_moodle_user_from_session(array $sessionData): array {
         $timezone = (string) ($localeMap[$lang]['timezone'] ?? 'America/New_York');
     }
 
+    if ($existingUserId > 0) {
+        $userId = $existingUserId;
+    } else {
     $userPayload = [
         'username' => $newUsername,
         'password' => $newPassword,
@@ -442,8 +446,9 @@ function provision_moodle_user_from_session(array $sessionData): array {
     }
 
     $userId = $createUserResult['decoded'][0]['id'] ?? null;
-    if ($userId === null) {
-        return ['success' => false, 'reason' => 'missing-user-id'];
+        if ($userId === null) {
+            return ['success' => false, 'reason' => 'missing-user-id'];
+        }
     }
 
     $checkoutMode = strtolower((string) ($sessionData['checkout_mode'] ?? 'payment'));
@@ -511,7 +516,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
         'success' => true,
         'user_id' => $userId,
         'username' => $newUsername,
-        'password' => $newPassword,
+        'password' => $existingUserId > 0 ? '' : $newPassword,
     ];
 }
 
@@ -642,6 +647,25 @@ switch ($event->type) {
         $checkoutLevel = $defaultCefrLevel ?? 'A1';
     }
 
+    $existingAccount = null;
+    try {
+        $accountLookup = get_account_database()->prepare(
+            'SELECT moodle_user_id, current_mission, level
+             FROM stripe_accounts WHERE email = :email LIMIT 1'
+        );
+        $accountLookup->execute(['email' => strtolower(trim((string) $email))]);
+        $existingAccount = $accountLookup->fetch() ?: null;
+    } catch (Throwable $exception) {
+        error_log('Unable to look up existing account for checkout: ' . $exception->getMessage());
+    }
+
+    if ($checkoutMode === 'subscription' && is_array($existingAccount)) {
+        $trackedLevel = strtoupper(trim((string) ($existingAccount['level'] ?? '')));
+        if (in_array($trackedLevel, (array) $cefrLevels, true)) {
+            $checkoutLevel = $trackedLevel;
+        }
+    }
+
     $subscriptionPeriodEnd = 0;
     $subscriptionStatus = '';
     if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
@@ -683,6 +707,18 @@ switch ($event->type) {
     }
 
     $resolvedCourseIds = array_values(array_filter(array_map('intval', $courseIds)));
+    $subscriptionCurrentMission = 1;
+    if ($checkoutMode === 'subscription' && is_array($existingAccount) && !empty($existingAccount['moodle_user_id'])) {
+        $subscriptionCurrentMission = max(1, (int) ($existingAccount['current_mission'] ?? 0) + 1);
+        $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
+        $nextMissionCourseId = (int) ($missionCourseIds[$subscriptionCurrentMission - 1] ?? 0);
+        $resolvedCourseIds = array_values(array_unique(array_filter([
+            $nextMissionCourseId,
+            (int) $moodleSubscriptionSupportCourseId,
+        ], static function ($courseId): bool {
+            return $courseId > 0;
+        })));
+    }
     $checkoutDebugPayload = [
         'source' => 'webhook.php',
         'mode' => $checkoutMode,
@@ -709,6 +745,7 @@ switch ($event->type) {
         'course_ids' => $resolvedCourseIds,
         'checkout_mode' => $checkoutMode,
         'level' => $checkoutLevel,
+        'existing_user_id' => $checkoutMode === 'subscription' ? (int) ($existingAccount['moodle_user_id'] ?? 0) : 0,
         'moodle_user_lang' => (string) ($metadata->moodle_user_lang ?? ''),
         'moodle_user_country' => (string) ($metadata->moodle_user_country ?? ''),
         'moodle_user_timezone' => (string) ($metadata->moodle_user_timezone ?? ''),
@@ -718,15 +755,15 @@ switch ($event->type) {
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
-        if ($checkoutMode === 'subscription' && !empty($session->customer) && !empty($session->subscription)) {
+        if (!empty($session->customer)) {
             save_stripe_account(
                 trim((string) $email),
                 (string) $session->customer,
-                (string) $session->subscription,
-                $subscriptionStatus !== '' ? $subscriptionStatus : 'active',
-                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
+                $checkoutMode === 'subscription' ? (string) $session->subscription : '',
+                $checkoutMode === 'subscription' ? ($subscriptionStatus !== '' ? $subscriptionStatus : 'active') : '',
+                $checkoutMode === 'subscription' && $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
                 (int) $provisioningResult['user_id'],
-                1,
+                $checkoutMode === 'subscription' ? $subscriptionCurrentMission : 1,
                 $checkoutLevel
             );
         }
