@@ -490,7 +490,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
 
         $detail = $enrolResult['detail'] ?? 'unknown error';
         if ($checkoutMode === 'subscription') {
-            error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . (is_string($detail) ? $detail : json_encode($detail));
+            error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . (is_string($detail) ? $detail : json_encode($detail)));
             continue;
         }
 
