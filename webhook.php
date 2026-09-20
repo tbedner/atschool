@@ -71,39 +71,18 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
              ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = COALESCE(VALUES(stripe_subscription_id), stripe_subscription_id), subscription_status = COALESCE(VALUES(subscription_status), subscription_status), current_period_end = COALESCE(VALUES(current_period_end), current_period_end), moodle_user_id = COALESCE(VALUES(moodle_user_id), moodle_user_id), current_mission = IF(VALUES(current_mission) > 0, VALUES(current_mission), current_mission), level = IF(VALUES(level) <> \'\', VALUES(level), level)'
         );
         $statement->execute([
-        $subscriptionPeriodEnd = 0;
-        $subscriptionStatus = '';
-        if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
-            try {
-                $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
-                $subscriptionPeriodEnd = get_stripe_subscription_period_end($subscription);
-                $subscriptionStatus = (string) ($subscription->status ?? '');
-                error_log('[atschool-checkout] initial subscription=' . (string) $session->subscription . ' customer=' . (string) ($session->customer ?? '') . ' period_end=' . $subscriptionPeriodEnd . ' status=' . $subscriptionStatus);
-            } catch (Throwable $exception) {
-                error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
-            }
-
-            if (!empty($session->customer)) {
-                save_stripe_account(
-                    trim((string) $email),
-                    (string) $session->customer,
-                    (string) $session->subscription,
-                    $subscriptionStatus,
-                    $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
-                    null,
-                    0,
-                    $checkoutLevel
-                );
-            }
-        }
-            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : '__missing_subscription_id__',
-            'customer_id' => $customerId !== '' ? $customerId : '__missing_customer_id__',
+            'email' => strtolower(trim($email)),
+            'customer_id' => $customerId,
+            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : null,
+            'status' => $status !== '' ? $status : null,
+            'period_end' => $periodEnd !== null ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
+            'moodle_user_id' => $moodleUserId,
+            'current_mission' => $currentMission,
+            'level' => $level !== '' ? $level : ($defaultCefrLevel ?? 'A1'),
         ]);
-        if ($statement->rowCount() === 0) {
-            error_log('No stripe_accounts row matched subscription ' . $subscriptionId . ' or customer ' . $customerId . ' while updating period end.');
-        }
+        error_log('[atschool-account] saved email=' . strtolower(trim($email)) . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ' rows=' . $statement->rowCount());
     } catch (Throwable $exception) {
-        error_log('Unable to update Stripe subscription period end: ' . $exception->getMessage());
+        error_log('Unable to save Stripe account email=' . $email . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ': ' . $exception->getMessage());
     }
 }
 
@@ -693,6 +672,7 @@ switch ($event->type) {
         } catch (Throwable $exception) {
             error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
         }
+    }
 
     foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'line_click_id'] as $campaignField) {
         $campaignValue = trim((string) ($metadata->{$campaignField} ?? ''));
