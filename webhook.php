@@ -700,6 +700,28 @@ switch ($event->type) {
             return $courseId > 0;
         })));
     }
+
+    $accountCustomerId = resolve_stripe_customer_id(
+        $stripe,
+        trim((string) $email),
+        (string) ($fullName ?? ''),
+        (string) ($session->customer ?? '')
+    );
+    if ($accountCustomerId !== '') {
+        save_stripe_account(
+            trim((string) $email),
+            $accountCustomerId,
+            $checkoutMode === 'subscription' ? (string) $session->subscription : '',
+            $checkoutMode === 'subscription' ? ($subscriptionStatus !== '' ? $subscriptionStatus : 'active') : '',
+            $checkoutMode === 'subscription' && $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
+            null,
+            $checkoutMode === 'subscription' ? $subscriptionCurrentMission : 1,
+            $checkoutLevel
+        );
+    } else {
+        error_log('Unable to save checkout account because no Stripe customer ID was available for ' . trim((string) $email));
+    }
+
     $checkoutDebugPayload = [
         'source' => 'webhook.php',
         'mode' => $checkoutMode,
@@ -736,12 +758,6 @@ switch ($event->type) {
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
-        $accountCustomerId = resolve_stripe_customer_id(
-            $stripe,
-            trim((string) $email),
-            (string) ($fullName ?? ''),
-            (string) ($session->customer ?? '')
-        );
         if ($accountCustomerId !== '') {
             save_stripe_account(
                 trim((string) $email),
