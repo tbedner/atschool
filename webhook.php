@@ -26,6 +26,29 @@ function get_stripe_subscription_period_end($subscription): int {
     return 0;
 }
 
+function resolve_stripe_customer_id(\Stripe\StripeClient $stripe, string $email, string $fullName, string $customerId = ''): string {
+    if ($customerId !== '') {
+        return $customerId;
+    }
+
+    try {
+        $customers = $stripe->customers->all(['email' => $email, 'limit' => 1]);
+        $existingCustomer = $customers->data[0] ?? null;
+        if ($existingCustomer !== null && !empty($existingCustomer->id)) {
+            return (string) $existingCustomer->id;
+        }
+
+        $customer = $stripe->customers->create([
+            'email' => $email,
+            'name' => $fullName !== '' ? $fullName : null,
+        ]);
+        return (string) ($customer->id ?? '');
+    } catch (Throwable $exception) {
+        error_log('Unable to resolve Stripe customer for onecoin account email=' . $email . ': ' . $exception->getMessage());
+        return '';
+    }
+}
+
 function save_stripe_account(string $email, string $customerId, string $subscriptionId = '', string $status = '', ?int $periodEnd = null, ?int $moodleUserId = null, int $currentMission = 0, string $level = ''): void {
     if ($email === '' || $customerId === '') {
         return;
@@ -48,38 +71,31 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
              ON DUPLICATE KEY UPDATE stripe_customer_id = VALUES(stripe_customer_id), stripe_subscription_id = COALESCE(VALUES(stripe_subscription_id), stripe_subscription_id), subscription_status = COALESCE(VALUES(subscription_status), subscription_status), current_period_end = COALESCE(VALUES(current_period_end), current_period_end), moodle_user_id = COALESCE(VALUES(moodle_user_id), moodle_user_id), current_mission = IF(VALUES(current_mission) > 0, VALUES(current_mission), current_mission), level = IF(VALUES(level) <> \'\', VALUES(level), level)'
         );
         $statement->execute([
-            'email' => strtolower(trim($email)),
-            'customer_id' => $customerId,
-            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : null,
-            'status' => $status !== '' ? $status : null,
-            'period_end' => $periodEnd !== null ? gmdate('Y-m-d H:i:s', $periodEnd) : null,
-            'moodle_user_id' => $moodleUserId,
-            'current_mission' => $currentMission,
-            'level' => $level !== '' ? $level : ($defaultCefrLevel ?? 'A1'),
-        ]);
-        error_log('[atschool-account] saved email=' . strtolower(trim($email)) . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ' period_end=' . ($periodEnd !== null ? gmdate('c', $periodEnd) : 'NULL') . ' rows=' . $statement->rowCount());
-    } catch (Throwable $exception) {
-        error_log('Unable to save Stripe account email=' . $email . ' customer=' . $customerId . ' subscription=' . $subscriptionId . ': ' . $exception->getMessage());
-    }
-}
+        $subscriptionPeriodEnd = 0;
+        $subscriptionStatus = '';
+        if ($checkoutMode === 'subscription' && !empty($session->subscription)) {
+            try {
+                $subscription = $stripe->subscriptions->retrieve((string) $session->subscription, []);
+                $subscriptionPeriodEnd = get_stripe_subscription_period_end($subscription);
+                $subscriptionStatus = (string) ($subscription->status ?? '');
+                error_log('[atschool-checkout] initial subscription=' . (string) $session->subscription . ' customer=' . (string) ($session->customer ?? '') . ' period_end=' . $subscriptionPeriodEnd . ' status=' . $subscriptionStatus);
+            } catch (Throwable $exception) {
+                error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
+            }
 
-function update_stripe_period_end(string $subscriptionId, int $periodEnd, string $status = '', string $customerId = ''): void {
-    if ($periodEnd <= 0 || ($subscriptionId === '' && $customerId === '')) {
-        return;
-    }
-
-    try {
-        $database = get_account_database();
-        $statement = $database->prepare(
-            'UPDATE stripe_accounts
-             SET current_period_end = :period_end,
-                 subscription_status = CASE WHEN :status_check <> \'\' THEN :status_value ELSE subscription_status END
-               WHERE stripe_subscription_id = :subscription_id OR stripe_customer_id = :customer_id'
-        );
-        $statement->execute([
-            'period_end' => gmdate('Y-m-d H:i:s', $periodEnd),
-            'status_check' => $status,
-            'status_value' => $status,
+            if (!empty($session->customer)) {
+                save_stripe_account(
+                    trim((string) $email),
+                    (string) $session->customer,
+                    (string) $session->subscription,
+                    $subscriptionStatus,
+                    $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
+                    null,
+                    0,
+                    $checkoutLevel
+                );
+            }
+        }
             'subscription_id' => $subscriptionId !== '' ? $subscriptionId : '__missing_subscription_id__',
             'customer_id' => $customerId !== '' ? $customerId : '__missing_customer_id__',
         ]);
@@ -678,20 +694,6 @@ switch ($event->type) {
             error_log('Unable to retrieve initial subscription period for ' . (string) $session->subscription . ': ' . $exception->getMessage());
         }
 
-        if (!empty($session->customer)) {
-            save_stripe_account(
-                trim((string) $email),
-                (string) $session->customer,
-                (string) $session->subscription,
-                $subscriptionStatus,
-                $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
-                null,
-                0,
-                $checkoutLevel
-            );
-        }
-    }
-
     foreach (['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'line_click_id'] as $campaignField) {
         $campaignValue = trim((string) ($metadata->{$campaignField} ?? ''));
         if ($campaignValue !== '') {
@@ -699,7 +701,6 @@ switch ($event->type) {
         }
     }
 
-    $courseIds = [];
     if (!empty($metadata->moodle_course_ids)) {
         $courseIds = preg_split('/[\s,]+/', (string) $metadata->moodle_course_ids) ?: [];
     } elseif (!empty($metadata->moodle_course_id)) {
@@ -755,10 +756,16 @@ switch ($event->type) {
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
-        if (!empty($session->customer)) {
+        $accountCustomerId = resolve_stripe_customer_id(
+            $stripe,
+            trim((string) $email),
+            (string) ($fullName ?? ''),
+            (string) ($session->customer ?? '')
+        );
+        if ($accountCustomerId !== '') {
             save_stripe_account(
                 trim((string) $email),
-                (string) $session->customer,
+                $accountCustomerId,
                 $checkoutMode === 'subscription' ? (string) $session->subscription : '',
                 $checkoutMode === 'subscription' ? ($subscriptionStatus !== '' ? $subscriptionStatus : 'active') : '',
                 $checkoutMode === 'subscription' && $subscriptionPeriodEnd > 0 ? $subscriptionPeriodEnd : null,
