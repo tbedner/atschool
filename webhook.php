@@ -214,6 +214,17 @@ function advance_subscription_mission($event, \Stripe\StripeClient $stripe): voi
             }
         }
 
+        if ($nextCourseId > 0 && $nextMission > 1) {
+            $previousCourseId = (int) ($missionCourseIds[$nextMission - 2] ?? 0);
+            $minimumXp = (int) ([0, 120, 276, 479, 742, 1085, 1531, 2110, 2863, 3842, 5114, 6768, 8918][$nextMission - 1] ?? 0);
+            transfer_moodle_course_xp(
+                $previousCourseId,
+                $nextCourseId,
+                (int) $account['moodle_user_id'],
+                $minimumXp
+            );
+        }
+
         if ($moodleSubscriptionSupportCourseId > 0 && $periodEnd > 0) {
             $supportEnrollmentResult = enroll_moodle_course(
                 $moodleDomainName,

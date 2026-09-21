@@ -92,3 +92,47 @@ function seed_moodle_course_xp(int $courseId, int $userId, int $minimumXp, int $
         error_log('Unable to seed Moodle XP course=' . $courseId . ' user=' . $userId . ': ' . $exception->getMessage());
     }
 }
+
+function transfer_moodle_course_xp(int $sourceCourseId, int $targetCourseId, int $userId, int $minimumXp): void {
+    if ($sourceCourseId <= 0 || $targetCourseId <= 0 || $userId <= 0 || $minimumXp < 0) {
+        return;
+    }
+
+    $env = parse_ini_file(__DIR__ . '/.env');
+    $tablePrefix = $env['MOODLE_DB_PREFIX'] ?? 'mdlpj_';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $tablePrefix)) {
+        throw new RuntimeException('Invalid Moodle database table prefix.');
+    }
+
+    $levelThresholds = [0, 120, 276, 479, 742, 1085, 1531, 2110, 2863, 3842, 5114, 6768, 8918];
+
+    try {
+        $database = get_moodle_database();
+        $sourceStatement = $database->prepare(
+            'SELECT xp FROM ' . $tablePrefix . 'block_xp WHERE courseid = :courseid AND userid = :userid LIMIT 1'
+        );
+        $sourceStatement->execute(['courseid' => $sourceCourseId, 'userid' => $userId]);
+        $sourceXp = (int) ($sourceStatement->fetchColumn() ?: 0);
+        $xp = max($sourceXp, $minimumXp);
+        $level = 1;
+        foreach ($levelThresholds as $index => $threshold) {
+            if ($xp >= $threshold) {
+                $level = $index + 1;
+            }
+        }
+
+        $statement = $database->prepare(
+            'INSERT INTO ' . $tablePrefix . 'block_xp (courseid, userid, xp, lvl)
+             VALUES (:courseid, :userid, :xp, :lvl)
+             ON DUPLICATE KEY UPDATE xp = GREATEST(xp, VALUES(xp)), lvl = GREATEST(lvl, VALUES(lvl))'
+        );
+        $statement->execute([
+            'courseid' => $targetCourseId,
+            'userid' => $userId,
+            'xp' => $xp,
+            'lvl' => $level,
+        ]);
+    } catch (Throwable $exception) {
+        error_log('Unable to transfer Moodle XP source_course=' . $sourceCourseId . ' target_course=' . $targetCourseId . ' user=' . $userId . ': ' . $exception->getMessage());
+    }
+}
