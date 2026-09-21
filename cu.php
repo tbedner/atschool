@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/stripe/init.php';
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/database.php';
 include('lang.php');
 require 'PHPMailer.php';
 require 'SMTP.php';
@@ -562,6 +563,43 @@ $levelSubscriptionCourseIds = $levelMissionCourseIds !== []
     ? [$levelMissionCourseIds[0], $moodleSubscriptionSupportCourseId]
     : $moodleSubscriptionCourseIds;
 $courseIds = resolveMoodleCourseIds($metadata, $checkoutMode, $levelDefaultCourseId, (array) $levelSubscriptionCourseIds);
+$trackedAccount = null;
+$trackedCurrentMission = 0;
+$selectedSubscriptionMission = 0;
+if ($checkoutMode === 'subscription') {
+    try {
+        $accountLookup = get_account_database()->prepare(
+            'SELECT moodle_user_id, current_mission, level
+             FROM stripe_accounts
+             WHERE email = :email OR stripe_customer_id = :customer_id
+             LIMIT 1'
+        );
+        $accountLookup->execute([
+            'email' => strtolower($newEmail),
+            'customer_id' => (string) ($checkoutSession->customer ?? ''),
+        ]);
+        $trackedAccount = $accountLookup->fetch() ?: null;
+    } catch (Throwable $exception) {
+        error_log('Unable to look up tracked account for success-page enrollment: ' . $exception->getMessage());
+    }
+
+    if (is_array($trackedAccount) && (int) ($trackedAccount['current_mission'] ?? 0) > 0 && !empty($trackedAccount['moodle_user_id'])) {
+        $trackedCurrentMission = (int) $trackedAccount['current_mission'];
+        $trackedLevel = strtoupper(trim((string) ($trackedAccount['level'] ?? '')));
+        if (in_array($trackedLevel, (array) $cefrLevels, true)) {
+            $checkoutLevel = $trackedLevel;
+        }
+        $subscriptionMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
+        $nextMission = min(max(2, $trackedCurrentMission), count($subscriptionMissionCourseIds));
+        $selectedSubscriptionMission = $nextMission;
+        $nextMissionCourseId = (int) ($subscriptionMissionCourseIds[$nextMission - 1] ?? 0);
+        $courseIds = array_values(array_unique(array_filter([
+            $nextMissionCourseId,
+            (int) $moodleSubscriptionSupportCourseId,
+        ], static function ($courseId): bool {
+            return $courseId > 0;
+        })));
+    }
 $enrollmentEndTime = 0;
 if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) {
     try {
@@ -587,6 +625,8 @@ if ($moodleUserLocaleSettings['lang'] !== 'en' && file_exists($localizedLanguage
 $checkoutDebugPayload = [
     'source' => 'cu.php',
     'mode' => $checkoutMode,
+    'tracked_current_mission' => $trackedCurrentMission,
+    'selected_subscription_mission' => $selectedSubscriptionMission,
     'resolved_course_ids' => $courseIds,
     'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
     'session_id' => $sessionId,
