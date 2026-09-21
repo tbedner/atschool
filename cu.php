@@ -614,6 +614,12 @@ if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) 
 }
 $moodleUserLocaleSettings = resolveMoodleUserLocaleSettings($metadata, $lang ?? 'en');
 
+if ($checkoutMode === 'subscription' && $selectedSubscriptionMission === 2 && is_array($trackedAccount) && !empty($trackedAccount['moodle_user_id'])) {
+    $subscriptionMissionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
+    $missionTwoCourseId = (int) ($subscriptionMissionCourseIds[1] ?? 0);
+    seed_moodle_course_xp($missionTwoCourseId, (int) $trackedAccount['moodle_user_id'], 120, 2);
+}
+
 $translations = include __DIR__ . '/assets/lang/en.php';
 $localizedLanguageFile = __DIR__ . '/assets/lang/' . $moodleUserLocaleSettings['lang'] . '.php';
 if ($moodleUserLocaleSettings['lang'] !== 'en' && file_exists($localizedLanguageFile)) {

@@ -756,6 +756,12 @@ switch ($event->type) {
         FILE_APPEND | LOCK_EX
     );
 
+    if ($checkoutMode === 'subscription' && $subscriptionCurrentMission === 2 && is_array($existingAccount) && !empty($existingAccount['moodle_user_id'])) {
+        $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
+        $missionTwoCourseId = (int) ($missionCourseIds[1] ?? 0);
+        seed_moodle_course_xp($missionTwoCourseId, (int) $existingAccount['moodle_user_id'], 120, 2);
+    }
+
     $provisioningResult = provision_moodle_user_from_session([
         'email' => trim((string) $email),
         'full_name' => (string) ($fullName ?? ''),
@@ -772,16 +778,6 @@ switch ($event->type) {
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
-        if ($checkoutMode === 'subscription' && $subscriptionCurrentMission === 2 && is_array($existingAccount)) {
-            $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
-            $missionTwoCourseId = (int) ($missionCourseIds[1] ?? 0);
-            seed_moodle_course_xp(
-                $missionTwoCourseId,
-                (int) $provisioningResult['user_id'],
-                120,
-                2
-            );
-        }
         if ($accountCustomerId !== '') {
             save_stripe_account(
                 trim((string) $email),
