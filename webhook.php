@@ -646,9 +646,14 @@ switch ($event->type) {
     try {
         $accountLookup = get_account_database()->prepare(
             'SELECT moodle_user_id, current_mission, level
-             FROM stripe_accounts WHERE email = :email LIMIT 1'
+             FROM stripe_accounts
+             WHERE email = :email OR stripe_customer_id = :customer_id
+             LIMIT 1'
         );
-        $accountLookup->execute(['email' => strtolower(trim((string) $email))]);
+        $accountLookup->execute([
+            'email' => strtolower(trim((string) $email)),
+            'customer_id' => (string) ($session->customer ?? ''),
+        ]);
         $existingAccount = $accountLookup->fetch() ?: null;
     } catch (Throwable $exception) {
         error_log('Unable to look up existing account for checkout: ' . $exception->getMessage());
@@ -689,7 +694,7 @@ switch ($event->type) {
 
     $resolvedCourseIds = array_values(array_filter(array_map('intval', $courseIds)));
     $subscriptionCurrentMission = 1;
-    if ($checkoutMode === 'subscription' && is_array($existingAccount) && !empty($existingAccount['moodle_user_id'])) {
+    if ($checkoutMode === 'subscription' && is_array($existingAccount) && (int) ($existingAccount['current_mission'] ?? 0) > 0) {
         $subscriptionCurrentMission = max(1, (int) ($existingAccount['current_mission'] ?? 0) + 1);
         $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
         $nextMissionCourseId = (int) ($missionCourseIds[$subscriptionCurrentMission - 1] ?? 0);
@@ -726,6 +731,9 @@ switch ($event->type) {
         'source' => 'webhook.php',
         'mode' => $checkoutMode,
         'level' => $checkoutLevel,
+        'tracked_current_mission' => (int) ($existingAccount['current_mission'] ?? 0),
+        'tracked_moodle_user_id' => (int) ($existingAccount['moodle_user_id'] ?? 0),
+        'selected_subscription_mission' => $checkoutMode === 'subscription' ? $subscriptionCurrentMission : 0,
         'resolved_course_ids' => $resolvedCourseIds,
         'subscription_config_ids' => array_values(array_unique(array_map('intval', (array) $moodleSubscriptionCourseIds))),
         'session_id' => (string) $session->id,
