@@ -824,6 +824,23 @@ if (!empty($loginResult['curl_error'])) {
     exit;
 }
 
+if ($userId !== null) {
+    $manualAuthResult = moodle_rest_request($domainName, [
+        'wstoken' => $token,
+        'wsfunction' => 'core_user_update_users',
+        'moodlewsrestformat' => $restFormat,
+    ] + ['users' => [[
+        'id' => $userId,
+        'auth' => 'manual',
+    ]]]);
+
+    if (!empty($manualAuthResult['curl_error']) || (is_array($manualAuthResult['decoded']) && isset($manualAuthResult['decoded']['exception']))) {
+        error_log('Unable to restore manual authentication for user ' . $userId . ': ' . json_encode($manualAuthResult['decoded'] ?? $manualAuthResult['curl_error']));
+    } else {
+        error_log('Restored manual authentication for Moodle user ' . $userId . ' after generating user-key login URL.');
+    }
+}
+
 if (is_array($loginResult['decoded']) && isset($loginResult['decoded']['loginurl'])) {
     $mail = new PHPMailer(true);
     $mail->CharSet = "UTF-8";
