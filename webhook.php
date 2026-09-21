@@ -86,6 +86,34 @@ function save_stripe_account(string $email, string $customerId, string $subscrip
     }
 }
 
+function update_stripe_period_end(string $subscriptionId, int $periodEnd, string $status = '', string $customerId = ''): void {
+    if ($periodEnd <= 0 || ($subscriptionId === '' && $customerId === '')) {
+        return;
+    }
+
+    try {
+        $database = get_account_database();
+        $statement = $database->prepare(
+            'UPDATE stripe_accounts
+             SET current_period_end = :period_end,
+                 subscription_status = CASE WHEN :status_check <> \'\' THEN :status_value ELSE subscription_status END
+             WHERE stripe_subscription_id = :subscription_id OR stripe_customer_id = :customer_id'
+        );
+        $statement->execute([
+            'period_end' => gmdate('Y-m-d H:i:s', $periodEnd),
+            'status_check' => $status,
+            'status_value' => $status,
+            'subscription_id' => $subscriptionId !== '' ? $subscriptionId : '__missing_subscription_id__',
+            'customer_id' => $customerId !== '' ? $customerId : '__missing_customer_id__',
+        ]);
+        if ($statement->rowCount() === 0) {
+            error_log('No stripe_accounts row matched subscription ' . $subscriptionId . ' or customer ' . $customerId . ' while updating period end.');
+        }
+    } catch (Throwable $exception) {
+        error_log('Unable to update Stripe subscription period end: ' . $exception->getMessage());
+    }
+}
+
 function enroll_moodle_course(string $domainName, string $token, string $restFormat, int $userId, int $courseId, int $timeEnd = 0): array {
     $result = moodle_rest_request($domainName, [
         'wstoken' => $token,
