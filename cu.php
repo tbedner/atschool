@@ -739,7 +739,9 @@ if ($userId !== null) {
 
         if (!empty($enrolResult['curl_error'])) {
             $enrollmentFailed = true;
-        } elseif (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
+        } elseif (!is_array($enrolResult['decoded'])) {
+            $enrollmentFailed = true;
+        } elseif (isset($enrolResult['decoded']['exception'])) {
             $enrollmentFailed = true;
         } else {
             $enrollmentFailed = false;

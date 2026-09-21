@@ -104,7 +104,11 @@ function enroll_moodle_course(string $domainName, string $token, string $restFor
         return ['success' => false, 'detail' => $result['curl_error']];
     }
 
-    if (is_array($result['decoded']) && isset($result['decoded']['exception'])) {
+    if (!is_array($result['decoded'])) {
+        return ['success' => false, 'detail' => 'Moodle returned an empty or invalid response.'];
+    }
+
+    if (isset($result['decoded']['exception'])) {
         return ['success' => false, 'detail' => json_encode($result['decoded'])];
     }
 
@@ -484,7 +488,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
 
     foreach ($courseIds as $courseIndex => $courseId) {
         $enrolResult = enroll_moodle_course_for_checkout($userId, (int) $courseId, $enrollmentEndTime);
-        error_log('[atschool-enrollment] user=' . $userId . ' course=' . (int) $courseId . ' success=' . (($enrolResult['success'] ?? false) ? '1' : '0') . ' detail=' . (is_string($enrolResult['detail'] ?? null) ? ($enrolResult['detail'] ?? '') : json_encode($enrolResult['detail'] ?? null));
+        error_log('[atschool-enrollment] user=' . $userId . ' course=' . (int) $courseId . ' success=' . (($enrolResult['success'] ?? false) ? '1' : '0') . ' detail=' . (is_string($enrolResult['detail'] ?? null) ? ($enrolResult['detail'] ?? '') : json_encode($enrolResult['detail'] ?? null)));
         if ($enrolResult['success'] ?? false) {
             continue;
         }
