@@ -600,6 +600,7 @@ if ($checkoutMode === 'subscription') {
             return $courseId > 0;
         })));
     }
+}
 $enrollmentEndTime = 0;
 if ($checkoutMode === 'subscription' && !empty($checkoutSession->subscription)) {
     try {
