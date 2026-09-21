@@ -753,8 +753,7 @@ if ($userId !== null) {
 
         if ($checkoutMode === 'subscription') {
             error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . format_moodle_error($enrolResult['decoded'] ?? [], 'Enrollment'));
-            fail_with_request_error($enrolResult, 'Error8:', 'Subscription enrollment for course ' . (int) $courseId);
-            exit;
+            continue;
         }
 
         $moodleErrorPayload = is_array($enrolResult['decoded'] ?? null)
