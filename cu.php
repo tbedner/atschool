@@ -757,10 +757,14 @@ if ($userId !== null) {
             exit;
         }
 
-        $moodleErrorMessage = is_array($enrolResult['decoded'] ?? null)
-            ? strtolower((string) ($enrolResult['decoded']['message'] ?? ''))
+        $moodleErrorPayload = is_array($enrolResult['decoded'] ?? null)
+            ? json_encode($enrolResult['decoded'], JSON_UNESCAPED_SLASHES)
             : '';
-        if (strpos($moodleErrorMessage, 'no mobile number found for userid') !== false) {
+        $moodleErrorText = strtolower(
+            (string) ($moodleErrorPayload ?: '') . ' ' .
+            (string) ($enrolResult['raw'] ?? '')
+        );
+        if (strpos($moodleErrorText, 'no mobile number found for userid') !== false) {
             error_log('Moodle enrolled one-coin user ' . $userId . ' in course ' . (int) $courseId . ' but returned a non-blocking mobile-number warning.');
             continue;
         }
