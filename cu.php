@@ -757,6 +757,14 @@ if ($userId !== null) {
             exit;
         }
 
+        $moodleErrorMessage = is_array($enrolResult['decoded'] ?? null)
+            ? strtolower((string) ($enrolResult['decoded']['message'] ?? ''))
+            : '';
+        if (strpos($moodleErrorMessage, 'no mobile number found for userid') !== false) {
+            error_log('Moodle enrolled one-coin user ' . $userId . ' in course ' . (int) $courseId . ' but returned a non-blocking mobile-number warning.');
+            continue;
+        }
+
         $a1CourseId = (int) ($moodleCourseIdByLevel['A1'] ?? $moodleCourseId);
         if ($a1CourseId > 0 && $a1CourseId !== (int) $courseId) {
             $fallbackResult = moodle_rest_request($domainName, [
