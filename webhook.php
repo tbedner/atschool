@@ -772,6 +772,16 @@ switch ($event->type) {
     if ($provisioningResult['success'] ?? false) {
         $capture['moodle_user_id'] = $provisioningResult['user_id'] ?? null;
         $capture['moodle_username'] = $provisioningResult['username'] ?? null;
+        if ($checkoutMode === 'subscription' && $subscriptionCurrentMission === 2 && is_array($existingAccount)) {
+            $missionCourseIds = $moodleSubscriptionMissionCourseIdsByLevel[$checkoutLevel] ?? $moodleSubscriptionMissionCourseIds;
+            $missionTwoCourseId = (int) ($missionCourseIds[1] ?? 0);
+            seed_moodle_course_xp(
+                $missionTwoCourseId,
+                (int) $provisioningResult['user_id'],
+                120,
+                2
+            );
+        }
         if ($accountCustomerId !== '') {
             save_stripe_account(
                 trim((string) $email),
