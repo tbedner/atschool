@@ -475,6 +475,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
         'firstname' => $firstName,
         'lastname' => $lastName,
         'email' => $email,
+        'auth' => 'manual',
         'country' => $country,
         'timezone' => $timezone,
         'lang' => $lang,

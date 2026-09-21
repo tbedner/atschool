@@ -707,6 +707,7 @@ if ($userId !== null) {
         'firstname' => $newFirstname,
         'lastname' => $newLastname,
         'email' => $newEmail,
+        'auth' => 'manual',
         'country' => $moodleUserLocaleSettings['country'],
         'timezone' => $moodleUserLocaleSettings['timezone'],
         'lang' => $moodleUserLocaleSettings['lang'],
