@@ -484,6 +484,7 @@ function provision_moodle_user_from_session(array $sessionData): array {
 
     foreach ($courseIds as $courseIndex => $courseId) {
         $enrolResult = enroll_moodle_course_for_checkout($userId, (int) $courseId, $enrollmentEndTime);
+        error_log('[atschool-enrollment] user=' . $userId . ' course=' . (int) $courseId . ' success=' . (($enrolResult['success'] ?? false) ? '1' : '0') . ' detail=' . (is_string($enrolResult['detail'] ?? null) ? ($enrolResult['detail'] ?? '') : json_encode($enrolResult['detail'] ?? null));
         if ($enrolResult['success'] ?? false) {
             continue;
         }

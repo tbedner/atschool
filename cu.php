@@ -732,6 +732,11 @@ if ($userId !== null) {
             'enrolments[0][suspend]' => 0,
         ]);
 
+        error_log('[atschool-enrollment] user=' . $userId . ' course=' . (int) $courseId . ' result=' . json_encode([
+            'curl_error' => $enrolResult['curl_error'] ?? '',
+            'decoded' => $enrolResult['decoded'] ?? null,
+        ], JSON_UNESCAPED_SLASHES));
+
         if (!empty($enrolResult['curl_error'])) {
             $enrollmentFailed = true;
         } elseif (is_array($enrolResult['decoded']) && isset($enrolResult['decoded']['exception'])) {
@@ -746,7 +751,8 @@ if ($userId !== null) {
 
         if ($checkoutMode === 'subscription') {
             error_log('Skipping invalid subscription course ' . (int) $courseId . ' for user ' . $userId . ': ' . format_moodle_error($enrolResult['decoded'] ?? [], 'Enrollment'));
-            continue;
+            fail_with_request_error($enrolResult, 'Error8:', 'Subscription enrollment for course ' . (int) $courseId);
+            exit;
         }
 
         $a1CourseId = (int) ($moodleCourseIdByLevel['A1'] ?? $moodleCourseId);
