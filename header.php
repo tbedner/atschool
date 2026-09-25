@@ -7,6 +7,11 @@
                                 <img src="images/logo.png" alt="@School Logo" width="60" height="60"> <span class="title"><?php echo $translations['title']; ?></span>
 								</a>
 <form name="langSelect" action="" method="get">
+	<?php foreach ($_GET as $paramName => $paramValue): ?>
+		<?php if ($paramName !== 'lang' && is_scalar($paramValue)): ?>
+		<input type="hidden" name="<?php echo htmlspecialchars((string) $paramName, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars((string) $paramValue, ENT_QUOTES, 'UTF-8'); ?>">
+		<?php endif; ?>
+	<?php endforeach; ?>
 	<div class="form-group col-md-4 float-right lang">
      <select class="form-control form-control-sm" name="lang" id="lang" onchange='this.form.submit()'>
          <option>Select Language</option>
