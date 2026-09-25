@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/lang.php';
 require_once __DIR__ . '/PHPMailer.php';
 require_once __DIR__ . '/SMTP.php';
 
