@@ -223,6 +223,7 @@ body {
 
 .level-select-row label {
 	margin: 0;
+	text-align: right;
 	white-space: normal;
 }
 
@@ -240,6 +241,7 @@ body {
 	.level-select-row label {
 		display: block;
 		margin-bottom: 6px;
+		text-align: left;
 	}
 }
 
