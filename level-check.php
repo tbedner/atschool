@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/secrets.php';
+require_once __DIR__ . '/PHPMailer.php';
+require_once __DIR__ . '/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
 
 // Stripe-free entry point: creates/reuses a Moodle account, enrolls the
 // student in the Level Check course, and redirects straight to their dashboard.
@@ -197,17 +201,19 @@ $domainName = $moodleDomainName;
 $token = $moodleWebserviceToken;
 $restFormat = $moodleRestFormat;
 $username = get_username_from_email($email);
+$newUserPassword = null;
 
 $userId = find_moodle_user_id($domainName, $token, $restFormat, $email, $username);
 
 if ($userId === null) {
+    $newUserPassword = generate_level_check_password(12);
     $createResult = moodle_rest_request($domainName, [
         'wstoken' => $token,
         'wsfunction' => 'core_user_create_users',
         'moodlewsrestformat' => $restFormat,
     ] + ['users' => [[
         'username' => $username,
-        'password' => generate_level_check_password(12),
+        'password' => $newUserPassword,
         'firstname' => $firstName,
         'lastname' => $lastName,
         'email' => $email,
@@ -224,6 +230,7 @@ if ($userId === null) {
 
     if (is_array($createResult['decoded']) && isset($createResult['decoded']['exception'])) {
         // Likely a duplicate created concurrently; look the user up again.
+        $newUserPassword = null;
         $userId = find_moodle_user_id($domainName, $token, $restFormat, $email, $username);
         if ($userId === null) {
             fail_with_error($createResult, 'User creation');
@@ -283,6 +290,37 @@ moodle_rest_request($domainName, [
 if (!is_array($loginResult['decoded']) || !isset($loginResult['decoded']['loginurl'])) {
     fail_with_error($loginResult, 'Auto-login URL');
     exit;
+}
+
+if ($newUserPassword !== null) {
+    try {
+        $mail = new PHPMailer(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->isSMTP();
+        $mail->Host = $emailHost;
+        $mail->SMTPAuth = true;
+        $mail->Username = $emailUser;
+        $mail->Password = $emailPassword;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+        $mail->setFrom($emailFromAddress, $emailFromName);
+        $mail->addAddress($email, $firstName . ' ' . $lastName);
+
+        $plainMessage = strtr($translations['welcome_email_message'] ?? "Hello {first_name},\n\nYour account has been created successfully.\n\nHere are your login details:\nUsername: {username}\nPassword: {password}\n\nYou can log in using the following link:\n{login_url}\n\nPlease change your password after logging in for the first time.\n\nBest regards,\n@School Team", [
+            '{first_name}' => $firstName,
+            '{username}' => $username,
+            '{password}' => $newUserPassword,
+            '{login_url}' => $domainName . '/?lang=' . rawurlencode($lang),
+        ]);
+
+        $mail->isHTML(true);
+        $mail->Subject = $translations['welcome_email_subject'] ?? 'Welcome to the @School Portal';
+        $mail->Body = nl2br(htmlspecialchars($plainMessage, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+        $mail->AltBody = $plainMessage;
+        $mail->send();
+    } catch (Throwable $mailError) {
+        error_log('[level-check] Credentials email failed for ' . $email . ': ' . $mailError->getMessage());
+    }
 }
 
 header('Location: ' . resolve_login_redirect_url((string) $loginResult['decoded']['loginurl'], $domainName));
