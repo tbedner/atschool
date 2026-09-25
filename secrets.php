@@ -52,6 +52,10 @@ $moodleSubscriptionSupportCourseId = 27;
 $moodleSubscriptionCourseIds = [$moodleSubscriptionMissionCourseIds[0], $moodleSubscriptionSupportCourseId];
 $moodleStudentRoleId = 5;
 
+// Level Check course (no-payment enrollment link).
+$levelCheckCourseId = 5;
+$levelCheckAccessKey = trim((string) ($env['LEVEL_CHECK_ACCESS_KEY'] ?? ''));
+
 // Checkout configuration.
 $courseDisplayName = 'Course Enrollment';
 $courseAmountOne = 500;
