@@ -25,10 +25,14 @@ $campaignTracking = capture_campaign_tracking_params();
 // to level-check.php, exactly like the onecoin/subscribe checkout forms do.
 $passthroughParams = $_GET;
 unset($passthroughParams['email']);
+unset($passthroughParams['first_name']);
+unset($passthroughParams['last_name']);
 
 $pageTitle = $translations['level_check_title'] ?? 'Find Your English Level';
 $pageSubhead = $translations['level_check_subhead'] ?? 'Enter your email to start your free Level Check and jump straight into your dashboard.';
 $emailLabel = $translations['level_check_email_label'] ?? 'Email Address';
+$firstNameLabel = $translations['level_check_first_name_label'] ?? 'First Name';
+$lastNameLabel = $translations['level_check_last_name_label'] ?? 'Last Name';
 $submitLabel = $translations['level_check_cta'] ?? 'Start My Level Check';
 ?>
 <main class="page">
@@ -39,6 +43,14 @@ $submitLabel = $translations['level_check_cta'] ?? 'Start My Level Check';
 		</div>
 
 		<form class="subscribe-form" method="get" action="level-check.php">
+			<div class="level-select-row">
+				<label for="level-check-first-name"><?php echo htmlspecialchars($firstNameLabel, ENT_QUOTES, 'UTF-8'); ?></label>
+				<input type="text" id="level-check-first-name" name="first_name" required>
+			</div>
+			<div class="level-select-row">
+				<label for="level-check-last-name"><?php echo htmlspecialchars($lastNameLabel, ENT_QUOTES, 'UTF-8'); ?></label>
+				<input type="text" id="level-check-last-name" name="last_name" required>
+			</div>
 			<div class="level-select-row">
 				<label for="level-check-email"><?php echo htmlspecialchars($emailLabel, ENT_QUOTES, 'UTF-8'); ?></label>
 				<input type="email" id="level-check-email" name="email" required>

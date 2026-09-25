@@ -45,8 +45,9 @@ function fail_with_error(array $result, string $context): void {
     $detail = !empty($result['curl_error'])
         ? $result['curl_error']
         : (is_array($result['decoded']) ? format_moodle_error($result['decoded'], $context) : 'Unknown Moodle response.');
+    $debugInfo = is_array($result['decoded']) ? (string) ($result['decoded']['debuginfo'] ?? '') : '';
 
-    error_log('[level-check] ' . $context . ': ' . $detail);
+    error_log('[level-check] ' . $context . ': ' . $detail . ($debugInfo !== '' ? ' | debuginfo=' . $debugInfo : ''));
     http_response_code(500);
     echo 'Error: ' . htmlspecialchars($detail, ENT_QUOTES, 'UTF-8');
 }
@@ -86,12 +87,13 @@ function get_username_from_email(string $email): string {
 function split_name(string $fullName): array {
     $trimmed = trim($fullName);
     if ($trimmed === '') {
-        return ['Student', ''];
+        return ['Student', 'Student'];
     }
 
     $parts = preg_split('/\s+/', $trimmed);
     $first = $parts[0] ?? 'Student';
-    $last = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
+    // core_user_create_users rejects a blank lastname.
+    $last = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : 'Student';
 
     return [$first, $last];
 }
@@ -161,7 +163,15 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-[$firstName, $lastName] = split_name((string) ($_REQUEST['name'] ?? ''));
+$requestedFirstName = trim((string) ($_REQUEST['first_name'] ?? ''));
+$requestedLastName = trim((string) ($_REQUEST['last_name'] ?? ''));
+if ($requestedFirstName !== '' || $requestedLastName !== '') {
+    $firstName = $requestedFirstName !== '' ? $requestedFirstName : 'Student';
+    $lastName = $requestedLastName !== '' ? $requestedLastName : 'Student';
+} else {
+    // Backwards compatible with older links that only pass a combined "name" param.
+    [$firstName, $lastName] = split_name((string) ($_REQUEST['name'] ?? ''));
+}
 
 $localeMap = [
     'ar' => ['country' => 'AE', 'timezone' => 'Asia/Dubai'],
