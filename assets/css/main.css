@@ -213,21 +213,34 @@ body {
 }
 
 .level-select-row {
-	display: flex;
+	display: grid;
+	grid-template-columns: minmax(10rem, 34%) minmax(0, 1fr);
 	align-items: center;
 	gap: 8px;
-	flex-wrap: nowrap;
 	margin-bottom: 20px;
 	overflow: visible;
 }
 
 .level-select-row label {
 	margin: 0;
+	white-space: normal;
 }
 
+.level-select-row input,
 .level-select-row select {
-	flex: 1 1 140px;
-	min-width: 140px;
+	width: 100%;
+	min-width: 0;
+}
+
+@media screen and (max-width: 480px) {
+	.level-select-row {
+		display: block;
+	}
+
+	.level-select-row label {
+		display: block;
+		margin-bottom: 6px;
+	}
 }
 
 .level-help-tooltip {
