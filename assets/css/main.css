@@ -113,6 +113,7 @@ body {
 	max-width: 980px;
 	text-align: left;
 	padding: 36px;
+	margin-top: -50px;
 }
 
 .subscribe-hero {
@@ -3681,7 +3682,10 @@ input, select, textarea {
 			.carousel-inner {
 				height: auto;
 			}
-
+			.form-control-sm {
+				width: 50% !important;
+				margin-left: 50% !important;
+			}
 		}
 /* FAQs */
 
