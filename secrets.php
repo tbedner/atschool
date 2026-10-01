@@ -29,7 +29,7 @@ $moodleCourseIdByLevel = [
 	'B1' => 33, // TODO: replace with real Moodle course id
 	'B2' => 36, // TODO: replace with real Moodle course id
 	'C1' => 37, // TODO: replace with real Moodle course id
-	'C2' => 204, // TODO: replace with real Moodle course id
+	'C2' => 39, // TODO: replace with real Moodle course id
 ];
 
 // 12-mission subscription course sequence per CEFR level.
@@ -40,7 +40,7 @@ $moodleSubscriptionMissionCourseIdsByLevel = [
 	'B1' => [33, 36, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241],
 	'B2' => [36, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261],
 	'C1' => [37, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281],
-	'C2' => [290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301],
+	'C2' => [39, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301],
 ];
 
 // Backwards-compatible defaults (kept in sync with the A1 level above).
