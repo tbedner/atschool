@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => '名',
     'level_check_last_name_label' => '姓',
     'level_check_email_label' => '电子邮件地址',
+    'level_check_email_notice' => '我们绝不会分享或出售您的电子邮件地址。我们需要使用它在课程门户网站为您创建账户，以便您访问英语水平测试课程。',
     'level_check_cta' => '开始我的水平测试',
     'account_link_prompt' => '请输入订阅使用的电子邮件地址，以接收安全的账户链接。',
     'account_link_sent' => '如果该电子邮件地址存在账户，安全链接已发送。',

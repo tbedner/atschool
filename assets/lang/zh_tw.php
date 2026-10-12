@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => '名字',
     'level_check_last_name_label' => '姓氏',
     'level_check_email_label' => '電子郵件地址',
+    'level_check_email_notice' => '我們絕不會分享或出售您的電子郵件地址。我們需要使用它在課程入口網站為您建立帳戶，讓您能夠存取英語程度測驗課程。',
     'level_check_cta' => '開始我的程度測驗',
     'account_link_prompt' => '請輸入訂閱使用的電子郵件地址，以接收安全的帳戶連結。',
     'account_link_sent' => '如果該電子郵件地址存在帳戶，安全連結已寄出。',

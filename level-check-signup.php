@@ -31,6 +31,7 @@ unset($passthroughParams['last_name']);
 $pageTitle = $translations['level_check_title'] ?? 'Find Your English Level';
 $pageSubhead = $translations['level_check_subhead'] ?? 'Enter your email to start your free Level Check and jump straight into your dashboard.';
 $emailLabel = $translations['level_check_email_label'] ?? 'Email Address';
+$emailNotice = $translations['level_check_email_notice'] ?? 'We never share or sell your email address. We need it to create your account on our course portal and give you access to the Level Check course.';
 $firstNameLabel = $translations['level_check_first_name_label'] ?? 'First Name';
 $lastNameLabel = $translations['level_check_last_name_label'] ?? 'Last Name';
 $submitLabel = $translations['level_check_cta'] ?? 'Start My Level Check';
@@ -54,6 +55,7 @@ $submitLabel = $translations['level_check_cta'] ?? 'Start My Level Check';
 			<div class="level-select-row">
 				<label for="level-check-email"><?php echo htmlspecialchars($emailLabel, ENT_QUOTES, 'UTF-8'); ?></label>
 				<input type="email" id="level-check-email" name="email" required>
+				<p class="level-check-email-notice"><?php echo htmlspecialchars($emailNotice, ENT_QUOTES, 'UTF-8'); ?></p>
 			</div>
 <?php foreach ($passthroughParams as $paramName => $paramValue): ?>
 <?php if (is_scalar($paramValue)): ?>

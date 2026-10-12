@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => 'Nome próprio',
     'level_check_last_name_label' => 'Apelido',
     'level_check_email_label' => 'Endereço de e-mail',
+    'level_check_email_notice' => 'Nunca partilharemos nem venderemos o seu endereço de e-mail. Precisamos dele para criar a sua conta no nosso portal de cursos e dar-lhe acesso ao curso de avaliação de nível.',
     'level_check_cta' => 'Começar o meu teste de nível',
     'account_link_prompt' => 'Introduza o endereço de e-mail usado na sua subscrição para receber um link seguro para a sua conta.',
     'account_link_sent' => 'Se existir uma conta para esse endereço de e-mail, foi enviado um link seguro.',

@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => '名',
     'level_check_last_name_label' => '姓',
     'level_check_email_label' => 'メールアドレス',
+    'level_check_email_notice' => 'メールアドレスを第三者と共有したり、販売したりすることはありません。レベルチェックコースをご利用いただくため、コースポータルのアカウント作成に使用します。',
     'level_check_cta' => 'レベルチェックを始める',
     'account_link_prompt' => 'サブスクリプションに使用したメールアドレスを入力すると、安全なアカウントリンクが届きます。',
     'account_link_sent' => 'アカウントが存在する場合は、安全なリンクを送信しました。',

@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => '이름',
     'level_check_last_name_label' => '성',
     'level_check_email_label' => '이메일 주소',
+    'level_check_email_notice' => '이메일 주소를 공유하거나 판매하지 않습니다. 레벨 확인 코스에 접속할 수 있도록 코스 포털 계정을 만드는 데 필요합니다.',
     'level_check_cta' => '레벨 테스트 시작하기',
     'account_link_prompt' => '구독에 사용한 이메일 주소를 입력하면 안전한 계정 링크를 보내드립니다.',
     'account_link_sent' => '해당 이메일 주소로 등록된 계정이 있으면 안전한 링크를 보냈습니다.',

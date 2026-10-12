@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => 'First Name',
     'level_check_last_name_label' => 'Last Name',
     'level_check_email_label' => 'Email Address',
+    'level_check_email_notice' => 'We never share or sell your email address. We need it to create your account on our course portal and give you access to the Level Check course.',
     'level_check_cta' => 'Start My Level Check',
     'account_link_prompt' => 'Enter the email address used for your subscription to receive a secure account link.',
     'account_link_sent' => 'If an account exists for that email address, a secure link has been sent.',

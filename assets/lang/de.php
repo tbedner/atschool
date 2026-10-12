@@ -15,6 +15,7 @@ return [
     'level_check_first_name_label' => 'Vorname',
     'level_check_last_name_label' => 'Nachname',
     'level_check_email_label' => 'E-Mail-Adresse',
+    'level_check_email_notice' => 'Wir geben deine E-Mail-Adresse niemals weiter und verkaufen sie nicht. Wir benötigen sie, um dein Konto in unserem Kursportal einzurichten und dir Zugang zum Level-Check-Kurs zu geben.',
     'level_check_cta' => 'Einstufungstest starten',
     'account_link_prompt' => 'Gib die E-Mail-Adresse deines Abonnements ein, um einen sicheren Kontolink zu erhalten.',
     'account_link_sent' => 'Wenn ein Konto für diese E-Mail-Adresse existiert, wurde ein sicherer Link gesendet.',
